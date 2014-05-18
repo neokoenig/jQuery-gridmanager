@@ -32,7 +32,10 @@ $(document).ready(function(){
 ```
 
 ## Documentation
-_(Coming soon)_
+See [GitHub Pages][ghp]
+
+[ghp]: http://neokoenig.github.io/jQuery-gridmanager/
+
 
 ## Examples
 _(Coming soon)_
