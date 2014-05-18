@@ -1,0 +1,36 @@
+{
+  "name": "gridmanager",
+  "version": "0.1.0",
+  "description": "jQuery GridManager",
+  "keywords": [
+    "jquery-plugin"
+  ],
+  "homepage": "https://github.com/neokeonig/gridmanager",
+  "author": {
+    "name": "Tom King",
+    "email": "tom@oxalto.co.uk",
+    "url": "https://github.com/neokeonig"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/neokeonig/gridmanager.git"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-qunit": "~0.3.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-contrib-clean": "~0.5.0",
+    "grunt-contrib-connect": "~0.5.0",
+    "time-grunt": "~0.2.3",
+    "load-grunt-tasks": "~0.2.0",
+    "jshint-stylish": "~0.1.3",
+    "grunt": "~0.4.2"
+  }
+}

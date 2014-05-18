@@ -1,0 +1,28 @@
+{
+  "name": "gridmanager",
+  "title": "jQuery GridManager",
+  "description": "A way of building rows and grids with built in editable regions",
+  "version": "0.1",
+  "homepage": "http://www.oxalto.co.uk",
+  "author": {
+    "name": "Tom King",
+    "url": "https://github.com/neokoenig"
+  },
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "bugs": "",
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ],
+  "dependencies": {
+    "jquery": "~1.11.0"
+  },
+  "keywords": [
+    "jquery-plugin"
+  ]
+}
