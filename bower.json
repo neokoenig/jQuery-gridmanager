@@ -1,11 +1,12 @@
-	{
+{
   "name": "gridmanager",
   "version": "0.1.0",
   "dependencies": {
     "ckeditor": "~4.4.0",
     "jquery": "~2.1.1",
     "bootstrap": "~3.1.1",
-    "jquery-ui": "~1.10.4"
+    "jquery-ui": "~1.10.4",
+    "tinymce": "~4.0.26"
   },
   "devDependencies": {
     "qunit": "~1.12.0",

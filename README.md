@@ -1,6 +1,6 @@
 # jQuery GridManager
 
-A way of building rows and grids with built in editable regions
+A way of building rows and grids with built in editable regions; requires jQuery, jQueryUI, Bootstrap 3.x, TinyMCE
 
 ## Getting Started
 
@@ -12,13 +12,23 @@ Download the [production version][min] or the [development version][max].
 In your web page:
 
 ```html
-<script src="jquery.js"></script>
+<script src="/path/to/jquery.js"></script>
+<script src="/path/to/jquery-ui.js"></script>
+<script src="/path/to/bootstrap.js"></script>
+<script src="/path/to/tinymce.js"></script>
+<script src="/path/to/tinymce.query.js"></script>
 <script src="dist/gridmanager.min.js"></script>
-<script>
-jQuery(function($) {
-  $.awesome(); // "awesome"
+
+<div class="container">  
+	<div id="myeditableregion"></div>
+</div>
+
+<script> 
+$(document).ready(function(){ 
+   $("#mycanvas").gridmanager();  
 });
 </script>
+
 ```
 
 ## Documentation

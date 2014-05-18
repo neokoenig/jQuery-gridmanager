@@ -1,12 +1,6 @@
-/*
- * GridManager
- * 
- *
- * Copyright (c) 2014 Tom King
- * Licensed under the MIT license.
- */
- 
-
+/*! gridmanager - v0.1.0 - 2014-05-18
+* https://github.com/neokeonig/gridmanager
+* Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
 
     $.gridmanager = function(el, options){ 
