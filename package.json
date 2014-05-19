@@ -1,11 +1,11 @@
 {
   "name": "gridmanager",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "jQuery GridManager",
   "keywords": [
     "jquery-plugin"
   ],
-  "homepage": "https://github.com/neokeonig/gridmanager",
+  "homepage": "http://neokoenig.github.io/jQuery-gridmanager/",
   "author": {
     "name": "Tom King",
     "email": "tom@oxalto.co.uk",
@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/neokeonig/gridmanager.git"
+    "url": "https://github.com/neokoenig/jQuery-gridmanager.git"
   },
   "licenses": [
     {
