@@ -1,4 +1,4 @@
-/*! gridmanager - v0.1.0 - 2014-05-18
+/*! gridmanager - v0.1.0 - 2014-05-19
 * https://github.com/neokeonig/gridmanager
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -32,12 +32,14 @@
         // Build and prepend the control panel
         gm.createControls = function(){   
           var string=("<div id=" + gm.options.controls.id + ">" + gm.options.controls.prepend);
+          var _class="";
               $.each(gm.options.buttons, function(i, val){ 
-                string=string + "<a class='btn btn-default add" + gm.generateButtonClass(val) + "'><span class='glyphicon glyphicon-plus-sign'></span> " + gm.generateButtonClass(val) + "</a>";
+                _class=gm.generateButtonClass(val);
+                string=string + "<a title='Add Row " + _class + "' class='btn btn-default add" + _class + "'><span class='glyphicon glyphicon-plus-sign'></span> " + _class + "</a>";
               });
               string= string + gm.options.controls.append;
               gm.log("Control Buttons created");
-              gm.$el.prepend(string); 
+              gm.$el.prepend(string);  
         }; 
                 
         // Add click functionality to the buttons        
@@ -181,12 +183,12 @@
         controls: {
             id:  "gridmanager-controls",
             prepend: "<div class='row'><div class='col-md-12'><div id='gridmanager-addnew' class='btn-group'>", 
-            append: "</div><div id='gridmanager-util' class='btn-group pull-right'><a class='btn btn-info edit-all '><span class='glyphicon glyphicon-edit'></span></a><a class='btn btn-success preview-all '><span class='glyphicon glyphicon-eye-open'></span></a><a class='btn btn-primary save-all '><span class='glyphicon glyphicon-floppy-disk'><span></a></div></div></div>"
+            append: "</div><div id='gridmanager-util' class='btn-group pull-right'><a title='Turn on editing'  class='btn btn-info edit-all '><span class='glyphicon glyphicon-edit'></span></a><a title='Preview' class='btn btn-success preview-all '><span class='glyphicon glyphicon-eye-open'></span></a><a title='Save' class='btn btn-primary save-all '><span class='glyphicon glyphicon-floppy-disk'><span></a></div></div></div>"
         },
         row: { 
             prepend:  "<div class='row'>",
             append:   "</div>", 
-            tools:    "<div class='tools clearfix'><a class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span> Move</a><a class=' pull-right remove-row btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span> Remove</a></div>"
+            tools:    "<div class='tools clearfix'><a title='Move row' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span> Move</a><a title='Remove row'  class=' pull-right remove-row btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span> Remove</a></div>"
 
         },
         tinyMCE: {
