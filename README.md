@@ -25,7 +25,7 @@ In your web page:
 
 <script> 
 $(document).ready(function(){ 
-   $("#mycanvas").gridmanager();  
+   $("#myeditableregion").gridmanager();  
 });
 </script>
 
