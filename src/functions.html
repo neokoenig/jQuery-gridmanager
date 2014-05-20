@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>TinyMCE Variant - Gridmanager</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"> 
+    <link href="../bower_components/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">   
+    <link href="gridmanager.css" rel="stylesheet">   
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]--> 
+     <script src="../bower_components/jquery/dist/jquery.js"></script>
+     <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+     <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
+     <script src="../bower_components/jquery-ui/ui/minified/jquery-ui.min.js"></script> 
+
+  	 <script src="gridmanager.js"></script>
+  </head>
+<body> 
+<div class="container">
+  <div class="btn-group">
+    <a class='btn btn-primary test-btn'>Test</a>
+  </div>
+</div>  
+<div class="container">  
+  <div id="mycanvas">
+
+ <div class='row'> 
+    <div class="col-md-4">
+      1Something 1
+    </div>
+    <div class="col-md-4">
+      1Something 2
+    </div>
+    <div class="col-md-4">
+      1Something 3
+    </div>
+  </div>
+
+ <div class='row'> 
+    <div class="col-md-4">
+      2Something 1
+    </div>
+    <div class="col-md-4">
+      2Something 2
+    </div>
+    <div class="col-md-4">
+      2Something 3
+    </div>
+  </div>
+
+ <div class='row'> 
+    <div class="col-md-4">
+      3Something 1
+    </div>
+    <div class="col-md-4">
+      3Something 2
+    </div>
+    <div class="col-md-4">
+      3Something 3
+    </div>
+  </div>
+</div> 
+
+<!--================== JS ================--> 
+<script> 
+$(document).ready(function(){
+var gm=$("#mycanvas").gridmanager({debug: 1}); 
+
+   $(".test-btn").on("click", function(e){
+
+    e.preventDefault();
+   }); 
+});
+</script> 
+  </body>
+</html>
+	
