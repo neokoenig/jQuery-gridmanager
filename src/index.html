@@ -16,8 +16,17 @@
      <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
      <script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>
      <script src="../bower_components/jquery-ui/ui/minified/jquery-ui.min.js"></script>
+
+     <!-- TINY MCE -->
      <script src="../bower_components/tinymce/tinymce.min.js"></script>
-     <script src="../bower_components/tinymce/tinymce.jquery.min.js"></script> 
+     <script src="../bower_components/tinymce/tinymce.jquery.min.js"></script>
+
+      <!-- CKEDITOR 
+
+     <script src="../bower_components/ckeditor/ckeditor.js"></script>
+     <script src="../bower_components/ckeditor/adapters/jquery.js"></script> -->
+
+
   	 <script src="gridmanager.js"></script>
   </head>
 <body> 
@@ -30,7 +39,9 @@
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){ 
-   $("#mycanvas").gridmanager();  
+  //CKEDITOR.disableAutoInline = true;
+   $("#mycanvas").gridmanager({debug: 1, 
+    rte: "tinymce"});  
 });
 </script> 
   </body>

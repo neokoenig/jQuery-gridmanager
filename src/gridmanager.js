@@ -20,11 +20,19 @@
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options);
             
+            // Check for RTE initialisation
+            gm.rteControl("init");
             // Create the controls & canvas placeholders 
             gm.createCanvas();
             gm.createControls(); 
             gm.initControls(); 
             gm.initCanvas();  
+        };
+
+        gm.rteCheck=function(){
+          if ( window.CKEDITOR !== 'undefined') {
+          
+          }
         };
         
         // Build and append the canvas, making sure existing HTML in the user's div is wrapped
@@ -93,7 +101,7 @@
                 .find(id).sortable(
                 {axis: "y", cursor: "move", handle: ".handle-row", forcePlaceholderSize: true,   opacity: 0.7,  revert: true, placeholder: "bg-warning"  }
                 ); 
-          gm.tinymceStart();
+           gm.rteControl("start");
            gm.log("InitCanvas Ran"); 
         };
         
@@ -133,24 +141,64 @@
           var id="#" + gm.options.canvas.id;  
           gm.$el.find(id + " div.tools").remove().end()
                 .find(id + " div.row").removeAttr("style").removeClass("editing").end() 
-                .find(id + " [class*=col-]").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body").end()
+                .find(id + " [class*=col-]").removeAttr("style").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body").end()
                 .find(id + " img").removeAttr("style").removeAttr("data-mce-src").addClass("img-responsive").end()
                 .find(id + " div").removeAttr( "contenteditable" );
-          gm.tinymceStop();
+          gm.rteControl("stop");
           gm.log("Cleanup Ran"); 
         };
 
-        gm.tinymceStart=function(){
-           window.tinymce.init(gm.options.tinyMCE);
-            gm.log("TinyMCE Started"); 
+        // Rich Text Editor controller
+        gm.rteControl=function(action){
+          switch (action) { 
+            case 'init':
+                if(typeof window.CKEDITOR !== 'undefined'){
+                    gm.options.rte='ckeditor';
+                    gm.log("CKEDITOR Found");   
+              }
+                if(typeof window.tinymce !== 'undefined'){
+                    gm.options.rte='tinymce';
+                    gm.log("TINYMCE Found"); 
+                }
+                break;
+            case 'start':  
+                switch (gm.options.rte) {
+                    case 'tinymce': 
+                      // initialise TinyMCE
+                      window.tinymce.init(gm.options.tinymceConfig);
+                    break;
+
+                    case 'ckeditor':
+                    // ckeditor likes to start by itself, irrespective of what I ask it to do.
+                    // So this is only needed when you destroy and then reinit();
+                    window.CKEDITOR.inlineAll();
+                    
+                    break;
+                }
+                break; //end start 
+
+            case 'stop':    
+                switch (gm.options.rte) {
+                    case 'tinymce': 
+                      // destroy TinyMCE
+                      window.tinymce.remove();
+                    break;
+
+                    case 'ckeditor':
+                      // destroy ckeditor
+                         for(var name in window.CKEDITOR.instances)
+                        {
+                          window.CKEDITOR.instances[name].destroy();
+                        }
+                        
+                    break;
+                }
+                break; //end stop
+            }
+            gm.log(gm.options.rte + ' ' +action);
         };
 
-        gm.tinymceStop=function(){
-          window.tinymce.remove();
-           gm.log("TinyMCE Removed");
-           
-        };
-
+       
         // Push cleaned div content somewhere to save it
         gm.saveremote =  function(){  
         var id="#" + gm.options.canvas.id;
@@ -197,7 +245,8 @@
             tools:    "<div class='tools clearfix'><a title='Move row' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span> Move</a><a title='Remove row'  class=' pull-right remove-row btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span> Remove</a></div>"
 
         },
-        tinyMCE: {
+       
+        tinymceConfig: {
             selector: "[contenteditable='true']",
             inline: true,
             plugins: [
@@ -206,7 +255,8 @@
             "insertdatetime media table contextmenu paste"
             ],
             toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
-        }
+        },
+        ckeditorConfig: {}
 
     };
     
