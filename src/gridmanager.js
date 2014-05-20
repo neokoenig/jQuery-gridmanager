@@ -171,12 +171,12 @@
                     case 'ckeditor':
                     // ckeditor likes to start by itself, irrespective of what I ask it to do.
                     // So this is only needed when you destroy and then reinit();
-                    window.CKEDITOR.inlineAll();
-                    
-                    break;
+                    window.CKEDITOR.inlineAll(); 
+                    break; 
+                    default:
+                        gm.log("No RTE specified for start");
                 }
                 break; //end start 
-
             case 'stop':    
                 switch (gm.options.rte) {
                     case 'tinymce': 
@@ -192,8 +192,13 @@
                         }
                         
                     break;
+
+                    default:
+                        gm.log("No RTE specified for stop");
                 }
-                break; //end stop
+              break; //end stop
+              default:
+                  gm.log("No RTE Action specified");
             }
             gm.log(gm.options.rte + ' ' +action);
         };
