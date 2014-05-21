@@ -52,7 +52,7 @@
           var _class="";
               $.each(gm.options.buttons, function(i, val){ 
                 _class=gm.generateButtonClass(val);
-                string=string + "<a title='Add Row " + _class + "' class='btn btn-default add" + _class + "'><span class='glyphicon glyphicon-plus-sign'></span> " + _class + "</a>";
+                string=string + "<a title='Add Row " + _class + "' class='btn  btn-xs  btn-info add" + _class + "'><span class='glyphicon glyphicon-plus-sign'></span> " + _class + "</a>";
               });
               string= string + gm.options.controls.append; 
               gm.$el.prepend(string);  
@@ -66,26 +66,39 @@
               });
  
             // Utils 
-            gm.$el.on("click", "a.gm-switch", function(){ 
+            gm.$el.on("click", "button.gm-switch", function(){ 
                if(gm.status){ 
-                gm.deinitCanvas(); 
+                gm.deinitCanvas();
+                $(this).text("Editor ON"); 
               } else { 
                 gm.initCanvas(); 
+                $(this).text("Editor OFF"); 
             }
             }); 
   
-            gm.$el.on("click", "a.save-all", function(){ 
-              gm.cleanup();
+            gm.$el.on("click", "a.gm-save", function(){ 
+              gm.deinitCanvas();
               gm.saveremote(); 
             });
+
+            gm.$el.on("click", "a.gm-viewsource", function(){  
+            var id="#" + gm.options.canvas.id; 
+                gm.deinitCanvas(); 
+                window.alert(gm.$el.find(id).html());
+            });
+
+            gm.$el.on("click", "a.gm-resetgrid", function(){  
+            var id="#" + gm.options.canvas.id; 
+                gm.$el.find(id).html("");  
+            }); 
             
             // Remove Row or col
-            gm.$el.on("click", "a.remove", function(){  
+            gm.$el.on("click", "a.gm-remove", function(){  
               $(this).closest("div.gm-editing").remove();  
             });
 
             // btn default behaviours
-            gm.$el.on("click", "a.remove, a.edit-all, a.save-all", function(e){  
+            gm.$el.on("click", "a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource", function(e){  
               e.preventDefault();
             }); 
 
@@ -96,8 +109,8 @@
         gm.initCanvas = function(){    
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvas.id);
-          var cols=canvas.find("[class*=col-]");
-          var rows=canvas.find("div.row"); 
+          var cols=canvas.find(gm.options.col.selector);
+          var rows=canvas.find(gm.options.row.selector); 
            gm.log("---InitCanvas Running");  
               // Sort Rows First
               gm.activateRows(rows); 
@@ -105,7 +118,7 @@
               gm.activateCols(cols);  
               // Make Rows sortable
               canvas.sortable({
-                items: "div.row.gm-editing", 
+                items: gm.options.row.selector + ".gm-editing", 
                 axis: 'y',
                 placeholder: 'bg-warning',
                 handle: ".handle-row",
@@ -113,7 +126,7 @@
                });
               // Make columns sortable
               rows.sortable({
-                    items: "[class*=col-]", 
+                    items: gm.options.col.selector, 
                     axis: 'x',
                     handle: ".handle-col" ,
                     forcePlaceholderSize: true,
@@ -127,16 +140,16 @@
         gm.deinitCanvas = function(){ 
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvas.id);
-          var cols=canvas.find("[class*=col-]");
-          var rows=canvas.find("div.row");
+          var cols=canvas.find(gm.options.col.selector);
+          var rows=canvas.find(gm.options.row.selector);
 
            gm.log("---deInitCanvas Running");  
               // Sort Rows First
               gm.deactivateRows(rows); 
               // Now Columns
-              gm.deactivateCols(cols); 
-              // Remove Tools
-              canvas.find("div.gm-tools").remove();
+              gm.deactivateCols(cols);
+              // Clean markup
+              gm.cleanup(); 
               // Stop RTE
               gm.rteControl("stop"); 
               gm.status=false; 
@@ -177,16 +190,17 @@
         
         gm.generateClickHandler= function(arr){  
           var string="a.add" + gm.generateButtonClass(arr);
-          var id="#" + gm.options.canvas.id;
+          var canvas=gm.$el.find("#" + gm.options.canvas.id);
+          //var cols=canvas.find(gm.options.col.selector); 
           var output=gm.options.row.prepend + gm.options.row.tools; 
 
               $.each(arr, function(i, val){ 
-                output=output + gm.colmd(val); 
+                output=output +  gm.generateColumn(val); 
               });
 
               gm.$el.on("click", string, function(e){ 
                 gm.log("Clicked " + string); 
-                gm.$el.find(id).append(output);   
+                canvas.append(output);   
                 gm.reset();
                 e.preventDefault();  
             }); 
@@ -202,27 +216,40 @@
         };
 
         // Lazy function to return column markup
-        gm.colmd =  function(size){
+         gm.generateColumn =  function(size){
           return "<div class='col-md-" + size + " gm-editing'>" + gm.options.col.tools + "<div class='gm-editholder' contenteditable=true> Content here </div></div>";
         };
  
         gm.cleanup =  function(){  
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvas.id);
-              canvas.find("[class*=col-]").removeAttr("style").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body");
-              canvas.find("img").removeAttr("style").addClass("img-responsive").removeAttr("data-mce-src").end() 
-              .removeAttr("data-mce-src"); 
+              // Clean column markup
+              canvas.find(gm.options.col.selector)
+                  .removeAttr("style")
+                  .removeAttr("spellcheck")
+                  .removeAttr("id")
+                  .removeClass("mce-content-body").end()
+              // Clean img markup
+                  .find("img")
+                  .removeAttr("style")
+                  .addClass("img-responsive")
+                  .removeAttr("data-cke-saved-src")
+                  .removeAttr("data-mce-src").end()
+              // Remove Tools
+                  .find("div.gm-tools").remove(); 
         };
 
         // Rich Text Editor controller
         gm.rteControl=function(action){
           gm.log("-- RTE ---" + gm.options.rte + ' ' +action);
+        
           switch (action) { 
             case 'init':
                 if(typeof window.CKEDITOR !== 'undefined'){
                     gm.options.rte='ckeditor';
-                    gm.log("CKEDITOR Found");   
-              }
+                    gm.log("CKEDITOR Found");  
+                    window.CKEDITOR.disableAutoInline = true; 
+               }
                 if(typeof window.tinymce !== 'undefined'){
                     gm.options.rte='tinymce';
                     gm.log("TINYMCE Found"); 
@@ -231,14 +258,12 @@
             case 'start':  
                 switch (gm.options.rte) {
                     case 'tinymce': 
-                      // initialise TinyMCE
-                      window.tinymce.init(gm.options.tinymceConfig);
+                      window.tinymce.init(gm.options.tinymce.config);
                     break;
 
-                    case 'ckeditor':
-                    // ckeditor likes to start by itself, irrespective of what I ask it to do.
-                    // So this is only needed when you destroy and then init();
-                    window.CKEDITOR.inlineAll(); 
+                    case 'ckeditor': 
+                      $( 'div.gm-editholder' ).ckeditor(gm.options.ckeditor);
+                      gm.log(gm.options.ckeditor);
                     break; 
                     default:
                         gm.log("No RTE specified for start");
@@ -274,6 +299,7 @@
         gm.saveremote =  function(){  
         var id="#" + gm.options.canvas.id;
         var data=gm.log(gm.$el.find(id).html()); 
+       
             $.ajax({
               type: "POST",
               url:  gm.options.remoteURL,
@@ -308,30 +334,38 @@
         controls: {
             id:  "gm-controls",
             prepend: "<div class='row'><div class='col-md-12'><div id='gridmanager-addnew' class='btn-group'>", 
-            append: "</div><div id='gridmanager-util' class='pull-right'><a title='Turn editing on or off' class='btn btn-info gm-switch  '><span class='glyphicon glyphicon-off'></span> On/Off</a><a title='Save' class='btn btn-primary save-all '><span class='glyphicon glyphicon-floppy-disk'></span> Save</a></div></div></div>"
+            append: "</div><div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'>Editor</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>"
         },
         row: { 
+            selector: "div.row",
             prepend:  "<div class='row gm-editing'>",
             append:   "</div>", 
-            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-vertical'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
+            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-vertical'></span></a><a title='Remove row'  class=' pull-right gm-remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
 
         },
         col: {  
-            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-col pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-horizontal'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
+            selector: "div[class*=col-]",
+            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-col pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-horizontal'></span></a><a title='Remove column'  class=' pull-right gm-remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
 
         },
        
-        tinymceConfig: {
-            selector: "[contenteditable='true']",
-            inline: true,
-            plugins: [
-            "advlist autolink lists link image charmap print preview anchor",
-            "searchreplace visualblocks code fullscreen",
-            "insertdatetime media table contextmenu paste"
-            ],
-            toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+        tinymce: {
+            config: { 
+              selector: "[contenteditable='true']",
+              inline: true,
+              plugins: [
+              "advlist autolink lists link image charmap print preview anchor",
+              "searchreplace visualblocks code fullscreen",
+              "insertdatetime media table contextmenu paste"
+              ],
+              toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
+            }
         },
-        ckeditorConfig: {}
+        ckeditor: { 
+              customConfig: ""
+            
+          }
+         
 
     };
     

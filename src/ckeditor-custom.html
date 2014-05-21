@@ -38,7 +38,10 @@ $(document).ready(function(){
  
    $("#mycanvas").gridmanager(
     {
-      debug: 1 
+      debug: 1,
+      ckeditor: {
+        customConfig: "/jQuery-Gridmanager/src/ckeditorconfig.js"
+      }
   
     }
   );

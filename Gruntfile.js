@@ -22,7 +22,11 @@ module.exports = function (grunt) {
     copy: {
       main: {
         src: 'src/gridmanager.css',
-        dest: 'dist/jquery.gridmanager.css'
+        dest: 'dist/css/jquery.gridmanager.css'
+      },
+      ckeditor: {
+        src: 'src/ckeditorconfig.js',
+        dest: 'dist/js/ckeditorconfig.js'
       }
     },
     concat: {
@@ -32,7 +36,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: ['src/<%= pkg.name %>.js'],
-        dest: 'dist/jquery.<%= pkg.name %>.js'
+        dest: 'dist/js/jquery.<%= pkg.name %>.js'
       }
     },
     uglify: {
@@ -41,7 +45,7 @@ module.exports = function (grunt) {
       },
       dist: {
         src: '<%= concat.dist.dest %>',
-        dest: 'dist/jquery.<%= pkg.name %>.min.js'
+        dest: 'dist/js/jquery.<%= pkg.name %>.min.js'
       }
     },
     qunit: {

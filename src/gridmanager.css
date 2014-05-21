@@ -6,7 +6,7 @@
  * Licensed under the MIT license.
  */
  
-
+#gm-controls {margin:5px 0;}
 #gm-canvas {min-height: 100px; } 
 #gm-canvas div.row.gm-editing {padding: 5px; border: 2px solid #BBA; min-height: 20px; margin-bottom: 10px; } 
 #gm-canvas div.gm-editholder[contenteditable="true"],
