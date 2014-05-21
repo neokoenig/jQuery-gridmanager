@@ -28,6 +28,7 @@ module.exports = function (grunt) {
         src: 'src/ckeditorconfig.js',
         dest: 'dist/js/ckeditorconfig.js'
       }
+      
     },
     concat: {
       options: {

@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Multiple instances - Gridmanager Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+
+    <!-- Bootstrap CSS -->
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">   
+
+    <!-- Grid Manager CSS -->
+    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet"> 
+
+     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery -->
+     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- jQuery UI -->
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <!-- Bootstrap JS -->
+     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <!-- Grid Manager JS -->
+     <script src="../dist/js/jquery.gridmanager.min.js"></script> 
+ 
+  </head>
+<body> 
+  
+
+<div class="container">  
+  <div class="row">
+    <div id="mycanvas1" class="col-md-6"> 
+      <div class="row"><div class="col-md-2"> I am one instance</div><div class="col-md-8"> Content here </div><div class="col-md-2"> Content here </div></div>
+    </div>  
+    <div id="mycanvas2" class="col-md-6">
+      <div class="row"><div class="col-md-2"> I am a second instance</div><div class="col-md-8"> Content here </div><div class="col-md-2"> Content here </div></div>
+    </div>  
+  </div>
+
+</div> 
+
+<!--================== JS ================--> 
+<script> 
+$(document).ready(function(){  
+   $("#mycanvas1").gridmanager({
+        debug: 1,
+       buttons: [[12], [6,6], [4,4,4]]
+    }); 
+   $("#mycanvas2").gridmanager({
+        debug: 1,
+       buttons: [[1,3,1,4,3], [2,8,2], [4,8], [8,4]]
+    });
+});
+</script> 
+  </body>
+</html>
+  

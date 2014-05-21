@@ -1,0 +1,20 @@
+/*
+ * GridManager
+ * 
+ *
+ * Copyright (c) 2014 Tom King
+ * Licensed under the MIT license.
+ */
+ 
+#gm-controls {margin:5px 0;}
+#gm-canvas {min-height: 100px; } 
+#gm-canvas div.row.gm-editing {padding: 5px; border: 2px solid #BBA; min-height: 20px; margin-bottom: 10px; } 
+#gm-canvas div.gm-editholder[contenteditable="true"],
+#gm-canvas div.gm-editing,
+#gm-canvas div.gm-tools {
+            padding:5px;   min-height: 30px; -webkit-box-shadow: inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92);
+            -moz-box-shadow:    inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92);
+            box-shadow:         inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92); 
+        	}
+
+ 
