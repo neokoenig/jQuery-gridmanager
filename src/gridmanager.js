@@ -29,6 +29,12 @@
             gm.initControls(); 
             gm.initCanvas();  
         };
+
+        // Reset
+        gm.reset=function(){ 
+            gm.deinitCanvas();  
+            gm.initCanvas();  
+        };
         
         // Build and append the canvas, making sure existing HTML in the user's div is wrapped
         gm.createCanvas = function(){   
@@ -59,71 +65,60 @@
                 gm.generateClickHandler(val);
               });
  
-            // Utils
-
-            gm.$el.on("click", "a.gm-switch", function(e){ 
-              if(gm.status){ 
+            // Utils 
+            gm.$el.on("click", "a.gm-switch", function(){ 
+               if(gm.status){ 
                 gm.deinitCanvas(); 
               } else { 
                 gm.initCanvas(); 
-              }
+            }
             }); 
-
-            gm.$el.on("click", "a.preview-all", function(e){ 
-               
+  
+            gm.$el.on("click", "a.save-all", function(){ 
               gm.cleanup();
-              e.preventDefault();
-            });
-
-            gm.$el.on("click", "a.save-all", function(e){ 
-              gm.cleanup();
-              gm.saveremote();
-              e.preventDefault();
+              gm.saveremote(); 
             });
             
-            // Remove Row
+            // Remove Row or col
             gm.$el.on("click", "a.remove", function(){  
-              $(this).parent().parent().remove();  
+              $(this).closest("div.gm-editing").remove();  
             });
 
             // btn default behaviours
-            gm.$el.on("click", "a.remove, a.edit-all", function(e){ 
-              gm.initCanvas(); 
+            gm.$el.on("click", "a.remove, a.edit-all, a.save-all", function(e){  
               e.preventDefault();
             }); 
 
         };
 
 
-        // Turns canvas into editing mode - does most of the hard work here
-        gm.initCanvas = function(){   
-         
+        // Turns canvas into gm-editing mode - does most of the hard work here
+        gm.initCanvas = function(){    
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvas.id);
           var cols=canvas.find("[class*=col-]");
-          var rows=canvas.find("div.row");
-
-           gm.log("---InitCanvas Running"); 
-          
+          var rows=canvas.find("div.row"); 
+           gm.log("---InitCanvas Running");  
               // Sort Rows First
               gm.activateRows(rows); 
               // Now Columns
               gm.activateCols(cols);  
-
-               // Remove all tools just in case
-              //c.find("div.tools").remove().end() 
-               // Make all cols content editable attr( "contenteditable", true )
-               //.find("[class*=col-]").addClass("editing").prepend(gm.options.col.tools + "<div class='editholder'>").append("</div>").end()
-               // Make all images responsive
-               //.find("[class*=col-] img").addClass("img-responsive").end() 
-               // Add Row Tools
-               //.find("div.row").addClass("editing").prepend(gm.options.row.tools).sortable(
-              //    {items: "> [class*=col-]",   cursor: "move", handle: ".handle-col", forcePlaceholderSize: true,   opacity: 0.7,  revert: true, placeholder: "bg-warning"  }
-               // ).end() 
-               //  Make Rows Sortable
-              // .sortable(
-               //   {items: "> div.row.editing", axis: "y", cursor: "move", handle: ".handle-row", forcePlaceholderSize: true,   opacity: 0.7,  revert: true, placeholder: "bg-warning"  }
-                //); 
+              // Make Rows sortable
+              canvas.sortable({
+                items: "div.row.gm-editing", 
+                axis: 'y',
+                placeholder: 'bg-warning',
+                handle: ".handle-row",
+                forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
+               });
+              // Make columns sortable
+              rows.sortable({
+                    items: "[class*=col-]", 
+                    axis: 'x',
+                    handle: ".handle-col" ,
+                    forcePlaceholderSize: true,
+                     opacity: 0.7,  revert: true
+              }); 
             // Start RTE
             gm.rteControl("start");
             gm.status=true;
@@ -141,24 +136,14 @@
               // Now Columns
               gm.deactivateCols(cols); 
               // Remove Tools
-              canvas.find("div.tools").remove();
+              canvas.find("div.gm-tools").remove();
               // Stop RTE
               gm.rteControl("stop"); 
               gm.status=false; 
         };  
-
+ 
         gm.activateRows = function(rows){
-           rows.addClass("editing").end()
-              .sortable({ 
-                  items: "> div.row.editing", 
-                  cursor: "move", 
-                  handle: ".handle-row", 
-                  forcePlaceholderSize: true,   
-                  opacity: 0.7,  
-                  revert: true, 
-                  placeholder: "bg-warning"
-              });
-
+           rows.addClass("gm-editing");
            $.each(rows, function(i, val){ 
                $(val).prepend(gm.options.row.tools);
            });
@@ -166,27 +151,24 @@
         };
 
         gm.deactivateRows = function(rows){
-             rows.removeClass("editing").end(); 
-             $.each(rows, function(i, val){ 
-                 //$(val).remove(".tools");
-             });
+             rows.removeClass("gm-editing").removeClass("ui-sortable").removeAttr("style");  
              gm.log("DeActivate Rows Ran"); 
           };
 
         gm.activateCols = function(cols){ 
-           cols.addClass("editing");  
+           cols.addClass("gm-editing");  
            $.each(cols, function(i, val){ 
             var temp=$(val).html();
-               $(val).html(gm.options.col.tools + "<div class='editholder' contenteditable=true>" + temp + "</div>");
+               $(val).html(gm.options.col.tools + "<div class='gm-editholder' contenteditable=true>" + temp + "</div>");
            }); 
            gm.log("Activate Cols Ran"); 
 
         };
 
         gm.deactivateCols = function(cols){ 
-           cols.removeClass("editing");  
+           cols.removeClass("gm-editing");  
            $.each(cols, function(i, val){ 
-              var temp=$(val).find(".editholder").html();
+              var temp=$(val).find(".gm-editholder").html();
               $(val).html(temp);
            }); 
            gm.log("deActivate Cols Ran");  
@@ -204,8 +186,8 @@
 
               gm.$el.on("click", string, function(e){ 
                 gm.log("Clicked " + string); 
-                gm.$el.find(id).append(output); 
-                //gm.initCanvas(); 
+                gm.$el.find(id).append(output);   
+                gm.reset();
                 e.preventDefault();  
             }); 
         };
@@ -221,33 +203,15 @@
 
         // Lazy function to return column markup
         gm.colmd =  function(size){
-          return "<div class='col-md-" + size + " editing'>" + gm.options.col.tools + "<div class='editholder' contenteditable=true> Content here </div></div>";
+          return "<div class='col-md-" + size + " gm-editing'>" + gm.options.col.tools + "<div class='gm-editholder' contenteditable=true> Content here </div></div>";
         };
-
-        // basically reverses initCanvas
-        gm.cleanup =  function(){ 
-           
+ 
+        gm.cleanup =  function(){  
           // cache canvas
-          var canvas=gm.$el.find(id="#" + gm.options.canvas.id);
-              canvas.find("div.row").removeAttr("style").end()
-                    .find("[class*=col-]").removeAttr("style").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body").end()
-                    .find("img").removeAttr("style").removeAttr("data-mce-src").addClass("img-responsive").end();
-
-          /*
-          var cols=c.find("[class*=col-]");
-              // Remove tools
-               c.find("div.tools").remove().end()
-                .find("div.row").removeAttr("style").end() 
-                .find("[class*=col-]").removeAttr("style").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body").end()
-                .find("img").removeAttr("style").removeAttr("data-mce-src").addClass("img-responsive").end()
-                .find("div").removeAttr( "contenteditable" ).removeClass("editing").removeClass("ui-sortable");
-          //gm.rteControl("stop");
-           $.each(cols, function(i, val){
-                var temp=$(val > ".editholder").html(); 
-                $(val).html(temp);
-              });
-          gm.log("Cleanup Ran"); 
-          */
+          var canvas=gm.$el.find("#" + gm.options.canvas.id);
+              canvas.find("[class*=col-]").removeAttr("style").removeAttr("spellcheck").removeAttr("id").removeClass("mce-content-body");
+              canvas.find("img").removeAttr("style").addClass("img-responsive").removeAttr("data-mce-src").end() 
+              .removeAttr("data-mce-src"); 
         };
 
         // Rich Text Editor controller
@@ -338,22 +302,22 @@
         debug: 0,
         remoteURL: "/replace-with-your-url",
         canvas:    {
-            id: "gridmanager-canvas"
+            id: "gm-canvas"
         },
         buttons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
         controls: {
-            id:  "gridmanager-controls",
+            id:  "gm-controls",
             prepend: "<div class='row'><div class='col-md-12'><div id='gridmanager-addnew' class='btn-group'>", 
-            append: "</div><div id='gridmanager-util' class='pull-right'><a title='Turn on editing'  class='btn btn-info gm-switch  '><span class='glyphicon glyphicon-edit'></span> Switch</a><a title='Preview' class='btn btn-success preview-all '><span class='glyphicon glyphicon-eye-open'></span> Preview</a><a title='Save' class='btn btn-primary save-all '><span class='glyphicon glyphicon-floppy-disk'><span> Save</a></div></div></div>"
+            append: "</div><div id='gridmanager-util' class='pull-right'><a title='Turn editing on or off' class='btn btn-info gm-switch  '><span class='glyphicon glyphicon-off'></span> On/Off</a><a title='Save' class='btn btn-primary save-all '><span class='glyphicon glyphicon-floppy-disk'></span> Save</a></div></div></div>"
         },
         row: { 
-            prepend:  "<div class='row editing'>",
+            prepend:  "<div class='row gm-editing'>",
             append:   "</div>", 
-            tools:    "<div class='tools clearfix'><a title='Move' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-vertical'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
+            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-vertical'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
 
         },
         col: {  
-            tools:    "<div class='tools clearfix'><a title='Move' class='handle-col pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-horizontal'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
+            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-col pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-resize-horizontal'></span></a><a title='Remove row'  class=' pull-right remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>"
 
         },
        
