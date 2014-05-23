@@ -82,27 +82,21 @@
                 canvas.prepend(gm.createRow([gm.options.row.max]));   
                 gm.reset();*/  
             // Decrease Column Size
-            }).on("click", "a.gm-colDecrease", function(){ 
-               var col = $(this).closest("div.gm-editing");  
-               var colClassGrep=$.grep(col.attr("class").split(" "), function(v){
-                   return v.indexOf('col-md-') === 0;
-               }).join();  
-               var colClassWidth=colClassGrep.replace("col-md-", "");
-                   if(colClassWidth > gm.options.col.min){ 
-                       colClassWidth--; 
-                       col.switchClass(colClassGrep, "col-md-" + colClassWidth, 200); 
-                   } 
-            // Increase Column Size
+            }).on("click", "a.gm-colDecrease", function(){  
+              var col = $(this).closest("div.gm-editing");  
+              var t=gm.getColClass(col); 
+                   if(t.colWidth > gm.options.col.min){ 
+                       t.colWidth--; 
+                       col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
+                   }  
+            /* Increase Column Size }*/
             }).on("click", "a.gm-colIncrease", function(){ 
                var col = $(this).closest("div.gm-editing");  
-               var colClassGrep=$.grep(col.attr("class").split(" "), function(v){
-                   return v.indexOf('col-md-') === 0;
-               }).join();  
-               var colClassWidth=colClassGrep.replace("col-md-", "");
-                   if(colClassWidth < gm.options.col.max){ 
-                       colClassWidth++; 
-                       col.switchClass(colClassGrep, "col-md-" + colClassWidth, 200); 
-                   } 
+               var t=gm.getColClass(col); 
+                if(t.colWidth < gm.options.col.max){ 
+                  t.colWidth++; 
+                  col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
+                }    
             // Reset all teh things
             }).on("click", "a.gm-resetgrid", function(){   
                 canvas.html("");
@@ -122,6 +116,27 @@
 
         };
 
+        // Get the col-md-6 class, returning 6 as well from column
+        gm.getColClass=function(col){ 
+            var colClass=$.grep(col.attr("class").split(" "), function(v){
+                return v.indexOf('col-md-') === 0;
+                }).join(); 
+            var colWidth=colClass.replace("col-md-", "");
+                return {colClass:colClass, colWidth:colWidth}; 
+        };
+ 
+
+         /*gm.hideColWidthElements=function(colWidth, handler){  
+            if(colWidth === gm.options.col.min){
+              $(handler).closest("a.gm-colDecrease").css( "border", "5px solid red !important");
+            } else if(colWidth > gm.options.col.min &&  colWidth < gm.options.col.max){
+              gm.log(colWidth);gm.log(handler);
+                $(handler).find("a.gm-colDecrease").css( "display", "block !important");
+                $(handler).find("a.gm-colIncrease").css( "display", "block !important");
+            } else if(colWidth === gm.options.col.max){
+              $(handler).closest("a.gm-colIncrease").css( "display", "none !important");
+            }  
+        }; */
 
         // Turns canvas into gm-editing mode - does most of the hard work here
         gm.initCanvas = function(){    
@@ -157,6 +172,9 @@
             // Start RTE
             gm.rteControl("start");
             gm.status=true;
+
+            // Dev
+            //gm.buttonFactory(gm.options.row.buttons);
         };
 
         gm.deinitCanvas = function(){ 
@@ -192,8 +210,9 @@
 
 /*------------------------------------------ ROWS ---------------------------------------*/
         gm.activateRows = function(rows){
-           gm.log("++ Activate Rows Ran"); 
-           rows.addClass("gm-editing").prepend(gm.options.row.tools);  
+           gm.log("++ Activate Rows Ran");
+           var string=gm.toolFactory(gm.options.row.buttons);
+           rows.addClass("gm-editing").prepend(string);  
         };
  
         gm.deactivateRows = function(rows){
@@ -203,7 +222,7 @@
 
         // Creates a row, accepting an array of column widths to create child cols
         gm.createRow = function(colWidths){
-          var rowHTML= gm.options.row.prepend + gm.options.row.tools;
+          var rowHTML= gm.options.row.prepend + gm.toolFactory(gm.options.row.buttons) + gm.options.row.append;
           $.each(colWidths, function(i, val){
               rowHTML=rowHTML + gm.createCol(val);
           });
@@ -240,6 +259,24 @@
  
 
 /*------------------------------------------ BTNs ---------------------------------------*/ 
+        // Create the row and column toolbars
+        gm.toolFactory=function(btns){
+            var toolsPrepend="<div class='gm-tools clearfix'>";
+            var toolsAppend="</div>";
+            var string=toolsPrepend + gm.buttonFactory(btns) + toolsAppend;
+            return string;
+        };
+
+        // Generates buttons to add to toolbars etc
+        gm.buttonFactory=function(btns){
+        var string="";
+        var buttons=[];
+          $.each(btns, function(i, val){ 
+             buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>" + "</" + val.element + ">");
+          });
+          string=buttons.join("");
+          return string;
+        };
  
         // Basically just turns [2,4,6] into 2-4-6
         gm.generateButtonClass=function(arr){
@@ -254,7 +291,7 @@
         gm.generateClickHandler= function(arr){  
           var string="a.add" + gm.generateButtonClass(arr);
           var canvas=gm.$el.find("#" + gm.options.canvas.id); 
-          var output=gm.options.row.prepend + gm.options.row.tools; 
+          var output=gm.options.row.prepend; 
 
               $.each(arr, function(i, val){ 
                 output=output +  gm.createCol(val); 
@@ -390,7 +427,20 @@
             selector: "div.row",
             prepend:  "<div class='row gm-editing'>",
             append:   "</div>", 
-            tools:    "<div class='gm-tools clearfix'><div class='btn-group'><a title='Move' class='gm-handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span></a></div><a title='Remove row'  class=' pull-right gm-removeRow btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>" 
+            buttons: [
+                {
+                 title:"Move", 
+                 element: "a", 
+                 btnClass: "gm-handle-row pull-left btn btn-info btn-xs",
+                 iconClass: "glyphicon glyphicon-move"
+                },
+                {
+                 title:"Remove row", 
+                 element: "a", 
+                 btnClass: "pull-right gm-removeRow btn btn-danger btn-xs",
+                 iconClass: "glyphicon glyphicon-trash"
+                }
+            ]
 
         },
         col: {  
