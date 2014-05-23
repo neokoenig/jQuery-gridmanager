@@ -12,9 +12,10 @@
 #gm-canvas div.gm-editholder[contenteditable="true"],
 #gm-canvas div.gm-editing,
 #gm-canvas div.gm-tools {
-            padding:5px;   min-height: 30px; -webkit-box-shadow: inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92);
-            -moz-box-shadow:    inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92);
-            box-shadow:         inset 0px 0px 3px 0px rgba(181, 30, 45, 0.92); 
+			padding:5px;   min-height: 30px; 
+			-webkit-box-shadow: inset 0px 1px 2px 0px rgba(178, 175, 160, 0.75);
+			-moz-box-shadow:    inset 0px 1px 2px 0px rgba(178, 175, 160, 0.75);
+			box-shadow:         inset 0px 1px 2px 0px rgba(178, 175, 160, 0.75);
         	}
 
  

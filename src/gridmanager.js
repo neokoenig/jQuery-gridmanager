@@ -43,8 +43,7 @@
 
         // Build and prepend the control panel
         gm.createControls = function(){  
-        gm.log("+ Create Controls");  
-          var string="";
+        gm.log("+ Create Controls");   
           var prependstring=("<div id=" + gm.options.controls.id + ">" + gm.options.controls.prepend);
           var buttons=[];
               // Prepend dynamically generated buttons
@@ -53,9 +52,8 @@
                 buttons.push("<a title='Add Row " + _class + "' class='btn  btn-xs  btn-info add" + _class + "'><span class='glyphicon glyphicon-plus-sign'></span> " + _class + "</a>");
                 gm.generateClickHandler(val);
               }); 
-
-              string= prependstring + buttons.join("") + gm.options.controls.append; 
-              gm.$el.prepend(string);  
+ 
+              gm.$el.prepend(prependstring + buttons.join("") + gm.options.controls.append);  
         }; 
                 
         // Add click functionality to the buttons        
@@ -79,20 +77,46 @@
             }).on("click", "a.gm-viewsource", function(){  
                 gm.deinitCanvas(); 
                 window.alert(canvas.html());
-            // Default Add Child Row with max col width
-            }).on("click", "a.gm-addchildrow", function(){   
-                gm.log("Clicked New Row"); 
+            /* Default Add Child Row with max col width
+            }).on("click", "a.gm-addchildrow", function(){    
                 canvas.prepend(gm.createRow([gm.options.row.max]));   
-                gm.reset();  
+                gm.reset();*/  
+            // Decrease Column Size
+            }).on("click", "a.gm-colDecrease", function(){ 
+               var col = $(this).closest("div.gm-editing");  
+               var colClassGrep=$.grep(col.attr("class").split(" "), function(v){
+                   return v.indexOf('col-md-') === 0;
+               }).join();  
+               var colClassWidth=colClassGrep.replace("col-md-", "");
+                   if(colClassWidth > gm.options.col.min){ 
+                       colClassWidth--; 
+                       col.switchClass(colClassGrep, "col-md-" + colClassWidth, 200); 
+                   } 
+            // Increase Column Size
+            }).on("click", "a.gm-colIncrease", function(){ 
+               var col = $(this).closest("div.gm-editing");  
+               var colClassGrep=$.grep(col.attr("class").split(" "), function(v){
+                   return v.indexOf('col-md-') === 0;
+               }).join();  
+               var colClassWidth=colClassGrep.replace("col-md-", "");
+                   if(colClassWidth < gm.options.col.max){ 
+                       colClassWidth++; 
+                       col.switchClass(colClassGrep, "col-md-" + colClassWidth, 200); 
+                   } 
             // Reset all teh things
             }).on("click", "a.gm-resetgrid", function(){   
                 canvas.html("");
                 //canvas.animate({opacity: 'hide'}, 'slow', function(){$(this).html("");});  
             // Remove a col or row
-            }).on("click", "a.gm-remove", function(){  
-               $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide', width: 'hide'}, 'slow', function(){this.remove();});  
+            }).on("click", "a.gm-removeCol", function(){  
+               $(this).closest("div.gm-editing").animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();}); 
+            }).on("click", "a.gm-removeRow", function(){  
+               $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});   
             // For all the above, prevent default.
-            }).on("click", "a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, gm-addchildrow", function(e){  
+            }).on("click", "a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addchildrow, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
+               gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
+                 return v.indexOf('gm-') === 0;
+             }).join()); 
                e.preventDefault();
             }); 
 
@@ -117,16 +141,18 @@
                 items: gm.options.row.selector + ".gm-editing", 
                 axis: 'y',
                 placeholder: 'bg-warning',
-                handle: ".handle-row",
+                handle: ".gm-handle-row",
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
+                containment: "parent"
                });
               // Make columns sortable
               rows.sortable({
                     items: gm.options.col.selector, 
                     axis: 'x',
-                    handle: ".handle-col" ,
+                    handle: ".gm-handle-col" ,
                     forcePlaceholderSize: true,
-                     opacity: 0.7,  revert: true
+                     opacity: 0.7,  revert: true,
+                     containment: "parent"
               }); 
             // Start RTE
             gm.rteControl("start");
@@ -167,19 +193,13 @@
 /*------------------------------------------ ROWS ---------------------------------------*/
         gm.activateRows = function(rows){
            gm.log("++ Activate Rows Ran"); 
-           rows.addClass("gm-editing");
-           $.each(rows, function(i, val){ 
-               //gm.generateEmptyRowHolder($(val)); 
-               $(val).prepend(gm.options.row.tools); 
-           });
-           
+           rows.addClass("gm-editing").prepend(gm.options.row.tools);  
         };
  
         gm.deactivateRows = function(rows){
-             gm.log("-- DeActivate Rows"); 
-             rows.removeClass("gm-editing").removeClass("ui-sortable").removeAttr("style");  
-             
-          };
+           gm.log("-- DeActivate Rows"); 
+           rows.removeClass("gm-editing").removeClass("ui-sortable").removeAttr("style");  
+        };
 
         // Creates a row, accepting an array of column widths to create child cols
         gm.createRow = function(colWidths){
@@ -194,8 +214,12 @@
         gm.activateCols = function(cols){ 
            cols.addClass("gm-editing");  
            $.each(cols, function(i, val){ 
-            var temp=$(val).html();
-               $(val).html(gm.options.col.tools + "<div class='gm-editholder' contenteditable=true>" + temp + "</div>");
+            var tempHTML=$(val).html(); 
+            var colClass = $.grep((val).className.split(" "), function(v){
+                 return v.indexOf('col-') === 0;
+             }).join();  
+               $(val).html(gm.options.col.tools + "<div class='gm-editholder' contenteditable=true>" + tempHTML + "</div>")
+                     .find(".gm-handle-col").attr("title", "Move " +  colClass);
            }); 
            gm.log("++ Activate Cols Ran"); 
         };
@@ -213,7 +237,7 @@
          gm.createCol =  function(size){
           return "<div class='col-md-" + size + " gm-editing'>" + gm.options.col.tools + "<div class='gm-editholder' contenteditable=true> Content here </div></div>";
         };
-
+ 
 
 /*------------------------------------------ BTNs ---------------------------------------*/ 
  
@@ -359,19 +383,20 @@
         buttons: [[6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
         controls: {
             id:  "gm-controls",
-            prepend: "<div class='row'><div class='col-md-12'><div id='gm-addnew' class='btn-group'> <a title='Append New Row' class='gm-addchildrow btn btn-xs btn-primary'><span class='glyphicon glyphicon-plus-sign'></span></a>", 
+            prepend: "<div class='row'><div class='col-md-12'><div id='gm-addnew' class='btn-group'>", 
             append: "</div><div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'>Editor OFF</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>"
         },
         row: { 
             selector: "div.row",
             prepend:  "<div class='row gm-editing'>",
             append:   "</div>", 
-            tools:    "<div class='gm-tools clearfix'><div class='btn-group'><a title='Move' class='handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span></a></div><a title='Remove row'  class=' pull-right gm-remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>" 
+            tools:    "<div class='gm-tools clearfix'><div class='btn-group'><a title='Move' class='gm-handle-row pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span></a></div><a title='Remove row'  class=' pull-right gm-removeRow btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>" 
 
         },
         col: {  
             selector: "div[class*=col-]",
-            tools:    "<div class='gm-tools clearfix'><a title='Move' class='handle-col pull-left btn btn-info btn-xs'><span class='glyphicon glyphicon-move'></span></a><a title='Remove column'  class=' pull-right gm-remove btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>",
+            tools:    "<div class='gm-tools clearfix'><div class=' btn-group'><a title='' class='gm-handle-col pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-move'></span></a><a title='Make Column smaller' class='gm-colDecrease pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-minus'></span></a><a title='Make Column bigger' class='gm-colIncrease pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-plus'></span></a></div><a title='Remove column'  class=' pull-right gm-removeCol btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>",
+            min: 1,
             max: 12
         },
        
