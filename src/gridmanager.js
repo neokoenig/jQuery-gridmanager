@@ -60,6 +60,7 @@
         gm.initControls = function(){ 
           var canvas=gm.$el.find("#" + gm.options.canvas.id);
            gm.log("+ InitControls Running");   
+
            // Turn editing on or off 
            gm.$el.on("click", "button.gm-switch", function(){ 
                if(gm.status){ 
@@ -69,18 +70,31 @@
                 gm.initCanvas(); 
                   $(this).text("Editor OFF"); 
               }
+
+            // Make region editable
+            }).on("click", ".gm-editholder", function(){ 
+                var rteRegion=$(this); 
+                if(!rteRegion.attr("contenteditable")){ 
+                    rteRegion.attr("contenteditable", true); 
+                    gm.rteControl("attach", rteRegion ); 
+                } 
             // Save Function
             }).on("click", "a.gm-save", function(){ 
                 gm.deinitCanvas();
                 gm.saveremote(); 
+
             // View Source in Alert Dialog
             }).on("click", "a.gm-viewsource", function(){  
                 gm.deinitCanvas(); 
-                window.alert(canvas.html());
-            /* Default Add Child Row with max col width
-            }).on("click", "a.gm-addchildrow", function(){    
-                canvas.prepend(gm.createRow([gm.options.row.max]));   
-                gm.reset();*/  
+                window.alert(canvas.html()); 
+            
+            // Row settings 
+            }).on("click", "a.gm-rowSettings", function(){ 
+                gm.log("settings"); 
+            // Add new column to existing row    
+            }).on("click", "a.gm-addColumn", function(){   
+                $(this).parent().after(gm.createCol(2)); 
+
             // Decrease Column Size
             }).on("click", "a.gm-colDecrease", function(){  
               var col = $(this).closest("div.gm-editing");  
@@ -89,7 +103,8 @@
                        t.colWidth--; 
                        col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
                    }  
-            /* Increase Column Size }*/
+
+            // Increase Column Size 
             }).on("click", "a.gm-colIncrease", function(){ 
                var col = $(this).closest("div.gm-editing");  
                var t=gm.getColClass(col); 
@@ -97,17 +112,19 @@
                   t.colWidth++; 
                   col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
                 }    
+
             // Reset all teh things
             }).on("click", "a.gm-resetgrid", function(){   
-                canvas.html("");
-                //canvas.animate({opacity: 'hide'}, 'slow', function(){$(this).html("");});  
+                canvas.html(""); 
+
             // Remove a col or row
             }).on("click", "a.gm-removeCol", function(){  
                $(this).closest("div.gm-editing").animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();}); 
             }).on("click", "a.gm-removeRow", function(){  
-               $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});   
+               $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
+
             // For all the above, prevent default.
-            }).on("click", "a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addchildrow, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
+            }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
                  return v.indexOf('gm-') === 0;
              }).join()); 
@@ -124,20 +141,7 @@
             var colWidth=colClass.replace("col-md-", "");
                 return {colClass:colClass, colWidth:colWidth}; 
         };
- 
-
-         /*gm.hideColWidthElements=function(colWidth, handler){  
-            if(colWidth === gm.options.col.min){
-              $(handler).closest("a.gm-colDecrease").css( "border", "5px solid red !important");
-            } else if(colWidth > gm.options.col.min &&  colWidth < gm.options.col.max){
-              gm.log(colWidth);gm.log(handler);
-                $(handler).find("a.gm-colDecrease").css( "display", "block !important");
-                $(handler).find("a.gm-colIncrease").css( "display", "block !important");
-            } else if(colWidth === gm.options.col.max){
-              $(handler).closest("a.gm-colIncrease").css( "display", "none !important");
-            }  
-        }; */
-
+  
         // Turns canvas into gm-editing mode - does most of the hard work here
         gm.initCanvas = function(){    
           // cache canvas
@@ -156,25 +160,25 @@
                 items: gm.options.row.selector + ".gm-editing", 
                 axis: 'y',
                 placeholder: 'bg-warning',
-                handle: ".gm-handle-row",
+                handle: ".gm-tools",
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
-                containment: "parent"
+                containment: "parent",
+                tolerance: "pointer",
+                cursor: "move"  
                });
               // Make columns sortable
               rows.sortable({
                     items: gm.options.col.selector, 
                     axis: 'x',
-                    handle: ".gm-handle-col" ,
+                    handle: ".gm-tools" ,
                     forcePlaceholderSize: true,
                      opacity: 0.7,  revert: true,
-                     containment: "parent"
-              }); 
-            // Start RTE
-            gm.rteControl("start");
-            gm.status=true;
+                     containment: "parent", 
+                     tolerance: "pointer",
+                     cursor: "move"
 
-            // Dev
-            //gm.buttonFactory(gm.options.row.buttons);
+              });  
+            gm.status=true; 
         };
 
         gm.deinitCanvas = function(){ 
@@ -193,7 +197,7 @@
               // Clean markup
               gm.cleanup(); 
               // Stop RTE
-              gm.rteControl("stop"); 
+              //gm.rteControl("stop"); 
               gm.status=false; 
         };  
 
@@ -211,8 +215,9 @@
 /*------------------------------------------ ROWS ---------------------------------------*/
         gm.activateRows = function(rows){
            gm.log("++ Activate Rows Ran");
-           var string=gm.toolFactory(gm.options.row.buttons);
-           rows.addClass("gm-editing").prepend(string);  
+           var prepend=gm.toolFactory(gm.options.row.buttonsPrepend); 
+           var append=gm.toolFactory(gm.options.row.buttonsAppend); 
+           rows.addClass("gm-editing").prepend(prepend).append(append);  
         };
  
         gm.deactivateRows = function(rows){
@@ -222,7 +227,7 @@
 
         // Creates a row, accepting an array of column widths to create child cols
         gm.createRow = function(colWidths){
-          var rowHTML= gm.options.row.prepend + gm.toolFactory(gm.options.row.buttons) + gm.options.row.append;
+          var rowHTML= gm.options.row.prepend + gm.toolFactory(gm.options.row.buttonsPrepend) + gm.options.row.append;
           $.each(colWidths, function(i, val){
               rowHTML=rowHTML + gm.createCol(val);
           });
@@ -232,12 +237,14 @@
 /*------------------------------------------ COLS ---------------------------------------*/
         gm.activateCols = function(cols){ 
            cols.addClass("gm-editing");  
-           $.each(cols, function(i, val){ 
+           $.each(cols, function(i, val){
+            var prepend=gm.toolFactory(gm.options.col.buttonsPrepend) + "<div class='gm-editholder'>";
+            var append="</div>" + gm.toolFactory(gm.options.col.buttonsAppend);
             var tempHTML=$(val).html(); 
             var colClass = $.grep((val).className.split(" "), function(v){
                  return v.indexOf('col-') === 0;
              }).join();  
-               $(val).html(gm.options.col.tools + "<div class='gm-editholder' contenteditable=true>" + tempHTML + "</div>")
+               $(val).html( prepend + tempHTML + append)
                      .find(".gm-handle-col").attr("title", "Move " +  colClass);
            }); 
            gm.log("++ Activate Cols Ran"); 
@@ -254,7 +261,10 @@
 
         // Lazy function to return column markup
          gm.createCol =  function(size){
-          return "<div class='col-md-" + size + " gm-editing'>" + gm.options.col.tools + "<div class='gm-editholder' contenteditable=true> Content here </div></div>";
+          var prepend="<div class='col-md-" + size + " gm-editing'>" + gm.toolFactory(gm.options.col.buttonsPrepend) + "<div class='gm-editholder'><p>Content here</p>";
+          var append="</div>" + gm.toolFactory(gm.options.col.buttonsAppend) + "</div>";
+          var colHTML= prepend + append;
+          return colHTML; 
         };
  
 
@@ -272,7 +282,7 @@
         var string="";
         var buttons=[];
           $.each(btns, function(i, val){ 
-             buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>" + "</" + val.element + ">");
+             buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>" + "</" + val.element + "> ");
           });
           string=buttons.join("");
           return string;
@@ -307,7 +317,7 @@
 
 
 /*------------------------------------------ RTEs ---------------------------------------*/
-        gm.rteControl=function(action){
+        gm.rteControl=function(action, element){
           gm.log("RTE " + gm.options.rte + ' ' +action);
         
           switch (action) { 
@@ -322,20 +332,23 @@
                     gm.log("++ TINYMCE Found"); 
                 }
                 break;
-            case 'start':  
+             case 'attach':  
                 switch (gm.options.rte) {
                     case 'tinymce': 
-                      window.tinymce.init(gm.options.tinymce.config);
+                    gm.log(element); 
+                    if(!(element).hasClass("mce-content-body")){
+                      element.tinymce(gm.options.tinymce.config);
+                    }
                     break;
 
                     case 'ckeditor': 
-                      $( 'div.gm-editholder' ).ckeditor(gm.options.ckeditor);
-                      gm.log(gm.options.ckeditor);
+                      $(element).ckeditor(gm.options.ckeditor);
+                      gm.log(this);
                     break; 
                     default:
-                        gm.log("No RTE specified for start");
+                        gm.log("No RTE specified for attach");
                 }
-                break; //end start 
+                break; //end Attach 
             case 'stop':    
                 switch (gm.options.rte) {
                     case 'tinymce': 
@@ -357,6 +370,7 @@
                         gm.log("No RTE specified for stop");
                 }
               break; //end stop
+             
               default:
                   gm.log("No RTE Action specified");
             }
@@ -388,7 +402,9 @@
                   .removeAttr("data-cke-saved-src")
                   .removeAttr("data-mce-src").end()
               // Remove Tools
-                  .find("div.gm-tools").remove(); 
+                  .find("div.gm-tools").remove();
+              // Destroy any RTEs
+                  gm.rteControl("stop"); 
               gm.log("~~Cleanup Ran~~");
         };
 
@@ -401,9 +417,6 @@
             }
         };
 
-
-
-      
         // Run initializer
         gm.init(); 
     };
@@ -420,39 +433,70 @@
         buttons: [[6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
         controls: {
             id:  "gm-controls",
-            prepend: "<div class='row'><div class='col-md-12'><div id='gm-addnew' class='btn-group'>", 
+            prepend: "<div class='row'><div class='col-md-12'><div id='gm-addnew' class='btn-group '>", 
             append: "</div><div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'>Editor OFF</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>"
         },
         row: { 
             selector: "div.row",
             prepend:  "<div class='row gm-editing'>",
             append:   "</div>", 
-            buttons: [
+            buttonsPrepend: [
                 {
-                 title:"Move", 
+                 title:"New Column", 
                  element: "a", 
-                 btnClass: "gm-handle-row pull-left btn btn-info btn-xs",
-                 iconClass: "glyphicon glyphicon-move"
+                 btnClass: "gm-addColumn pull-left  ",
+                 iconClass: "glyphicon glyphicon-plus"
                 },
+                 {
+                 title:"Row Settings", 
+                 element: "a", 
+                 btnClass: "pull-right gm-rowSettings",
+                 iconClass: "glyphicon glyphicon-cog"
+                }
+            ],
+            buttonsAppend: [ 
                 {
                  title:"Remove row", 
                  element: "a", 
-                 btnClass: "pull-right gm-removeRow btn btn-danger btn-xs",
+                 btnClass: "pull-right gm-removeRow",
                  iconClass: "glyphicon glyphicon-trash"
                 }
-            ]
+            ],
+            settingControls: "Hi"
 
         },
         col: {  
             selector: "div[class*=col-]",
-            tools:    "<div class='gm-tools clearfix'><div class=' btn-group'><a title='' class='gm-handle-col pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-move'></span></a><a title='Make Column smaller' class='gm-colDecrease pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-minus'></span></a><a title='Make Column bigger' class='gm-colIncrease pull-left btn btn-primary btn-xs'><span class='glyphicon glyphicon-plus'></span></a></div><a title='Remove column'  class=' pull-right gm-removeCol btn btn-danger btn-xs'><span class='glyphicon glyphicon-trash'></span></a></div>",
+            buttonsPrepend: [              
+                
+                   {
+                 title:"Make Column Narrower", 
+                 element: "a", 
+                 btnClass: "gm-colDecrease pull-left",
+                 iconClass: "glyphicon glyphicon-minus-sign"
+                },
+                {
+                 title:"Make Column Wider", 
+                 element: "a", 
+                 btnClass: "gm-colIncrease pull-left",
+                 iconClass: "glyphicon glyphicon-plus-sign"
+                }
+            ],
+            buttonsAppend: [ 
+                {
+                 title:"Remove Column", 
+                 element: "a", 
+                 btnClass: "pull-right gm-removeCol",
+                 iconClass: "glyphicon glyphicon-trash"
+                }
+            ], 
             min: 1,
             max: 12
         },
        
         tinymce: {
             config: { 
-              selector: "[contenteditable='true']",
+              //selector: "[contenteditable='true']",
               inline: true,
               plugins: [
               "advlist autolink lists link image charmap print preview anchor",
