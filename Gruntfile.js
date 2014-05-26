@@ -27,6 +27,10 @@ module.exports = function (grunt) {
       ckeditor: {
         src: 'src/ckeditorconfig.js',
         dest: 'dist/js/ckeditorconfig.js'
+      },
+      democss: {
+        src: 'src/demo.css',
+        dest: 'demo/demo.css'
       }
       
     },

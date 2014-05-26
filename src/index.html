@@ -1,19 +1,19 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Fluid - Gridmanager Development</title>
+    <title>Gridmanager Development</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">  
 
     <!-- Bootstrap CSS -->
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet">   
+    <link href="//netdna.bootstrapcdn.com/bootswatch/3.1.1/cerulean/bootstrap.min.css" rel="stylesheet">   
 
-  <!-- Grid Manager CSS -->
-    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet"> 
-    <!-- Just for Demo purposes-->
+    <!-- Grid Manager CSS -->
+    <link href="gridmanager.css" rel="stylesheet"> 
+
+   
     <link href="demo.css" rel="stylesheet"> 
-
 
      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -27,33 +27,31 @@
      <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <!-- Bootstrap JS -->
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-      
-     <!-- Grid Manager JS -->
-     <script src="../dist/js/jquery.gridmanager.js"></script> 
- 
+<!--
+     <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+     <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
+   -->
+    <!-- Grid Manager JS -->
+     <script src="gridmanager.js"></script> 
+
+  
   </head>
-<body> 
-
-
+<body>  
  
-<div class="container-fluid">  
-    <div id="mycanvas">  
+    <div class="container">
 
-    </div> 
-</div> 
- 
+     <div id="mycanvas">
+   
+    </div>
+
+  </div>
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){  
 
-   $("#mycanvas").gridmanager({ 
-        controlPrepend: "<div class='row-fluid'><div class='col-md-12'><div id='gm-addnew' class='btn-group '>", 
-        // Row Specific
-        rowSelector: "div.row-fluid",
-        rowPrepend:  "<div class='row-fluid gm-editing'>"
-    }   );
-
-   
+   $("#mycanvas").gridmanager({
+         debug: 1}
+    ); 
 });
 </script> 
 </body>
