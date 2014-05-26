@@ -1,9 +1,14 @@
 /* Demo CSS */
-.row.gray {background-color: #f5f5f5;border-top:10px solid #ccc; border-bottom:10px solid #ccc; margin-bottom:10px; margin-top:10px;}
+.row.gray div[class*=col-] img { border-top:10px solid #ccc; border-bottom:10px solid #ccc; margin-bottom:10px; margin-top:10px;}
 .row.gray h2 {color:black;}
-.row.mega-awesome { }
-.row.mega-awesome img { 
+ 
+.row.rounded-img-corners img { 
 	-webkit-border-radius: 10px;
 	-moz-border-radius: 10px;
 	border-radius: 10px;}
+
 .row.blue div[class*=col-] {background:#003470; color:#f4f4f4;}
+
+ .black {background-color: black; padding-top:10px; padding-bottom:10px;}
+
+ .container {border:1px dotted red;}
