@@ -1,4 +1,4 @@
-/*! gridmanager - v0.2.1 - 2014-05-26
+/*! gridmanager - v0.2.1 - 2014-05-27
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -24,7 +24,9 @@
 
 /*------------------------------------------ Canvas & Controls ---------------------------------------*/ 
         
-        // Build and append the canvas, making sure existing HTML in the user's div is wrapped
+        /*
+         Build and append the canvas, making sure existing HTML in the user's div is wrapped
+         */
         gm.createCanvas = function(){   
           gm.log("+ Create Canvas"); 
            var html=gm.$el.html();
@@ -32,7 +34,9 @@
                 $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el); 
         };
 
-        // Build and prepend the control panel
+        /*
+         Build and prepend the control panel
+        */
         gm.createControls = function(){  
           gm.log("+ Create Controls");    
             var buttons=[];  
@@ -43,7 +47,9 @@
               gm.generateClickHandler(val);
             });  
 
-         // Generate the control bar markup 
+         /*
+          Generate the control bar markup 
+        */
          gm.$el.prepend(
               $('<div/>', 
                   {'id': gm.options.controlId, 'class': gm.options.gmClearClass }
@@ -60,7 +66,9 @@
               );
             }; 
                 
-        // Add click functionality to the buttons        
+        /*
+         Add click functionality to the buttons        
+        */
         gm.initControls = function(){ 
           var canvas=gm.$el.find("#" + gm.options.canvasId);
            gm.log("+ InitControls Running");    
@@ -103,7 +111,7 @@
                     if(drawer.length > 0){
                       drawer.remove(); 
                     } else {
-                      row.prepend(gm.generateModalRowMarkup(row));
+                      row.prepend(gm.generateRowSettings(row));
                     } 
 
             // Remove a class from a row via rowsettings
@@ -122,11 +130,12 @@
                 $(this).parent().after(gm.createCol(2)); 
 
             // Decrease Column Size
+            /* Note, issue here when a col width is 1 and the resize step is say, 5 */
             }).on("click", "a.gm-colDecrease", function(){  
               var col = $(this).closest("." +gm.options.gmEditClass);   
               var t=gm.getColClass(col); 
                    if(t.colWidth > gm.options.colMin){ 
-                       t.colWidth--; 
+                       t.colWidth=(parseInt(t.colWidth, 10) - parseInt(gm.options.colResizeStep, 10)); 
                        col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                    }  
 
@@ -134,9 +143,9 @@
             }).on("click", "a.gm-colIncrease", function(){ 
                var col = $(this).closest("." +gm.options.gmEditClass);  
                var t=gm.getColClass(col); 
-                if(t.colWidth < gm.options.colMax){ 
-                  t.colWidth++; 
-                  col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
+                if(t.colWidth < gm.options.colMax){                    
+                    t.colWidth=(parseInt(t.colWidth, 10) + parseInt(gm.options.colResizeStep, 10)); 
+                    col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                 }    
 
             // Reset all teh things
@@ -287,24 +296,27 @@
 
         /*
         Create the row specific settings box
-          @row : element to look at
         */
-        gm.generateModalRowMarkup = function(row){
-            var html="";  
-            var classHTML="";
-            var toolsPrepend="<div class='gm-rowSettingsDrawer " + gm.options.gmToolClass + " " + gm.options.gmClearClass + "'>";
-            var toolsAppend="</div>"; 
-
-             $.each(gm.options.rowCustomClasses, function(i, val){
-                if(row.hasClass(val)){
-                  classHTML=classHTML + "<button class='" + gm.options.controlButtonClass + " btn-danger gm-toggleRowClass'><span class='" + gm.options.controlButtonSpanClass +"'></span> "+  val + "</button>";
-                } else {
-                  classHTML=classHTML + "<button class='" + gm.options.controlButtonClass + " gm-toggleRowClass'><span class='" + gm.options.controlButtonSpanClass +"'></span> "+  val + "</button>";
-                }
+        gm.generateRowSettings = function(){
+          var classBtns=[];
+              $.each(gm.options.rowCustomClasses, function(i, val){
+                  var btn=$("<button/>")
+                  .addClass("gm-toggleRowClass")
+                  .addClass(gm.options.controlButtonClass)
+                  .append(
+                    $("<span/>")
+                    .addClass(gm.options.controlButtonSpanClass) 
+                    ).append(" " + val);
+                   classBtns.push(btn[0].outerHTML);
              });
-              html=toolsPrepend + "<div class='btn-group'>" +  classHTML + "</div>" + toolsAppend;
 
-            return html;
+          var html=$("<div/>")
+              .addClass("gm-rowSettingsDrawer")
+              .addClass(gm.options.gmToolClass)
+              .addClass(gm.options.gmClearClass)
+              .prepend($("<div />").addClass("btn-group").html(classBtns.join("")));
+  
+          return html[0].outerHTML; 
         };
 
 /*------------------------------------------ COLS ---------------------------------------*/
@@ -313,7 +325,8 @@
           @rows: elements to act on
         */
         gm.activateCols = function(cols){ 
-           cols.addClass(gm.options.gmEditClass);  
+           cols.addClass(gm.options.gmEditClass); 
+
            $.each(cols, function(i, val){
             var prepend=gm.toolFactory(gm.options.colButtonsPrepend) + "<div class='gm-editholder'>";
             var append="</div>" + gm.toolFactory(gm.options.colButtonsAppend);
@@ -323,6 +336,7 @@
              }).join();  
                $(val).html( prepend + tempHTML + append)
                      .find(".gm-handle-col").attr("title", "Move " +  colClass);
+                      gm.log(i + val); 
            }); 
            gm.log("++ Activate Cols Ran"); 
         };
@@ -532,31 +546,65 @@
 
     
 
-    // Options which can be overridden by the .gridmanager() call on the requesting page
+    /*
+     Options which can be overridden by the .gridmanager() call on the requesting page------------------------------------------------------
+    */
     $.gridmanager.defaultOptions = {
-        // General Options
+     /*
+     General Options---------------
+    */
+        // Debug to console
         debug: 0,
-        remoteURL: "/replace-with-your-url",
 
-        // Canvas
+        // URL to save to
+        remoteURL: "/replace-with-your-url",
+  /*
+     Canvas---------------
+    */
+        // Canvas ID
         canvasId: "gm-canvas",
-        canvasModal: "<div id='canvasModal' class='modal fade' tabindex='-1' role='dialog' aria-labelledby='canvasModal' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>GridManager</h4></div><div class='modal-body'></div></div></div></div></div>", 
-        
-        // Top Control Row
+
+        // Shortcut for modal window markup
+        canvasModal: "<div id='canvasModal' class='modal fade' tabindex='-1' role='dialog' aria-labelledby='canvasModal' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>GridManager</h4></div><div class='modal-body'></div></div></div></div></div>",        
+  /*
+     Control Bar---------------
+  */
+        // Top Control Row ID
         controlId:  "gm-controls",
+
+        // Array of buttons for row templates
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
+
+        // Default control button class
         controlButtonClass: "btn  btn-xs  btn-primary",
+
+        // Default control button icon
         controlButtonSpanClass: "glyphicon glyphicon-plus-sign",
+
+        // Control bar RH dropdown markup
         controlAppend: "<div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'><span class='glyphicon glyphicon-off'></span> Editor</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
-        
-        // GM editing classes
+   /*
+     General editing classes---------------
+  */      
+        // Standard edit class, applied to active elements
         gmEditClass: "gm-editing",
+
+        // Tool bar class which are inserted dynamically
         gmToolClass: "gm-tools",
+
+        // Clearing class, used on most toolbars
         gmClearClass: "clearfix",
 
-        // Row Specific
+  /*
+     Rows---------------
+  */
+        // Generic row class. change to row--fluid for fluid width in Bootstrap
         rowClass:    "row",
+
+        // Used to find rows - change to div.row-fluid for fluid width
         rowSelector: "div.row",        
+
+        // Buttons at the top of each row
         rowButtonsPrepend: [
                 {
                    title:"New Column", 
@@ -572,6 +620,8 @@
                 }
                 
             ],
+
+        // Buttons at the bottom of each row
         rowButtonsAppend: [ 
                 {
                  title:"Remove row", 
@@ -580,12 +630,23 @@
                  iconClass: "glyphicon glyphicon-trash"
                 }
             ],
+
+        // Not sure about this one yet
         rowSettingControls: "Reserved for future use",
+
+        // CUstom row classes - add your own to make them available in the row settings
         rowCustomClasses: ["gray","blue","rounded-img-corners"],
 
-        // Column Specific 
+  /*
+     Columns--------------
+  */    
+        // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
         colClass: "col-md-",
+
+        // Wild card column selector - this means we can find all columns irrespective of col-md or col-lg etc.
         colSelector: "div[class*=col-]",
+
+        // Buttons to prepend to each column
         colButtonsPrepend: [                
                {
                  title:"Make Column Narrower", 
@@ -600,6 +661,8 @@
                iconClass: "glyphicon glyphicon-plus-sign"
               }
             ],
+
+        // Buttons to append to each column
         colButtonsAppend: [ 
                 {
                  title:"Remove Column", 
@@ -608,13 +671,21 @@
                  iconClass: "glyphicon glyphicon-trash"
                 }
             ], 
+
+        // Minimum column span value. If you never want columns to go below 'x' set it here. It might be you don't want users to create col-md-1 for instance, as that is quite narrow.
         colMin: 1,
+
+        // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,
 
-        // RTE configuration 
+        // Column resizing +- value
+        colResizeStep: 2,
+
+  /*
+     Rich Text Editors---------------
+  */
         tinymce: {
-            config: { 
-              //selector: "[contenteditable='true']",
+            config: {  
               inline: true,
               plugins: [
               "advlist autolink lists link image charmap print preview anchor",
@@ -624,6 +695,8 @@
               toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
             }
         },
+
+        // Path to CK custom comfiguration
         ckeditor: { 
               customConfig: ""
         }
