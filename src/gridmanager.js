@@ -120,6 +120,10 @@
                       row.prepend(gm.generateRowSettings(row));
                     } 
 
+            // Change Row ID via rowsettings
+            }).on("blur", "input.gm-rowSettingsID", function(){
+                var row=$(this).closest(gm.options.rowSelector);
+                    row.attr("id", $(this).val());
             // Remove a class from a row via rowsettings
             }).on("click", "button.gm-toggleRowClass", function(){
                 var row=$(this).closest(gm.options.rowSelector);
@@ -135,12 +139,11 @@
             }).on("click", "a.gm-addColumn", function(){   
                 $(this).parent().after(gm.createCol(2)); 
 
-            // Decrease Column Size
-            /* Note, issue here when a col width is 1 and the resize step is say, 5 */
+            // Decrease Column Size 
             }).on("click", "a.gm-colDecrease", function(){  
               var col = $(this).closest("." +gm.options.gmEditClass);   
               var t=gm.getColClass(col); 
-                   if(t.colWidth > gm.options.colMin){ 
+                   if(t.colWidth > parseInt(gm.options.colResizeStep, 10)){ 
                        t.colWidth=(parseInt(t.colWidth, 10) - parseInt(gm.options.colResizeStep, 10)); 
                        col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                    }  
@@ -303,7 +306,8 @@
         /*
         Create the row specific settings box
         */
-        gm.generateRowSettings = function(){
+        gm.generateRowSettings = function(row){
+         // Row class toggle buttons
           var classBtns=[];
               $.each(gm.options.rowCustomClasses, function(i, val){
                   var btn=$("<button/>")
@@ -312,15 +316,28 @@
                   .append(
                     $("<span/>")
                     .addClass(gm.options.controlButtonSpanClass) 
-                    ).append(" " + val);
+                  ).append(" " + val);
+ 
+                   if(row.hasClass(val)){
+                     gm.log(val);
+                       btn.addClass("btn-danger"); 
+                    } else {
+                      gm.log(row);
+                    }
+
                    classBtns.push(btn[0].outerHTML);
              });
-
+          // Row settings drawer
           var html=$("<div/>")
               .addClass("gm-rowSettingsDrawer")
               .addClass(gm.options.gmToolClass)
               .addClass(gm.options.gmClearClass)
-              .prepend($("<div />").addClass("btn-group").html(classBtns.join("")));
+              .prepend($("<div />").addClass("btn-group pull-left").html(classBtns.join("")))
+              .append($("<div />").addClass("pull-right").html(
+                $("<label />").html("Row ID ").append(
+                $("<input>").addClass("gm-rowSettingsID").attr({type: 'text', placeholder: 'Row ID', value: row.attr("id")})
+                )
+              ));
   
           return html[0].outerHTML; 
         };
@@ -678,14 +695,12 @@
                 }
             ], 
 
-        // Minimum column span value. If you never want columns to go below 'x' set it here. It might be you don't want users to create col-md-1 for instance, as that is quite narrow.
-        colMin: 1,
-
+        
         // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,
 
-        // Column resizing +- value
-        colResizeStep: 2,
+        // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
+        colResizeStep: 1,
 
   /*
      Rich Text Editors---------------
