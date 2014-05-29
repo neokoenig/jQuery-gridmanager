@@ -1,4 +1,4 @@
-/*! gridmanager - v0.2.1 - 2014-05-27
+/*! gridmanager - v0.2.1 - 2014-05-29
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -57,7 +57,9 @@
                   gm.options.canvasModal, 
                     $('<div/>', {"class": gm.options.rowClass}).html(
                        $('<div/>', {"class": 'col-md-12'}).html(
-                          $('<div/>', {'id': 'gm-addnew', "class": 'btn-group'}).html(
+                          $('<div/>', {'id': 'gm-addnew'})
+                          .addClass(gm.options.gmBtnGroup)
+                          .addClass(gm.options.gmFloatLeft).html(
                             buttons.join("")
                           ) 
                         ).append(gm.options.controlAppend)
@@ -74,7 +76,7 @@
            gm.log("+ InitControls Running");    
 
            // Turn editing on or off 
-           gm.$el.on("click", "button.gm-switch", function(){ 
+           gm.$el.on("click", ".gm-switch", function(){ 
                if(gm.status){ 
                 gm.deinitCanvas();
               } else { 
@@ -114,8 +116,12 @@
                       row.prepend(gm.generateRowSettings(row));
                     } 
 
+            // Change Row ID via rowsettings
+            }).on("blur", "input.gm-rowSettingsID", function(){
+                var row=$(this).closest(gm.options.rowSelector);
+                    row.attr("id", $(this).val());
             // Remove a class from a row via rowsettings
-            }).on("click", "button.gm-toggleRowClass", function(){
+            }).on("click", ".gm-toggleRowClass", function(){
                 var row=$(this).closest(gm.options.rowSelector);
                 var theClass=$(this).text().trim();
                     row.toggleClass(theClass);
@@ -129,12 +135,11 @@
             }).on("click", "a.gm-addColumn", function(){   
                 $(this).parent().after(gm.createCol(2)); 
 
-            // Decrease Column Size
-            /* Note, issue here when a col width is 1 and the resize step is say, 5 */
+            // Decrease Column Size 
             }).on("click", "a.gm-colDecrease", function(){  
               var col = $(this).closest("." +gm.options.gmEditClass);   
               var t=gm.getColClass(col); 
-                   if(t.colWidth > gm.options.colMin){ 
+                   if(t.colWidth > parseInt(gm.options.colResizeStep, 10)){ 
                        t.colWidth=(parseInt(t.colWidth, 10) - parseInt(gm.options.colResizeStep, 10)); 
                        col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                    }  
@@ -203,7 +208,7 @@
               canvas.sortable({
                 items: gm.options.rowSelector, 
                 axis: 'y',
-                placeholder: 'bg-warning',
+                placeholder: gm.options.rowSortingClass,
                 handle: "." + gm.options.gmToolClass,
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
@@ -297,7 +302,8 @@
         /*
         Create the row specific settings box
         */
-        gm.generateRowSettings = function(){
+        gm.generateRowSettings = function(row){
+         // Row class toggle buttons
           var classBtns=[];
               $.each(gm.options.rowCustomClasses, function(i, val){
                   var btn=$("<button/>")
@@ -306,15 +312,30 @@
                   .append(
                     $("<span/>")
                     .addClass(gm.options.controlButtonSpanClass) 
-                    ).append(" " + val);
+                  ).append(" " + val);
+ 
+                   if(row.hasClass(val)){ 
+                       btn.addClass("btn-danger"); 
+                    } else {
+                      gm.log(row);
+                    }
+
                    classBtns.push(btn[0].outerHTML);
              });
-
+          // Row settings drawer
           var html=$("<div/>")
               .addClass("gm-rowSettingsDrawer")
               .addClass(gm.options.gmToolClass)
               .addClass(gm.options.gmClearClass)
-              .prepend($("<div />").addClass("btn-group").html(classBtns.join("")));
+              .prepend($("<div />")
+                .addClass(gm.options.gmBtnGroup)
+                .addClass(gm.options.gmFloatLeft)
+                .html(classBtns.join("")))
+              .append($("<div />").addClass("pull-right").html(
+                $("<label />").html("Row ID ").append(
+                $("<input>").addClass("gm-rowSettingsID").attr({type: 'text', placeholder: 'Row ID', value: row.attr("id")})
+                )
+              ));
   
           return html[0].outerHTML; 
         };
@@ -335,8 +356,7 @@
                  return v.indexOf(gm.options.colClass) === 0;
              }).join();  
                $(val).html( prepend + tempHTML + append)
-                     .find(".gm-handle-col").attr("title", "Move " +  colClass);
-                      gm.log(i + val); 
+                     .find(".gm-handle-col").attr("title", "Move " +  colClass); 
            }); 
            gm.log("++ Activate Cols Ran"); 
         };
@@ -358,7 +378,9 @@
         Create a single column with appropriate editing tools
         */
          gm.createCol =  function(size){  
-         var col= $("<div/>", {"class": gm.options.colClass + size + " " + gm.options.gmEditClass}) 
+         var col= $("<div/>").addClass(gm.options.colClass + size)
+             .addClass(gm.options.gmEditClass)
+             .addClass(gm.options.colAdditionalClass) 
             .html(gm.toolFactory(gm.options.colButtonsPrepend)).append(
                   $("<div/>", {"class": "gm-editholder"}).html("<p>Awaiting Content</p>").append(gm.toolFactory(gm.options.colButtonsAppend)) 
             );  
@@ -373,7 +395,10 @@
          @btns Array of buttons (see options)
         */
         gm.toolFactory=function(btns){
-           var tools=$("<div/>", {"class": gm.options.gmToolClass + " " + gm.options.gmClearClass}).html(gm.buttonFactory(btns)); 
+           var tools=$("<div/>")
+              .addClass(gm.options.gmToolClass)
+              .addClass(gm.options.gmClearClass)
+              .html(gm.buttonFactory(btns)); 
            return tools[0].outerHTML;
         };
 
@@ -384,7 +409,7 @@
         gm.buttonFactory=function(btns){  
           var buttons=[];
           $.each(btns, function(i, val){  
-            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>" + "</" + val.element + "> ");
+            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + "</" + val.element + "> ");
           }); 
           return buttons.join("");
         };
@@ -595,6 +620,12 @@
         // Clearing class, used on most toolbars
         gmClearClass: "clearfix",
 
+        // generic float left and right
+        gmFloatLeft: "pull-left",
+        gmFloatRight: "pull-right",
+        gmBtnGroup:  "btn-group",
+
+
   /*
      Rows---------------
   */
@@ -602,7 +633,10 @@
         rowClass:    "row",
 
         // Used to find rows - change to div.row-fluid for fluid width
-        rowSelector: "div.row",        
+        rowSelector: "div.row",     
+
+        // class of background element when sorting rows
+        rowSortingClass: "bg-warning",   
 
         // Buttons at the top of each row
         rowButtonsPrepend: [
@@ -646,6 +680,9 @@
         // Wild card column selector - this means we can find all columns irrespective of col-md or col-lg etc.
         colSelector: "div[class*=col-]",
 
+        // Additional column class to add (foundation needs columns, bs3 doesn't)
+        colAdditionalClass: "",
+
         // Buttons to prepend to each column
         colButtonsPrepend: [                
                {
@@ -672,14 +709,12 @@
                 }
             ], 
 
-        // Minimum column span value. If you never want columns to go below 'x' set it here. It might be you don't want users to create col-md-1 for instance, as that is quite narrow.
-        colMin: 1,
-
+        
         // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,
 
-        // Column resizing +- value
-        colResizeStep: 2,
+        // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
+        colResizeStep: 1,
 
   /*
      Rich Text Editors---------------
