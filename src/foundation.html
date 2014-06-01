@@ -79,6 +79,7 @@
 <script> 
 $(document).ready(function(){  
 
+
    $("#mycanvas").gridmanager({
           /*
      General Options---------------
@@ -91,20 +92,16 @@ $(document).ready(function(){
   /*
      Canvas---------------
     */
-        // Canvas ID
-        canvasId: "gm-canvas",
 
         // Shortcut for modal window markup
-        //canvasModal: "<div id='canvasModal' class='modal fade' tabindex='-1' role='dialog' aria-labelledby='canvasModal' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>GridManager</h4></div><div class='modal-body'></div></div></div></div></div>",      
-        canvasModal: "",  
+        canvasModal: "<div id='canvasModal' class='reveal-modal' data-reveal> <h4 class='modal-title' id='myModalLabel'>GridManager</h4><div class='modal-body'></div></div>",      
+     
   /*
      Control Bar---------------
   */
-        // Top Control Row ID
-        controlId:  "gm-controls",
 
         // Array of buttons for row templates
-        controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
+        controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3],   [2,8,2], [4,8], [8,4]],
 
         // Default control button class
         controlButtonClass: "tiny button",
@@ -113,32 +110,21 @@ $(document).ready(function(){
         controlButtonSpanClass: "fi-plus",
 
         // Control bar RH  
-        controlAppend: "<div class='right'><a class='button tiny gm-switch'><span class='fi-pencil'></span> On/Off</a><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span> Save</a><a title='View Source' href='#' class='gm-viewsource button tiny'><span class='fi-magnifying-glass'></span> Source</a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span> Reset</a> </div>",
+        controlAppend: "<div class='right'><a class='button tiny gm-switch'><span class='fi-pencil'></span> On/Off</a><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span> Save</a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span> Reset</a> </div>",
         
    /*
      General editing classes---------------
   */      
-        // Standard edit class, applied to active elements
-        gmEditClass: "gm-editing",
-
-        // Tool bar class which are inserted dynamically
-        gmToolClass: "gm-tools",
-
-        // Clearing class, used on most toolbars
-        gmClearClass: "clearfix",
 
        // generic float left and right
         gmFloatLeft: "left",
         gmFloatRight: "right",
+        gmBtnGroup:  "button-group", 
+        gmDangerClass: "alert",
+
   /*
      Rows---------------
   */
-        // Generic row class. change to row--fluid for fluid width in Bootstrap
-        rowClass:    "row",
-
-        // Used to find rows - change to div.row-fluid for fluid width
-        rowSelector: "div.row",        
-
         // class of background element when sorting rows
         rowSortingClass: "panel callout radius",   
 
@@ -168,9 +154,6 @@ $(document).ready(function(){
                  iconClass: "fi-trash"
                 }
             ],
-
-        // Not sure about this one yet
-        rowSettingControls: "Reserved for future use",
 
         // CUstom row classes - add your own to make them available in the row settings
         rowCustomClasses: ["panel","callout","radius"],

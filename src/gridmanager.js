@@ -62,7 +62,7 @@
               ).prepend(
                   gm.options.canvasModal, 
                     $('<div/>', {"class": gm.options.rowClass}).html(
-                       $('<div/>', {"class": 'col-md-12'}).html(
+                       $('<div/>', {"class": gm.options.colClass + 12}).addClass(gm.options.colAdditionalClass).html(
                           $('<div/>', {'id': 'gm-addnew'})
                           .addClass(gm.options.gmBtnGroup)
                           .addClass(gm.options.gmFloatLeft).html(
@@ -103,15 +103,15 @@
                 gm.saveremote(); 
 
             // View Source in Alert Dialog
+            // NB not working in foundation yet.
             }).on("click", "a.gm-viewsource", function(){  
                 gm.deinitCanvas();  
                 var source=gm.htmlEncode(canvas.html()); 
                 var modal=$("#canvasModal"); 
                     modal.find(".modal-body").html(
                        $('<pre/>', {"class": 'pre-scrollable'}).html(source)
-                    );
-                    modal.modal();  
-            
+                    ); 
+                    modal.modal(); 
             /* Row settings */
             }).on("click", "a.gm-rowSettings", function(){ 
                  var row=$(this).closest(gm.options.rowSelector); 
@@ -132,9 +132,9 @@
                 var theClass=$(this).text().trim();
                     row.toggleClass(theClass);
                     if(row.hasClass(theClass)){
-                        $(this).addClass("btn-danger");
+                        $(this).addClass(gm.options.gmDangerClass);
                     } else { 
-                        $(this).removeClass("btn-danger");
+                        $(this).removeClass(gm.options.gmDangerClass);
                     }
                      
             // Add new column to existing row    
@@ -321,7 +321,7 @@
                   ).append(" " + val);
  
                    if(row.hasClass(val)){ 
-                       btn.addClass("btn-danger"); 
+                       btn.addClass(gm.options.gmDangerClass); 
                     } else {
                       gm.log(row);
                     }
@@ -630,6 +630,7 @@
         gmFloatLeft: "pull-left",
         gmFloatRight: "pull-right",
         gmBtnGroup:  "btn-group",
+        gmDangerClass: "btn-danger",
 
 
   /*
