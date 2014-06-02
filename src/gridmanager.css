@@ -6,7 +6,8 @@
  * Licensed under the MIT license.
  */
  
-#gm-controls {margin:5px 0;}
+#gm-controls {margin:5px 0; }
+	#gm-controls button,  #gm-controls a {font-size: 16px;}
 #gm-canvas {min-height: 100px;} 
 #gm-canvas .gm-editing {
 	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
@@ -26,5 +27,6 @@
 #gm-canvas div.gm-tools {padding:3px;   min-height: 30px; display:block; clear:both;}
 #gm-canvas div.gm-tools a:hover {cursor: pointer;}
 #gm-canvas div.gm-tools label, #gm-canvas div.gm-tools input {font-size:14px;}
+#gm-canvas textarea {width:100%; height: 100%;}
 
  
