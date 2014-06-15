@@ -15,7 +15,16 @@
         gm.el = el; 
         gm.$el.data("gridmanager", gm);
        
-        
+/*------------------------------------------ API ----------------------------------------*/
+        gm.appendHTMLSelectedCols = function(html) {
+          var canvas=gm.$el.find("#" + gm.options.canvasId);
+          var cols = canvas.find(gm.options.colSelector);
+          $.each(cols, function(index) {
+            if($(this).hasClass('colSelected')) {
+              $('.gm-editholder', this).append(html);
+            }
+          });
+        }
 /*------------------------------------------ INIT ---------------------------------------*/
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options); 
@@ -128,6 +137,10 @@
             }).on("click", "a.gm-removeRow", function(){  
                $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
 
+            }).on('click',('#' + gm.options.canvasId + ' [class^="col-md"]'), function() {
+              if(gm.options.colSelectEnabled) {
+                $(this).toggleClass('colSelected');
+              }
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
@@ -439,6 +452,7 @@
         // General Options
         debug: 0,
         remoteURL: "/replace-with-your-url",
+        colSelectEnabled: true,
 
         // Canvas
         canvasId: "gm-canvas",
@@ -527,7 +541,9 @@
     // Expose as jquery function
     $.fn.gridmanager = function(options){
         return this.each(function(){
-            (new $.gridmanager(this, options));
+          var element = $(this);
+          var gridmanager = new $.gridmanager(this, options);
+          element.data('gridmanager', gridmanager);
         });
     }; 
     
