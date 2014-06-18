@@ -1,4 +1,4 @@
-/*! gridmanager - v0.2.1 - 2014-05-29
+/*! gridmanager - v0.2.2 - 2014-06-18
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -53,10 +53,9 @@
          gm.$el.prepend(
               $('<div/>', 
                   {'id': gm.options.controlId, 'class': gm.options.gmClearClass }
-              ).prepend(
-                  gm.options.canvasModal, 
+              ).prepend( 
                     $('<div/>', {"class": gm.options.rowClass}).html(
-                       $('<div/>', {"class": 'col-md-12'}).html(
+                       $('<div/>', {"class": gm.options.colClass + 12}).addClass(gm.options.colAdditionalClass).html(
                           $('<div/>', {'id': 'gm-addnew'})
                           .addClass(gm.options.gmBtnGroup)
                           .addClass(gm.options.gmFloatLeft).html(
@@ -76,12 +75,31 @@
            gm.log("+ InitControls Running");    
 
            // Turn editing on or off 
-           gm.$el.on("click", ".gm-switch", function(){ 
+           gm.$el.on("click", ".gm-preview", function(){ 
                if(gm.status){ 
                 gm.deinitCanvas();
+                 $(this).parent().find(".gm-mode").prop('disabled', true);
               } else { 
-                gm.initCanvas(); 
+                gm.initCanvas();   
+                 $(this).parent().find(".gm-mode").prop('disabled', false);
               }
+              $(this).toggleClass(gm.options.gmDangerClass);
+
+          // Switch editing mode
+            }).on("click", ".gm-mode", function(){ 
+              if(gm.mode === "visual"){ 
+                 gm.deinitCanvas(); 
+                 canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
+                 gm.mode="html";
+                 $(this).parent().find(".gm-preview").prop('disabled', true); 
+              } else {  
+                var editedSource=canvas.find("textarea").val();
+                 canvas.html(editedSource);
+                 gm.initCanvas();
+                 gm.mode="visual"; 
+                 $(this).parent().find(".gm-preview").prop('disabled', false);
+              } 
+              $(this).toggleClass(gm.options.gmDangerClass);
 
             // Make region editable
             }).on("click", ".gm-editholder", function(){ 
@@ -94,18 +112,8 @@
             // Save Function
             }).on("click", "a.gm-save", function(){ 
                 gm.deinitCanvas();
-                gm.saveremote(); 
-
-            // View Source in Alert Dialog
-            }).on("click", "a.gm-viewsource", function(){  
-                gm.deinitCanvas();  
-                var source=gm.htmlEncode(canvas.html()); 
-                var modal=$("#canvasModal"); 
-                    modal.find(".modal-body").html(
-                       $('<pre/>', {"class": 'pre-scrollable'}).html(source)
-                    );
-                    modal.modal();  
-            
+                gm.saveremote();  
+                    
             /* Row settings */
             }).on("click", "a.gm-rowSettings", function(){ 
                  var row=$(this).closest(gm.options.rowSelector); 
@@ -126,9 +134,9 @@
                 var theClass=$(this).text().trim();
                     row.toggleClass(theClass);
                     if(row.hasClass(theClass)){
-                        $(this).addClass("btn-danger");
+                        $(this).addClass(gm.options.gmDangerClass);
                     } else { 
-                        $(this).removeClass("btn-danger");
+                        $(this).removeClass(gm.options.gmDangerClass);
                     }
                      
             // Add new column to existing row    
@@ -165,7 +173,7 @@
                $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
 
             // For all the above, prevent default.
-            }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
+            }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
                  return v.indexOf('gm-') === 0;
              }).join()); 
@@ -224,7 +232,8 @@
                 tolerance: "pointer",
                 cursor: "move"
               });  
-            gm.status=true; 
+            gm.status=true;
+            gm.mode="visual"; 
         };
 
         /*
@@ -315,11 +324,8 @@
                   ).append(" " + val);
  
                    if(row.hasClass(val)){ 
-                       btn.addClass("btn-danger"); 
-                    } else {
-                      gm.log(row);
-                    }
-
+                       btn.addClass(gm.options.gmDangerClass);  
+                    } 
                    classBtns.push(btn[0].outerHTML);
              });
           // Row settings drawer
@@ -472,7 +478,7 @@
 
                     case 'ckeditor': 
                       $(element).ckeditor(gm.options.ckeditor);
-                      gm.log(this);
+                    
                     break; 
                     default:
                         gm.log("No RTE specified for attach");
@@ -589,8 +595,6 @@
         // Canvas ID
         canvasId: "gm-canvas",
 
-        // Shortcut for modal window markup
-        canvasModal: "<div id='canvasModal' class='modal fade' tabindex='-1' role='dialog' aria-labelledby='canvasModal' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>GridManager</h4></div><div class='modal-body'></div></div></div></div></div>",        
   /*
      Control Bar---------------
   */
@@ -607,7 +611,7 @@
         controlButtonSpanClass: "glyphicon glyphicon-plus-sign",
 
         // Control bar RH dropdown markup
-        controlAppend: "<div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'><span class='glyphicon glyphicon-off'></span> Editor</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
+        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
    /*
      General editing classes---------------
   */      
@@ -624,6 +628,7 @@
         gmFloatLeft: "pull-left",
         gmFloatRight: "pull-right",
         gmBtnGroup:  "btn-group",
+        gmDangerClass: "btn-danger",
 
 
   /*
@@ -669,7 +674,7 @@
         rowSettingControls: "Reserved for future use",
 
         // CUstom row classes - add your own to make them available in the row settings
-        rowCustomClasses: ["gray","blue","rounded-img-corners"],
+        rowCustomClasses: ["example-class","test-class"],
 
   /*
      Columns--------------
