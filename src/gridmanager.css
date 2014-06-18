@@ -7,7 +7,7 @@
  */
  
 #gm-controls {margin:5px 0; }
-	#gm-controls button,  #gm-controls a {font-size: 16px;}
+#gm-controls button,  #gm-controls a {font-size: 16px;}
 #gm-canvas {min-height: 100px;} 
 #gm-canvas .gm-editing {
 	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);

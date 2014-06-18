@@ -97,8 +97,7 @@
                  gm.deinitCanvas(); 
                  canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
                  gm.mode="html";
-                 $(this).parent().find(".gm-preview").prop('disabled', true);
-                 gm.log($(this));
+                 $(this).parent().find(".gm-preview").prop('disabled', true); 
               } else {  
                 var editedSource=canvas.find("textarea").val();
                  canvas.html(editedSource);
@@ -331,11 +330,8 @@
                   ).append(" " + val);
  
                    if(row.hasClass(val)){ 
-                       btn.addClass(gm.options.gmDangerClass); 
-                    } else {
-                      gm.log(row);
-                    }
-
+                       btn.addClass(gm.options.gmDangerClass);  
+                    } 
                    classBtns.push(btn[0].outerHTML);
              });
           // Row settings drawer
@@ -488,7 +484,7 @@
 
                     case 'ckeditor': 
                       $(element).ckeditor(gm.options.ckeditor);
-                      gm.log(this);
+                    
                     break; 
                     default:
                         gm.log("No RTE specified for attach");
@@ -621,7 +617,7 @@
         controlButtonSpanClass: "glyphicon glyphicon-plus-sign",
 
         // Control bar RH dropdown markup
-        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> Edit Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
+        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
    /*
      General editing classes---------------
   */      
@@ -684,7 +680,7 @@
         rowSettingControls: "Reserved for future use",
 
         // CUstom row classes - add your own to make them available in the row settings
-        rowCustomClasses: ["gray","blue","rounded-img-corners"],
+        rowCustomClasses: ["example-class","test-class"],
 
   /*
      Columns--------------
