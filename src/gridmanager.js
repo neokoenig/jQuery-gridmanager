@@ -19,8 +19,8 @@
         gm.appendHTMLSelectedCols = function(html) {
           var canvas=gm.$el.find("#" + gm.options.canvasId);
           var cols = canvas.find(gm.options.colSelector);
-          $.each(cols, function(index) {
-            if($(this).hasClass('colSelected')) {
+          $.each(cols, function(index){
+            if($(this).hasClass('gm-editing-selected')) {
               $('.gm-editholder', this).append(html);
             }
           });
@@ -187,9 +187,9 @@
             }).on("click", "a.gm-removeRow", function(){  
                $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
 
-            }).on('click',('#' + gm.options.canvasId + ' [class^="col-md"]'), function() {
+            }).on('click',('#' + gm.options.canvasId + ' ' + gm.options.colSelector), function() {
               if(gm.options.colSelectEnabled) {
-                $(this).toggleClass('colSelected');
+                $(this).toggleClass('gm-editing-selected');
               }
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 

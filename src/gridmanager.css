@@ -20,6 +20,10 @@
 	min-height: 30px;
 	}  
  
+#gm-canvas .gm-editing-selected{
+	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(255, 0, 0, 1);
+	-moz-box-shadow:    inset 0px 0px 5px 0px rgba(255, 0, 0, 1);
+	box-shadow:         inset 0px 0px 5px 0px rgba(255, 0, 0, 1); }
 #gm-canvas div.row.gm-editing, 
 #gm-canvas div.row-fluid.gm-editing {
 	padding: 5px;  
@@ -28,4 +32,3 @@
 #gm-canvas div.gm-tools a:hover {cursor: pointer;}
 #gm-canvas div.gm-tools label, #gm-canvas div.gm-tools input {font-size:14px;}
 #gm-canvas textarea {width:100%; height: 100%;}
-.colSelected { border: 1px solid red; }
