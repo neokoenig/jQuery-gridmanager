@@ -20,7 +20,7 @@
           var canvas=gm.$el.find("#" + gm.options.canvasId);
           var cols = canvas.find(gm.options.colSelector);
           $.each(cols, function(index){
-            if($(this).hasClass('gm-editing-selected')) {
+            if($(this).hasClass(gm.options.gmEditClassSelected)) {
               $('.gm-editholder', this).append(html);
             }
           });
@@ -189,7 +189,7 @@
 
             }).on('click',('#' + gm.options.canvasId + ' ' + gm.options.colSelector), function() {
               if(gm.options.colSelectEnabled) {
-                $(this).toggleClass('gm-editing-selected');
+                $(this).toggleClass(gm.options.gmEditClassSelected);
               }
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
@@ -391,7 +391,8 @@
           @rows: elements to act on
         */
         gm.deactivateCols = function(cols){ 
-           cols.removeClass(gm.options.gmEditClass);  
+           cols.removeClass(gm.options.gmEditClass)
+               .removeClass(gm.options.gmEditClassSelected);  
            $.each(cols, function(i, val){ 
               var temp=$(val).find(".gm-editholder").html();
               $(val).html(temp);
@@ -639,6 +640,7 @@
   */      
         // Standard edit class, applied to active elements
         gmEditClass: "gm-editing",
+        gmEditClassSelected: "gm-editing-selected",
 
         // Tool bar class which are inserted dynamically
         gmToolClass: "gm-tools",
