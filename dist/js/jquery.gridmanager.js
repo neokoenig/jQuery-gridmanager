@@ -1,4 +1,4 @@
-/*! gridmanager - v0.2.1 - 2014-05-24
+/*! gridmanager - v0.2.2 - 2014-06-18
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -13,55 +13,93 @@
 /*------------------------------------------ INIT ---------------------------------------*/
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options); 
-            gm.log("INIT"); 
-            
-            // Check for RTE initialisation
-            gm.rteControl("init");
-            // Create the controls & canvas placeholders 
+            gm.log("INIT");  
+            gm.rteControl("init"); 
             gm.createCanvas();
             gm.createControls(); 
             gm.initControls(); 
-            gm.initCanvas();  
+            gm.initCanvas(); 
+            gm.log("FINISHED"); 
         };
 
 /*------------------------------------------ Canvas & Controls ---------------------------------------*/ 
         
-        // Build and append the canvas, making sure existing HTML in the user's div is wrapped
+        /*
+         Build and append the canvas, making sure existing HTML in the user's div is wrapped
+         */
         gm.createCanvas = function(){   
           gm.log("+ Create Canvas"); 
            var html=gm.$el.html();
                 gm.$el.html("");
-            var c="<div id=" + gm.options.canvasId + ">" + html + "</div>";
-                gm.$el.append(c); 
+                $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el); 
         };
 
-        // Build and prepend the control panel
+        /*
+         Build and prepend the control panel
+        */
         gm.createControls = function(){  
-        gm.log("+ Create Controls");   
-          var prependstring=(gm.options.canvasModal + "<div class='clearfix' id=" + gm.options.controlId + ">" + gm.options.controlPrepend);
-          var buttons=[];
-              // Prepend dynamically generated buttons
-              $.each(gm.options.controlButtons, function(i, val){ 
-                var _class=gm.generateButtonClass(val);
-                buttons.push("<a title='Add Row " + _class + "' class='btn  btn-xs  btn-primary add" + _class + "'><span class='glyphicon glyphicon-plus-sign'></span> " + _class + "</a>");
-                gm.generateClickHandler(val);
-              }); 
- 
-              gm.$el.prepend(prependstring + buttons.join("") + gm.options.controlAppend);  
-        }; 
+          gm.log("+ Create Controls");    
+            var buttons=[];  
+            // Dynamically generated row template buttons
+            $.each(gm.options.controlButtons, function(i, val){ 
+              var _class=gm.generateButtonClass(val);
+              buttons.push("<a title='Add Row " + _class + "' class='" + gm.options.controlButtonClass + " add" + _class + "'><span class='" + gm.options.controlButtonSpanClass + "'></span> " + _class + "</a>");
+              gm.generateClickHandler(val);
+            });  
+
+         /*
+          Generate the control bar markup 
+        */
+         gm.$el.prepend(
+              $('<div/>', 
+                  {'id': gm.options.controlId, 'class': gm.options.gmClearClass }
+              ).prepend( 
+                    $('<div/>', {"class": gm.options.rowClass}).html(
+                       $('<div/>', {"class": gm.options.colClass + 12}).addClass(gm.options.colAdditionalClass).html(
+                          $('<div/>', {'id': 'gm-addnew'})
+                          .addClass(gm.options.gmBtnGroup)
+                          .addClass(gm.options.gmFloatLeft).html(
+                            buttons.join("")
+                          ) 
+                        ).append(gm.options.controlAppend)
+                     )
+                  )
+              );
+            }; 
                 
-        // Add click functionality to the buttons        
+        /*
+         Add click functionality to the buttons        
+        */
         gm.initControls = function(){ 
           var canvas=gm.$el.find("#" + gm.options.canvasId);
-           gm.log("+ InitControls Running");   
+           gm.log("+ InitControls Running");    
 
            // Turn editing on or off 
-           gm.$el.on("click", "button.gm-switch", function(){ 
+           gm.$el.on("click", ".gm-preview", function(){ 
                if(gm.status){ 
                 gm.deinitCanvas();
+                 $(this).parent().find(".gm-mode").prop('disabled', true);
               } else { 
-                gm.initCanvas(); 
+                gm.initCanvas();   
+                 $(this).parent().find(".gm-mode").prop('disabled', false);
               }
+              $(this).toggleClass(gm.options.gmDangerClass);
+
+          // Switch editing mode
+            }).on("click", ".gm-mode", function(){ 
+              if(gm.mode === "visual"){ 
+                 gm.deinitCanvas(); 
+                 canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
+                 gm.mode="html";
+                 $(this).parent().find(".gm-preview").prop('disabled', true); 
+              } else {  
+                var editedSource=canvas.find("textarea").val();
+                 canvas.html(editedSource);
+                 gm.initCanvas();
+                 gm.mode="visual"; 
+                 $(this).parent().find(".gm-preview").prop('disabled', false);
+              } 
+              $(this).toggleClass(gm.options.gmDangerClass);
 
             // Make region editable
             }).on("click", ".gm-editholder", function(){ 
@@ -74,56 +112,68 @@
             // Save Function
             }).on("click", "a.gm-save", function(){ 
                 gm.deinitCanvas();
-                gm.saveremote(); 
-
-            // View Source in Alert Dialog
-            }).on("click", "a.gm-viewsource", function(){  
-                gm.deinitCanvas();  
-                var source=gm.htmlEncode(canvas.html()); 
-                var modal=$("#canvasModal"); 
-                modal.find(".modal-body").html("<pre class='pre-scrollable'>" + source + "</pre>");
-                gm.log(source);
-                modal.modal(); 
-            
-            /* Row settings - coming at some point
+                gm.saveremote();  
+                    
+            /* Row settings */
             }).on("click", "a.gm-rowSettings", function(){ 
-                gm.log("settings"); 
-                */
+                 var row=$(this).closest(gm.options.rowSelector); 
+                 var drawer=row.find(".gm-rowSettingsDrawer");
+                    if(drawer.length > 0){
+                      drawer.remove(); 
+                    } else {
+                      row.prepend(gm.generateRowSettings(row));
+                    } 
 
+            // Change Row ID via rowsettings
+            }).on("blur", "input.gm-rowSettingsID", function(){
+                var row=$(this).closest(gm.options.rowSelector);
+                    row.attr("id", $(this).val());
+            // Remove a class from a row via rowsettings
+            }).on("click", ".gm-toggleRowClass", function(){
+                var row=$(this).closest(gm.options.rowSelector);
+                var theClass=$(this).text().trim();
+                    row.toggleClass(theClass);
+                    if(row.hasClass(theClass)){
+                        $(this).addClass(gm.options.gmDangerClass);
+                    } else { 
+                        $(this).removeClass(gm.options.gmDangerClass);
+                    }
+                     
             // Add new column to existing row    
             }).on("click", "a.gm-addColumn", function(){   
                 $(this).parent().after(gm.createCol(2)); 
 
-            // Decrease Column Size
+            // Decrease Column Size 
             }).on("click", "a.gm-colDecrease", function(){  
-              var col = $(this).closest("div.gm-editing");  
+              var col = $(this).closest("." +gm.options.gmEditClass);   
               var t=gm.getColClass(col); 
-                   if(t.colWidth > gm.options.colMin){ 
-                       t.colWidth--; 
-                       col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
+                   if(t.colWidth > parseInt(gm.options.colResizeStep, 10)){ 
+                       t.colWidth=(parseInt(t.colWidth, 10) - parseInt(gm.options.colResizeStep, 10)); 
+                       col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                    }  
 
             // Increase Column Size 
             }).on("click", "a.gm-colIncrease", function(){ 
-               var col = $(this).closest("div.gm-editing");  
+               var col = $(this).closest("." +gm.options.gmEditClass);  
                var t=gm.getColClass(col); 
-                if(t.colWidth < gm.options.colMax){ 
-                  t.colWidth++; 
-                  col.switchClass(t.colClass, "col-md-" + t.colWidth, 200); 
+                if(t.colWidth < gm.options.colMax){                    
+                    t.colWidth=(parseInt(t.colWidth, 10) + parseInt(gm.options.colResizeStep, 10)); 
+                    col.switchClass(t.colClass, gm.options.colClass + t.colWidth, 200); 
                 }    
 
             // Reset all teh things
             }).on("click", "a.gm-resetgrid", function(){   
-                canvas.html(""); 
+                canvas.html("");
+                gm.reset(); 
 
             // Remove a col or row
             }).on("click", "a.gm-removeCol", function(){  
-               $(this).closest("div.gm-editing").animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();}); 
+               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();}); 
             }).on("click", "a.gm-removeRow", function(){  
-               $(this).closest("div.gm-editing").animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
+               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', height: 'hide'}, 400, function(){this.remove();});  
 
             // For all the above, prevent default.
-            }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-switch, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
+            }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
                  return v.indexOf('gm-') === 0;
              }).join()); 
@@ -132,16 +182,24 @@
 
         };
 
-        // Get the col-md-6 class, returning 6 as well from column
+        /*
+        Get the col-md-6 class, returning 6 as well from column
+          @col - column to look at
+          
+          returns colClass: the full col-md-6 class 
+                  colWidth: just the last integer of classname
+        */ 
         gm.getColClass=function(col){ 
             var colClass=$.grep(col.attr("class").split(" "), function(v){
-                return v.indexOf('col-md-') === 0;
+                return v.indexOf(gm.options.colClass) === 0;
                 }).join(); 
-            var colWidth=colClass.replace("col-md-", "");
+            var colWidth=colClass.replace(gm.options.colClass, "");
                 return {colClass:colClass, colWidth:colWidth}; 
         };
   
-        // Turns canvas into gm-editing mode - does most of the hard work here
+        /*
+        Turns canvas into gm-editing mode - does most of the hard work here
+        */
         gm.initCanvas = function(){    
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -156,28 +214,31 @@
               gm.activateCols(cols);  
               // Make Rows sortable
               canvas.sortable({
-                items: gm.options.rowSelector + ".gm-editing", 
+                items: gm.options.rowSelector, 
                 axis: 'y',
-                placeholder: 'bg-warning',
-                handle: ".gm-tools",
+                placeholder: gm.options.rowSortingClass,
+                handle: "." + gm.options.gmToolClass,
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"  
                });
               // Make columns sortable
               rows.sortable({
-                    items: gm.options.colSelector, 
-                    axis: 'x',
-                    handle: ".gm-tools" ,
-                    forcePlaceholderSize: true,
-                     opacity: 0.7,  revert: true,
-                    tolerance: "pointer",
-                     cursor: "move"
-
+                items: gm.options.colSelector, 
+                axis: 'x',
+                handle: "." + gm.options.gmToolClass,
+                forcePlaceholderSize: true,
+                opacity: 0.7,  revert: true,
+                tolerance: "pointer",
+                cursor: "move"
               });  
-            gm.status=true; 
+            gm.status=true;
+            gm.mode="visual"; 
         };
 
+        /*
+        Removes canvas editing mode
+        */
         gm.deinitCanvas = function(){ 
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -192,13 +253,13 @@
               // Now Columns
               gm.deactivateCols(cols);
               // Clean markup
-              gm.cleanup(); 
-              // Stop RTE
-              //gm.rteControl("stop"); 
+              gm.cleanup();  
               gm.status=false; 
         };  
 
-        // Push cleaned div content somewhere to save it
+        /*
+         Push cleaned div content somewhere to save it
+        */
         gm.saveremote =  function(){  
         var canvas=gm.$el.find("#" + gm.options.canvasId); 
             $.ajax({
@@ -210,45 +271,108 @@
         }; 
 
 /*------------------------------------------ ROWS ---------------------------------------*/
+        /* 
+        Look for pre-existing rows and add editing tools as appropriate
+          @rows: elements to act on
+        */
         gm.activateRows = function(rows){
-           gm.log("++ Activate Rows Ran");
-           var prepend=gm.toolFactory(gm.options.rowButtonsPrepend); 
-           var append=gm.toolFactory(gm.options.rowButtonsAppend); 
-           rows.addClass("gm-editing").prepend(prepend).append(append);  
-        };
- 
-        gm.deactivateRows = function(rows){
-           gm.log("-- DeActivate Rows"); 
-           rows.removeClass("gm-editing").removeClass("ui-sortable").removeAttr("style");  
+           gm.log("++ Activate Rows"); 
+           rows.addClass(gm.options.gmEditClass).prepend(
+              gm.toolFactory(gm.options.rowButtonsPrepend)
+              ).append(
+              gm.toolFactory(gm.options.rowButtonsAppend)
+           );  
         };
 
-        // Creates a row, accepting an array of column widths to create child cols
-        gm.createRow = function(colWidths){
-          var rowHTML= gm.options.rowPrepend + gm.toolFactory(gm.options.rowButtonsPrepend) + gm.options.rowAppend;
-            $.each(colWidths, function(i, val){
-                rowHTML=rowHTML + gm.createCol(val);
-            });
-          return rowHTML;
+         /* 
+        Look for pre-existing rows and remove editing classes as appropriate
+          @rows: elements to act on
+        */        
+        gm.deactivateRows = function(rows){
+           gm.log("-- DeActivate Rows"); 
+           rows.removeClass(gm.options.gmEditClass).removeClass("ui-sortable").removeAttr("style");  
+        };
+
+        /* 
+        Create a single row with appropriate editing tools & nested columns
+          @colWidths : array of css class integers, i.e [2,4,5]
+        */
+        gm.createRow = function(colWidths){ 
+          var row= $("<div/>", {"class": gm.options.rowClass + " " + gm.options.gmEditClass});
+             $.each(colWidths, function(i, val){
+                row.append(gm.createCol(val));
+              });
+             row.prepend(gm.toolFactory(gm.options.rowButtonsPrepend))
+                .append(gm.toolFactory(gm.options.rowButtonsPrepend));
+                gm.log("++ Created Row"); 
+          return row;
+        };
+
+        /*
+        Create the row specific settings box
+        */
+        gm.generateRowSettings = function(row){
+         // Row class toggle buttons
+          var classBtns=[];
+              $.each(gm.options.rowCustomClasses, function(i, val){
+                  var btn=$("<button/>")
+                  .addClass("gm-toggleRowClass")
+                  .addClass(gm.options.controlButtonClass)
+                  .append(
+                    $("<span/>")
+                    .addClass(gm.options.controlButtonSpanClass) 
+                  ).append(" " + val);
+ 
+                   if(row.hasClass(val)){ 
+                       btn.addClass(gm.options.gmDangerClass);  
+                    } 
+                   classBtns.push(btn[0].outerHTML);
+             });
+          // Row settings drawer
+          var html=$("<div/>")
+              .addClass("gm-rowSettingsDrawer")
+              .addClass(gm.options.gmToolClass)
+              .addClass(gm.options.gmClearClass)
+              .prepend($("<div />")
+                .addClass(gm.options.gmBtnGroup)
+                .addClass(gm.options.gmFloatLeft)
+                .html(classBtns.join("")))
+              .append($("<div />").addClass("pull-right").html(
+                $("<label />").html("Row ID ").append(
+                $("<input>").addClass("gm-rowSettingsID").attr({type: 'text', placeholder: 'Row ID', value: row.attr("id")})
+                )
+              ));
+  
+          return html[0].outerHTML; 
         };
 
 /*------------------------------------------ COLS ---------------------------------------*/
+        /* 
+        Look for pre-existing columns and add editing tools as appropriate
+          @rows: elements to act on
+        */
         gm.activateCols = function(cols){ 
-           cols.addClass("gm-editing");  
+           cols.addClass(gm.options.gmEditClass); 
+
            $.each(cols, function(i, val){
             var prepend=gm.toolFactory(gm.options.colButtonsPrepend) + "<div class='gm-editholder'>";
             var append="</div>" + gm.toolFactory(gm.options.colButtonsAppend);
             var tempHTML=$(val).html(); 
             var colClass = $.grep((val).className.split(" "), function(v){
-                 return v.indexOf('col-') === 0;
+                 return v.indexOf(gm.options.colClass) === 0;
              }).join();  
                $(val).html( prepend + tempHTML + append)
-                     .find(".gm-handle-col").attr("title", "Move " +  colClass);
+                     .find(".gm-handle-col").attr("title", "Move " +  colClass); 
            }); 
            gm.log("++ Activate Cols Ran"); 
         };
 
+        /* 
+        Look for pre-existing columns and removeediting tools as appropriate
+          @rows: elements to act on
+        */
         gm.deactivateCols = function(cols){ 
-           cols.removeClass("gm-editing");  
+           cols.removeClass(gm.options.gmEditClass);  
            $.each(cols, function(i, val){ 
               var temp=$(val).find(".gm-editholder").html();
               $(val).html(temp);
@@ -256,36 +380,49 @@
            gm.log("-- deActivate Cols Ran");  
         };
 
-        // Lazy function to return column markup
-         gm.createCol =  function(size){
-          var prepend="<div class='col-md-" + size + " gm-editing'>" + gm.toolFactory(gm.options.colButtonsPrepend) + "<div class='gm-editholder'><p>Content here</p>";
-          var append="</div>" + gm.toolFactory(gm.options.colButtonsAppend) + "</div>";
-          var colHTML= prepend + append;
-          return colHTML; 
+        /* 
+        Create a single column with appropriate editing tools
+        */
+         gm.createCol =  function(size){  
+         var col= $("<div/>").addClass(gm.options.colClass + size)
+             .addClass(gm.options.gmEditClass)
+             .addClass(gm.options.colAdditionalClass) 
+            .html(gm.toolFactory(gm.options.colButtonsPrepend)).append(
+                  $("<div/>", {"class": "gm-editholder"}).html("<p>Awaiting Content</p>").append(gm.toolFactory(gm.options.colButtonsAppend)) 
+            );  
+            gm.log("++ Created Column " + size);  
+            return col;
         };
  
 
 /*------------------------------------------ BTNs ---------------------------------------*/ 
-        // Create the row and column toolbars
+        /*
+         Returns an editing div with appropriate btns as passed in
+         @btns Array of buttons (see options)
+        */
         gm.toolFactory=function(btns){
-            var toolsPrepend="<div class='gm-tools clearfix'>";
-            var toolsAppend="</div>";
-            var string=toolsPrepend + gm.buttonFactory(btns) + toolsAppend;
-            return string;
+           var tools=$("<div/>")
+              .addClass(gm.options.gmToolClass)
+              .addClass(gm.options.gmClearClass)
+              .html(gm.buttonFactory(btns)); 
+           return tools[0].outerHTML;
         };
 
-        // Generates buttons to add to toolbars etc
-        gm.buttonFactory=function(btns){
-        var string="";
-        var buttons=[];
-          $.each(btns, function(i, val){ 
-             buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>" + "</" + val.element + "> ");
-          });
-          string=buttons.join("");
-          return string;
+        /*
+         Returns html string of buttons 
+         @btns Array of button configurations (see options)
+        */
+        gm.buttonFactory=function(btns){  
+          var buttons=[];
+          $.each(btns, function(i, val){  
+            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + "</" + val.element + "> ");
+          }); 
+          return buttons.join("");
         };
  
-        // Basically just turns [2,4,6] into 2-4-6
+        /*
+         Basically just turns [2,4,6] into 2-4-6
+        */
         gm.generateButtonClass=function(arr){
             var string="";
               $.each(arr, function( i , val ) {
@@ -294,19 +431,16 @@
               return string;
         };
 
-        // click handlers for dynamic row template buttons
-        gm.generateClickHandler= function(arr){  
-          var string="a.add" + gm.generateButtonClass(arr);
-          var canvas=gm.$el.find("#" + gm.options.canvasId); 
-          var output=gm.options.rowPrepend; 
-
-              $.each(arr, function(i, val){ 
-                output=output +  gm.createCol(val); 
-              });
-
+        /*
+         click handlers for dynamic row template buttons
+         @colWidths - array of column widths, i.e [2,3,2]
+        */
+        gm.generateClickHandler= function(colWidths){  
+          var string="a.add" + gm.generateButtonClass(colWidths);
+          var canvas=gm.$el.find("#" + gm.options.canvasId);
               gm.$el.on("click", string, function(e){ 
                 gm.log("Clicked " + string); 
-                canvas.prepend(output);   
+                canvas.prepend(gm.createRow(colWidths));   
                 gm.reset();
                 e.preventDefault();  
             }); 
@@ -314,6 +448,11 @@
 
 
 /*------------------------------------------ RTEs ---------------------------------------*/
+        /*
+         Starts, stops, looks for and  attaches RTEs
+         @action - one of init|attach|stop
+         @element object to attach to
+        */
         gm.rteControl=function(action, element){
           gm.log("RTE " + gm.options.rte + ' ' +action);
         
@@ -332,7 +471,6 @@
              case 'attach':  
                 switch (gm.options.rte) {
                     case 'tinymce': 
-                    gm.log(element); 
                     if(!(element).hasClass("mce-content-body")){
                       element.tinymce(gm.options.tinymce.config);
                     }
@@ -340,7 +478,7 @@
 
                     case 'ckeditor': 
                       $(element).ckeditor(gm.options.ckeditor);
-                      gm.log(this);
+                    
                     break; 
                     default:
                         gm.log("No RTE specified for attach");
@@ -376,13 +514,18 @@
  
 /*------------------------------------------ Useful functions ---------------------------------------*/
         
-        // Reset
+        /*
+         Quick reset
+        */
         gm.reset=function(){ 
             gm.log("~~RESET~~");
             gm.deinitCanvas();  
             gm.initCanvas();  
         };
 
+        /*
+        Remove all extraneous markup
+        */
         gm.cleanup =  function(){  
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -399,13 +542,15 @@
                   .removeAttr("data-cke-saved-src")
                   .removeAttr("data-mce-src").end()
               // Remove Tools
-                  .find("div.gm-tools").remove();
+                  .find("." + gm.options.gmToolClass).remove();
               // Destroy any RTEs
                   gm.rteControl("stop"); 
               gm.log("~~Cleanup Ran~~");
         };
 
-        // Generic logging function
+        /*
+         Generic logging function
+        */
         gm.log = function(logvar){
           if(gm.options.debug){
             if ((window['console'] !== undefined)) {
@@ -414,9 +559,13 @@
             }
         };
 
+        /*
+        Wrap data in <pre>
+        @value - code to wrap
+        */
         gm.htmlEncode=function(value){
           if (value) {
-            return jQuery('<pre class="prettyprint" />').text(value).html();
+            return jQuery('<pre />').text(value).html();
               } else {
             return '';
           }
@@ -428,41 +577,90 @@
 
     
 
-    // Options which can be overridden by the .gridmanager() call on the requesting page
+    /*
+     Options which can be overridden by the .gridmanager() call on the requesting page------------------------------------------------------
+    */
     $.gridmanager.defaultOptions = {
-        // General Options
+     /*
+     General Options---------------
+    */
+        // Debug to console
         debug: 0,
-        remoteURL: "/replace-with-your-url",
 
-        // Canvas
+        // URL to save to
+        remoteURL: "/replace-with-your-url",
+  /*
+     Canvas---------------
+    */
+        // Canvas ID
         canvasId: "gm-canvas",
-        canvasModal: "<div id='canvasModal' class='modal fade' tabindex='-1' role='dialog' aria-labelledby='canvasModal' aria-hidden='true'><div class='modal-dialog modal-lg'><div class='modal-content'><div class='modal-header'><button type='button' class='close' data-dismiss='modal' aria-hidden='true'>&times;</button><h4 class='modal-title' id='myModalLabel'>Source Code</h4></div><div class='modal-body'></div></div></div></div></div>", 
-        // Top Control Row
+
+  /*
+     Control Bar---------------
+  */
+        // Top Control Row ID
         controlId:  "gm-controls",
+
+        // Array of buttons for row templates
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
-        controlPrepend: "<div class='row'><div class='col-md-12'><div id='gm-addnew' class='btn-group '>",
-        controlAppend: "</div><div class='btn-group pull-right'><button type='button' class='btn btn-xs btn-primary gm-switch'><span class='glyphicon glyphicon-off'></span> Editor</button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='View Source' href='#' class='gm-viewsource'><span class='glyphicon glyphicon-zoom-in'></span> View Source</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
-        
-        // Row Specific
-        rowSelector: "div.row",
-        rowPrepend:  "<div class='row gm-editing'>",
-        rowPppend:   "</div>", 
+
+        // Default control button class
+        controlButtonClass: "btn  btn-xs  btn-primary",
+
+        // Default control button icon
+        controlButtonSpanClass: "glyphicon glyphicon-plus-sign",
+
+        // Control bar RH dropdown markup
+        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button><button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
+   /*
+     General editing classes---------------
+  */      
+        // Standard edit class, applied to active elements
+        gmEditClass: "gm-editing",
+
+        // Tool bar class which are inserted dynamically
+        gmToolClass: "gm-tools",
+
+        // Clearing class, used on most toolbars
+        gmClearClass: "clearfix",
+
+        // generic float left and right
+        gmFloatLeft: "pull-left",
+        gmFloatRight: "pull-right",
+        gmBtnGroup:  "btn-group",
+        gmDangerClass: "btn-danger",
+
+
+  /*
+     Rows---------------
+  */
+        // Generic row class. change to row--fluid for fluid width in Bootstrap
+        rowClass:    "row",
+
+        // Used to find rows - change to div.row-fluid for fluid width
+        rowSelector: "div.row",     
+
+        // class of background element when sorting rows
+        rowSortingClass: "bg-warning",   
+
+        // Buttons at the top of each row
         rowButtonsPrepend: [
                 {
                    title:"New Column", 
                    element: "a", 
                    btnClass: "gm-addColumn pull-left  ",
                    iconClass: "glyphicon glyphicon-plus"
-                }
-                /* coming soon when I work out how to the hell to do it,
+                }, 
                  {
                    title:"Row Settings", 
                    element: "a", 
                    btnClass: "pull-right gm-rowSettings",
                    iconClass: "glyphicon glyphicon-cog"
                 }
-                */
+                
             ],
+
+        // Buttons at the bottom of each row
         rowButtonsAppend: [ 
                 {
                  title:"Remove row", 
@@ -471,10 +669,26 @@
                  iconClass: "glyphicon glyphicon-trash"
                 }
             ],
-        rowSettingControls: "Hi",
 
-        // Column Specific 
+        // Not sure about this one yet
+        rowSettingControls: "Reserved for future use",
+
+        // CUstom row classes - add your own to make them available in the row settings
+        rowCustomClasses: ["example-class","test-class"],
+
+  /*
+     Columns--------------
+  */    
+        // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
+        colClass: "col-md-",
+
+        // Wild card column selector - this means we can find all columns irrespective of col-md or col-lg etc.
         colSelector: "div[class*=col-]",
+
+        // Additional column class to add (foundation needs columns, bs3 doesn't)
+        colAdditionalClass: "",
+
+        // Buttons to prepend to each column
         colButtonsPrepend: [                
                {
                  title:"Make Column Narrower", 
@@ -489,6 +703,8 @@
                iconClass: "glyphicon glyphicon-plus-sign"
               }
             ],
+
+        // Buttons to append to each column
         colButtonsAppend: [ 
                 {
                  title:"Remove Column", 
@@ -497,13 +713,19 @@
                  iconClass: "glyphicon glyphicon-trash"
                 }
             ], 
-        colMin: 1,
+
+        
+        // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,
 
-        // RTE configuration 
+        // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
+        colResizeStep: 1,
+
+  /*
+     Rich Text Editors---------------
+  */
         tinymce: {
-            config: { 
-              //selector: "[contenteditable='true']",
+            config: {  
               inline: true,
               plugins: [
               "advlist autolink lists link image charmap print preview anchor",
@@ -513,6 +735,8 @@
               toolbar: "insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image"
             }
         },
+
+        // Path to CK custom comfiguration
         ckeditor: { 
               customConfig: ""
         }

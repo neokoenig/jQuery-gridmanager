@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Gridmanager Development</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+
+    <!-- Bootstrap CSS -->
+    <link href="../bower_components/foundation/css/foundation.min.css" rel="stylesheet">   
+    <link href="../bower_components/foundation-icon-fonts/foundation-icons.css" rel="stylesheet">   
+
+    <!-- Grid Manager CSS -->
+    <link href="gridmanager.css" rel="stylesheet"> 
+
+   
+    <link href="demo.css" rel="stylesheet"> 
+
+     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- jQuery -->
+     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
+    <!-- jQuery UI -->
+     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
+    <!-- Bootstrap JS -->
+     <script src="../bower_components/foundation/js/foundation.min.js"></script>
+<!--
+     <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
+     <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
+   -->
+    <!-- Grid Manager JS -->
+     <script src="gridmanager.js"></script> 
+
+  
+  </head>
+<body>  
+  
+      <div class="container"> 
+    <div id="mycanvas">
+
+ <div class="row">
+  <div class="large-4 columns"><img src="http://placekitten.com/300/300" /></div>
+  <div class="large-4 columns"><img src="http://placekitten.com/300/300" /></div>
+  <div class="large-4 columns"><img src="http://placekitten.com/300/300" /></div>
+</div>
+<div class="row">
+  <div class="large-3 columns"><p>Kitteh Left</p></div>
+  <div class="large-6 columns"><p>Kitteh Middle</p></div>
+  <div class="large-3 columns"><p>Kitteh Right</p></div>
+</div>
+<div class="row">
+  <div class="large-2 columns"><p>Kitteh Left</p></div>
+  <div class="large-8 columns"><img src="http://placekitten.com/900/400" /></div>
+  <div class=" large-2 columns"><p>Kitteh Right</p></div>
+</div>
+<div class="row">
+  <div class="columns">...</div>
+  <div class="columns">...</div>
+</div>
+<div class="row">
+  <div class="large-4 columns">...</div>
+  <div class="large-8 columns">...</div>
+</div>
+<div class="row">
+  <div class="large-5 columns">...</div>
+  <div class="large-7 columns">...</div>
+</div>
+<div class="row">
+  <div class="large-6 columns">...</div>
+  <div class="large-6 columns">...</div>
+</div>
+    </div>
+    </div>
+<!--================== JS ================--> 
+<script> 
+$(document).ready(function(){  
+
+
+   $("#mycanvas").gridmanager({
+          /*
+     General Options---------------
+    */
+        // Debug to console
+        debug: 1,
+
+        // URL to save to
+        remoteURL: "/replace-with-your-url",
+  /*
+     Canvas---------------
+    */
+
+        // Shortcut for modal window markup
+        canvasModal: "<div id='canvasModal' class='reveal-modal' data-reveal> <h4 class='modal-title' id='myModalLabel'>GridManager</h4><div class='modal-body'></div></div>",      
+     
+  /*
+     Control Bar---------------
+  */
+
+        // Array of buttons for row templates
+        controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3],   [2,8,2], [4,8], [8,4]],
+
+        // Default control button class
+        controlButtonClass: "tiny button",
+
+        // Default control button icon
+        controlButtonSpanClass: "fi-plus",
+
+        // Control bar RH  
+        //controlAppend: "<div class='right'><a class='button tiny gm-switch'><span class='fi-pencil'></span> On/Off</a><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span> Save</a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span> Reset</a> </div>",
+        // Control bar RH dropdown markup
+        controlAppend: "<div class='button-group right'><button title='Edit Source Code' type='button' class='button tiny gm-mode'><span class='fi-pencil'></span></span></button><button title='Preview' type='button' class='button tiny gm-preview'><span class='fi-eye'></span></button><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span></a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span></a> </div></div> ",
+        
+   /*
+     General editing classes---------------
+  */      
+
+       // generic float left and right
+        gmFloatLeft: "left",
+        gmFloatRight: "right",
+        gmBtnGroup:  "button-group", 
+        gmDangerClass: "alert",
+
+  /*
+     Rows---------------
+  */
+        // class of background element when sorting rows
+        rowSortingClass: "panel callout radius",   
+
+        // Buttons at the top of each row
+        rowButtonsPrepend: [
+                {
+                   title:"New Column", 
+                   element: "a", 
+                   btnClass: "gm-addColumn left  ",
+                   iconClass: "fi-plus"
+                }, 
+                 {
+                   title:"Row Settings", 
+                   element: "a", 
+                   btnClass: "right gm-rowSettings",
+                   iconClass: "fi-widget"
+                }
+                
+            ],
+
+        // Buttons at the bottom of each row
+        rowButtonsAppend: [ 
+                {
+                 title:"Remove row", 
+                 element: "a", 
+                 btnClass: "right gm-removeRow",
+                 iconClass: "fi-trash"
+                }
+            ],
+
+        // CUstom row classes - add your own to make them available in the row settings
+        rowCustomClasses: ["panel","callout","radius"],
+
+  /*
+     Columns--------------
+  */    
+        // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
+        colClass: "large-",
+        
+        // Additional column class to add (foundation needs columns, bs3 doesn't)
+        colAdditionalClass: "columns",
+
+        // Wild card column selector - this means we can find all columns irrespective of col-md or col-lg etc.
+        colSelector: "div[class*=large-]",
+
+        // Buttons to prepend to each column
+        colButtonsPrepend: [                
+               {
+                 title:"Make Column Narrower", 
+                 element: "a", 
+                 btnClass: "gm-colDecrease left",
+                 iconClass: "fi-minus"
+              },
+              {
+               title:"Make Column Wider", 
+               element: "a", 
+               btnClass: "gm-colIncrease left",
+               iconClass: "fi-plus"
+              }
+            ],
+
+        // Buttons to append to each column
+        colButtonsAppend: [ 
+                {
+                 title:"Remove Column", 
+                 element: "a", 
+                 btnClass: "right gm-removeCol",
+                 iconClass: "fi-trash"
+                }
+            ], 
+
+        
+        // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
+        colMax: 12,
+
+        // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
+        colResizeStep: 1 
+ 
+    }); 
+});
+</script> 
+</body>
+</html>
+  
