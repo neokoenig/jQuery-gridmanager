@@ -40,18 +40,22 @@
   </head>
 <body>  
   
-      <div class="container"> 
-    <div id="mycanvas">
-            <div id="TestID" class="row blue"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-8"><p>Awaiting Content</p></div><div class="col-md-4"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div>
-       </div>
+    <div class="container"> 
+    <a class="test">Click Me</a> <a class="clean">Clean</a>
+    <div id="mycanvas"></div>
     </div>
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){  
+var gm = jQuery("#mycanvas").gridmanager().data('gridmanager');
+  $(".test").on("click", function(e){ 
+    gm.appendHTMLSelectedCols('<p>my content to append to all my selected cols</p>');
+  });
 
-   $("#mycanvas").gridmanager({
-         debug: 1}
-    ); 
+    $(".clean").on("click", function(e){ 
+    gm.deinitCanvas();
+  });
+    
 });
 </script>  
 </body>
