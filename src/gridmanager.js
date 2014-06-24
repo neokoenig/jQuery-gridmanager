@@ -24,7 +24,8 @@
               $('.gm-editholder', this).append(html);
             }
           });
-        }
+        };
+
 /*------------------------------------------ INIT ---------------------------------------*/
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options); 
@@ -117,7 +118,7 @@
               $(this).toggleClass(gm.options.gmDangerClass);
 
             // Make region editable
-            }).on("click", ".gm-editholder", function(){ 
+            }).on("click", ".gm-editable-region", function(){ 
                 var rteRegion=$(this); 
                 if(!rteRegion.attr("contenteditable")){ 
                     rteRegion.attr("contenteditable", true); 
@@ -226,7 +227,7 @@
           var rows=canvas.find(gm.options.rowSelector); 
            gm.log("+ InitCanvas Running");  
               // Show the template controls
-              gm.$el.find("#gm-addnew").show();
+              gm.$el.find("#gm-addnew").show(); 
               // Sort Rows First
               gm.activateRows(rows); 
               // Now Columns
@@ -321,8 +322,8 @@
              $.each(colWidths, function(i, val){
                 row.append(gm.createCol(val));
               });
-             row.prepend(gm.toolFactory(gm.options.rowButtonsPrepend))
-                .append(gm.toolFactory(gm.options.rowButtonsPrepend));
+             //row.prepend(gm.toolFactory(gm.options.rowButtonsPrepend));
+                //.append(gm.toolFactory(gm.options.rowButtonsPrepend));
                 gm.log("++ Created Row"); 
           return row;
         };
@@ -366,23 +367,41 @@
         };
 
 /*------------------------------------------ COLS ---------------------------------------*/
+
+ 
+
         /* 
         Look for pre-existing columns and add editing tools as appropriate
           @rows: elements to act on
         */
         gm.activateCols = function(cols){ 
-           cols.addClass(gm.options.gmEditClass); 
+           cols.addClass(gm.options.gmEditClass);  
 
-           $.each(cols, function(i, val){
-            var prepend=gm.toolFactory(gm.options.colButtonsPrepend) + "<div class='gm-editholder'>";
-            var append="</div>" + gm.toolFactory(gm.options.colButtonsAppend);
-            var tempHTML=$(val).html(); 
-            var colClass = $.grep((val).className.split(" "), function(v){
-                 return v.indexOf(gm.options.colClass) === 0;
-             }).join();  
-               $(val).html( prepend + tempHTML + append)
-                     .find(".gm-handle-col").attr("title", "Move " +  colClass); 
-           }); 
+            // For each column, 
+            $.each(cols, function(i, column){    
+              //work out whether it's got a nested div.row
+              if($(column).children().hasClass("row")){  
+                    // If has nested, loop over column children and assign editable regions before and after
+                    $.each($(column).children(), function(i, val){ 
+                        if($(val).hasClass("row")){
+                            var prev=$(val).prevAll(); 
+                            var after=$(val).nextAll(); 
+                            $(val).before(gm.toolFactory(gm.options.colButtonsPrepend))
+                                  .after(gm.toolFactory(gm.options.colButtonsAppend))
+                                  .before($("<div />").addClass("gm-editable-region").html(prev))
+                                  .after($("<div />").addClass("gm-editable-region").html(after))
+                                  //.append(gm.toolFactory(gm.options.colButtonsAppend))
+                                  ;
+                        } 
+                    }); 
+              } else {
+                // Column has no nested rows, assign a single default editable region                
+                gm.log("Non-nested column");
+                $(column).wrapInner($("<div />").addClass("gm-editable-region"))
+                         .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
+                         .append(gm.toolFactory(gm.options.colButtonsAppend));
+              } 
+            });    
            gm.log("++ Activate Cols Ran"); 
         };
 

@@ -28,21 +28,77 @@
     <!-- Bootstrap JS -->
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
  
+ <!---
      <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
      <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
+    -->
   
     <!-- Grid Manager JS -->
      <script src="gridmanager.js"></script> 
  
-     
+     <style>
+     .gm-editable-region {background-color: yellow; min-height: 20px; border:1px solid black;}
+     </style>
 
   
   </head>
 <body>  
   
       <div class="container"> 
-    <div id="mycanvas">
-            <div id="TestID" class="row blue"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-8"><p>Awaiting Content</p></div><div class="col-md-4"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div>
+    <div id="mycanvas" class="clearfix">
+              <!-- without editing markup -->
+        <div class="row">
+            <!-- parent col -->
+                <div class="col-md-6">
+                        <p>Content which is before the nested row</p>
+                        <p>Content which is before the nested row</p>
+                        <p>Content which is before the nested row</p>
+                        <p>Content which is before the nested row</p>
+                        <p>Content which is before the nested row</p>
+                        <!-- nested row -->
+                   <div class="row">
+                                <!-- nested col -->
+                                <div class="col-md-6">
+                                   <p>Nested Level 1</p>
+                                   <p>Nested Level 1</p>
+                                   <p>Nested Level 1</p>
+        <!-- SUB nested row -->
+                   <div class="row">
+                                <!-- SUB nested col -->
+                                <div class="col-md-6">                                 
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                                 </div>
+                                <!-- SUB nested col -->
+                                <div class="col-md-6">
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                                   <p>Nested Level 2</p>
+                               </div>
+                     </div>
+                   </div>
+                    <!-- nested col -->
+                                <div class="col-md-6">
+                                  <p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p>
+                                </div>
+                  </div>
+                   <p>Content which is afterthe nested row</p>
+                </div>
+               
+                <!-- normal col-->
+                <div class="col-md-6">
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                        <p>Other column content</p>
+                </div>
+        </div>
        </div>
     </div>
 <!--================== JS ================--> 
