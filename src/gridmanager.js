@@ -19,12 +19,12 @@
         gm.appendHTMLSelectedCols = function(html) {
           var canvas=gm.$el.find("#" + gm.options.canvasId);
           var cols = canvas.find(gm.options.colSelector);
-          $.each(cols, function(index){
+          $.each(cols, function(i){
             if($(this).hasClass(gm.options.gmEditClassSelected)) {
               $('.gm-editholder', this).append(html);
             }
           });
-        }
+        };
 /*------------------------------------------ INIT ---------------------------------------*/
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options); 
@@ -46,23 +46,27 @@
         gm.createCanvas = function(){   
           gm.log("+ Create Canvas"); 
            var html=gm.$el.html();
-                gm.$el.html("");
+                gm.$el.html(""); 
+                $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el);
+                // Add responsive classes after initial loading of HTML, otherwise we lose the rows 
                 if(gm.options.addResponsiveClasses) {
-                  html = gm.addResponsiveness(html);
+                   gm.addResponsiveness(gm.$el.find("#" + gm.options.canvasId));
                 }
-                $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el); 
         };
 
         /*
           Add missing reponsive classes to existing HTML
          */
         gm.addResponsiveness = function(html) {
-          if(html == '') { return; }
-
-          var desktopRegex = gm.options.colDesktopClass+'(\\d+)', tabletRegex = gm.options.colTabletClass+'(\\d+)', phoneRegex = gm.options.colPhoneClass+'(\\d+)',
-              desktopRegexObj = new RegExp(desktopRegex,'i'), tabletRegexObj = new RegExp(tabletRegex, 'i'), phoneRegexObj = new RegExp(phoneRegex, 'i'), new_html = '';
-
-          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(index, el) {
+          if(html === '') { return; } 
+          var desktopRegex = gm.options.colDesktopClass+'(\\d+)', 
+              tabletRegex = gm.options.colTabletClass+'(\\d+)', 
+              phoneRegex = gm.options.colPhoneClass+'(\\d+)',
+              desktopRegexObj = new RegExp(desktopRegex,'i'), 
+              tabletRegexObj = new RegExp(tabletRegex, 'i'), 
+              phoneRegexObj = new RegExp(phoneRegex, 'i'), 
+              new_html = ''; 
+          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(i, el) {
             var elClasses = $(this).attr('class'), colNum = 2;
             var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
 
@@ -77,7 +81,7 @@
             if(!hasTablet) {
               $(this).addClass(gm.options.colTabletClass+colNum);
             }
-          }).parent().html();
+          });
         };
 
         /*
@@ -101,7 +105,7 @@
                   {'id': gm.options.controlId, 'class': gm.options.gmClearClass }
               ).prepend( 
                     $('<div/>', {"class": gm.options.rowClass}).html(
-                       $('<div/>', {"class": gm.options.colDesktopClass + 12}).addClass(gm.options.colAdditionalClass).html(
+                       $('<div/>', {"class": gm.options.colDesktopClass + gm.options.colMax}).addClass(gm.options.colAdditionalClass).html(
                           $('<div/>', {'id': 'gm-addnew'})
                           .addClass(gm.options.gmBtnGroup)
                           .addClass(gm.options.gmFloatLeft).html(
@@ -117,7 +121,7 @@
           Adds a CSS file or CSS Framework required for specific customizations
          */
         gm.addCSS = function(myStylesLocation) {
-          if(myStylesLocation != '') {
+          if(myStylesLocation !== '') {
             $('<link rel="stylesheet" href="'+myStylesLocation+'">').appendTo("head");
           }
         };
@@ -127,7 +131,7 @@
          */
         gm.cleanSubstring = function(regex, source, replacement) {
           return source.replace(new RegExp(regex, 'g'), replacement);
-        }
+        };
 
         /*
           Switches the layout mode for Desktop, Tablets or Mobile Phones
@@ -136,7 +140,7 @@
           var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex1 = '', regex2 = '', uimode = '';
           // Reset previous changes
           temp_html = gm.cleanSubstring(gm.options.classRenameSuffix, temp_html, '');
-          uimode = $('div.layout-mode > button > span');
+          uimode = $('div.gm-layout-mode > button > span');
           // Do replacements
           switch (mode) {
             case 768:
@@ -164,7 +168,7 @@
           temp_html = temp_html.replace(new RegExp((regex1+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
           temp_html = temp_html.replace(new RegExp((regex2+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
           canvas.html(temp_html);
-        }
+        };
                 
         /*
          Add click functionality to the buttons        
@@ -177,27 +181,27 @@
            gm.$el.on("click", ".gm-preview", function(){ 
                if(gm.status){ 
                 gm.deinitCanvas();
-                 $(this).parent().find(".gm-mode").prop('disabled', true);
+                 $(this).parent().find(".gm-edit-mode").prop('disabled', true);
               } else { 
                 gm.initCanvas();   
-                 $(this).parent().find(".gm-mode").prop('disabled', false);
+                 $(this).parent().find(".gm-edit-mode").prop('disabled', false);
               }
               $(this).toggleClass(gm.options.gmDangerClass);
-            }).on("click", ".layout-mode a", function() {
+            }).on("click", ".gm-layout-mode a", function() {
               gm.switchLayoutMode($(this).data('width'));
             // Switch editing mode
-            }).on("click", ".gm-mode", function(){ 
+            }).on("click", ".gm-edit-mode", function(){ 
               if(gm.mode === "visual"){ 
                  gm.deinitCanvas();
                  canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
                  gm.mode="html";
-                 $(this).parent().find(".gm-preview, .layout-mode > button").prop('disabled', true);
+                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', true);
               } else {  
                 var editedSource=canvas.find("textarea").val();
                  canvas.html(editedSource);
                  gm.initCanvas();
                  gm.mode="visual"; 
-                 $(this).parent().find(".gm-preview, .layout-mode > button").prop('disabled', false);
+                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', false);
               } 
               $(this).toggleClass(gm.options.gmDangerClass);
 
@@ -383,11 +387,9 @@
         */
         gm.activateRows = function(rows){
            gm.log("++ Activate Rows"); 
-           rows.addClass(gm.options.gmEditClass).prepend(
-              gm.toolFactory(gm.options.rowButtonsPrepend)
-              ).append(
-              gm.toolFactory(gm.options.rowButtonsAppend)
-           );  
+           rows.addClass(gm.options.gmEditClass)
+               .prepend(gm.toolFactory(gm.options.rowButtonsPrepend))
+               .append(gm.toolFactory(gm.options.rowButtonsAppend));  
         };
 
          /* 
@@ -396,7 +398,9 @@
         */        
         gm.deactivateRows = function(rows){
            gm.log("-- DeActivate Rows"); 
-           rows.removeClass(gm.options.gmEditClass).removeClass("ui-sortable").removeAttr("style");  
+           rows.removeClass(gm.options.gmEditClass)
+               .removeClass("ui-sortable")
+               .removeAttr("style");  
         };
 
         /* 
@@ -407,9 +411,7 @@
           var row= $("<div/>", {"class": gm.options.rowClass + " " + gm.options.gmEditClass});
              $.each(colWidths, function(i, val){
                 row.append(gm.createCol(val));
-              });
-             row.prepend(gm.toolFactory(gm.options.rowButtonsPrepend))
-                .append(gm.toolFactory(gm.options.rowButtonsPrepend));
+              }); 
                 gm.log("++ Created Row"); 
           return row;
         };
@@ -726,7 +728,7 @@
         controlButtonSpanClass: "glyphicon glyphicon-plus-sign",
 
         // Control bar RH dropdown markup
-        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button>     <div class='dropdown pull-left layout-mode'><button type='button' class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span></button> <ul class='dropdown-menu' role='menu'><li><a data-width='auto' title='Desktop'><span class='fa fa-desktop'></span> Desktop</a></li><li><a title='Tablet' data-width='768'><span class='fa fa-tablet'></span> Tablet</a></li><li><a title='Phone' data-width='640'><span class='fa fa-mobile-phone'></span> Phone</a></li></ul></div>    <button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
+        controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-edit-mode'><span class='glyphicon glyphicon-chevron-left'></span><span class='glyphicon glyphicon-chevron-right'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='glyphicon glyphicon-eye-open'></span></button>     <div class='dropdown pull-left gm-layout-mode'><button type='button' class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span></button> <ul class='dropdown-menu' role='menu'><li><a data-width='auto' title='Desktop'><span class='fa fa-desktop'></span> Desktop</a></li><li><a title='Tablet' data-width='768'><span class='fa fa-tablet'></span> Tablet</a></li><li><a title='Phone' data-width='640'><span class='fa fa-mobile-phone'></span> Phone</a></li></ul></div>    <button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='glyphicon glyphicon-ok'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='glyphicon glyphicon-trash'></span> Reset</a></li></ul></div>",
    /*
      General editing classes---------------
   */      
@@ -797,18 +799,18 @@
   */    
 
         // Adds any missing classes in columns for muti-device support.
-        addResponsiveClasses: true,
+        addResponsiveClasses: true, 
 
-        // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
+       // Generic desktop size layout class
         colDesktopClass: "col-md-",
 
         // Generic tablet size layout class
         colTabletClass: "col-sm-",
 
         // Generic phone size layout class
-        colPhoneClass: "col-xs-",
+        colPhoneClass: "col-xs-", 
 
-        // Wild card column desktop selector - this means we can find all columns irrespective of col-md or col-lg etc.
+        // Wild card column desktop selector
         colDesktopSelector: "div[class*=col-md-]",
 
         // Wildcard column tablet selector
@@ -903,5 +905,5 @@
         regexFlags = 'ig',
         regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
         return regex.test(jQuery(elem)[attr.method](attr.property));
-    }
+    };
 })(jQuery );

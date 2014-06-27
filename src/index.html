@@ -19,7 +19,7 @@
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <![endif]-->  
 
     <!-- jQuery -->
      <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -40,17 +40,29 @@
   </head>
 <body>  
   
-      <div class="container"> 
+   <div class="container"> 
     <div id="mycanvas">
-            <div id="TestID" class="row blue"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-8"><p>Awaiting Content</p></div><div class="col-md-4"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div>
-       </div>
+        <div class="row">
+          <div class="col-md-4"><p>Awaiting Content1</p></div>
+          <div class="col-md-8"><p>Awaiting Content</p></div>
+        </div>
+        <div class="row">
+          <div class="col-md-8"><p>Awaiting Content</p></div>
+          <div class="col-md-4"><p>Awaiting Content</p></div>
+        </div>
+        <div class="row">
+          <div class="col-md-4"><p>Awaiting Content</p></div>
+          <div class="col-md-8"><p>Awaiting Content</p></div>
+        </div>
+      </div>
     </div>
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){  
 
    $("#mycanvas").gridmanager({
-         debug: 1}
+         debug: 1,
+         addResponsiveClasses: true}
     ); 
 });
 </script>  
