@@ -47,7 +47,37 @@
           gm.log("+ Create Canvas"); 
            var html=gm.$el.html();
                 gm.$el.html("");
+                if(gm.options.addResponsiveClasses) {
+                  html = gm.addResponsiveness(html);
+                }
                 $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el); 
+        };
+
+        /*
+          Add missing reponsive classes to existing HTML
+         */
+        gm.addResponsiveness = function(html) {
+          if(html == '') { return; }
+
+          var desktopRegex = gm.options.colDesktopClass+'(\\d+)', tabletRegex = gm.options.colTabletClass+'(\\d+)', phoneRegex = gm.options.colPhoneClass+'(\\d+)',
+              desktopRegexObj = new RegExp(desktopRegex,'i'), tabletRegexObj = new RegExp(tabletRegex, 'i'), phoneRegexObj = new RegExp(phoneRegex, 'i'), new_html = '';
+
+          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(index, el) {
+            var elClasses = $(this).attr('class'), colNum = 2;
+            var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
+
+            colNum = (colNum = desktopRegexObj.exec(elClasses))? colNum[1] : ( (colNum = tabletRegexObj.exec(elClasses))? colNum[1] : phoneRegexObj.exec(elClasses)[1] );
+
+            if(!hasDesktop) {
+              $(this).addClass(gm.options.colDesktopClass+colNum);
+            }
+            if(!hasPhone) {
+              $(this).addClass(gm.options.colPhoneClass+colNum);
+            }
+            if(!hasTablet) {
+              $(this).addClass(gm.options.colTabletClass+colNum);
+            }
+          }).parent().html();
         };
 
         /*
@@ -103,32 +133,37 @@
           Switches the layout mode for Desktop, Tablets or Mobile Phones
          */
         gm.switchLayoutMode = function(mode) {
-          var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex = '', uimode = '';
+          var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex1 = '', regex2 = '', uimode = '';
           // Reset previous changes
           temp_html = gm.cleanSubstring(gm.options.classRenameSuffix, temp_html, '');
           uimode = $('div.layout-mode > button > span');
           // Do replacements
           switch (mode) {
             case 768:
-              regex = '(' + gm.options.colDesktopClass  + '\\d+|' + gm.options.colPhoneClass + '\\d+)';
+              regex1 = '(' + gm.options.colDesktopClass  + '\\d+)';
+              regex2 = '(' + gm.options.colPhoneClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colTabletClass;
               gm.options.colSelector = gm.options.colTabletSelector;
               $(uimode).attr('class', 'fa fa-tablet').attr('title', 'Tablet');
               break;
             case 640:
-              regex = '(' + gm.options.colDesktopClass  + '\\d+|' + gm.options.colTabletClass + '\\d+)';
+              regex1 = '(' + gm.options.colDesktopClass  + '\\d+)';
+              regex2 = '(' + gm.options.colTabletClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colPhoneClass;
               gm.options.colSelector = gm.options.colPhoneSelector;
               $(uimode).attr('class', 'fa fa-mobile-phone').attr('title', 'Phone');
               break;
             default:
-              regex = '(' + gm.options.colPhoneClass  + '\\d+|' + gm.options.colTabletClass + '\\d+)';
+              regex1 = '(' + gm.options.colPhoneClass  + '\\d+)';
+              regex2 = '(' + gm.options.colTabletClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colDesktopClass;
               gm.options.colSelector = gm.options.colDesktopSelector;
               $(uimode).attr('class', 'fa fa-desktop').attr('title', 'Desktop');
           }
           gm.options.layoutDefaultMode = mode;
-          canvas.html(temp_html.replace(new RegExp(regex, 'gm'), '$1'+gm.options.classRenameSuffix));
+          temp_html = temp_html.replace(new RegExp((regex1+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          temp_html = temp_html.replace(new RegExp((regex2+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          canvas.html(temp_html);
         }
                 
         /*
@@ -156,13 +191,13 @@
                  gm.deinitCanvas();
                  canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
                  gm.mode="html";
-                 $(this).parent().find(".gm-preview").prop('disabled', true); 
+                 $(this).parent().find(".gm-preview, .layout-mode > button").prop('disabled', true);
               } else {  
                 var editedSource=canvas.find("textarea").val();
                  canvas.html(editedSource);
                  gm.initCanvas();
                  gm.mode="visual"; 
-                 $(this).parent().find(".gm-preview").prop('disabled', false);
+                 $(this).parent().find(".gm-preview, .layout-mode > button").prop('disabled', false);
               } 
               $(this).toggleClass(gm.options.gmDangerClass);
 
@@ -760,6 +795,10 @@
   /*
      Columns--------------
   */    
+
+        // Adds any missing classes in columns for muti-device support.
+        addResponsiveClasses: true,
+
         // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
         colDesktopClass: "col-md-",
 
@@ -851,6 +890,18 @@
           var gridmanager = new $.gridmanager(this, options);
           element.data('gridmanager', gridmanager);
         });
-    }; 
-    
+    };
+
+    $.expr[':'].regex = function(elem, index, match) {
+      var matchParams = match[3].split(','),
+        validLabels = /^(data|css):/,
+        attr = {
+            method: matchParams[0].match(validLabels) ?
+                        matchParams[0].split(':')[0] : 'attr',
+            property: matchParams.shift().replace(validLabels,'')
+        },
+        regexFlags = 'ig',
+        regex = new RegExp(matchParams.join('').replace(/^\s+|\s+$/g,''), regexFlags);
+        return regex.test(jQuery(elem)[attr.method](attr.property));
+    }
 })(jQuery );
