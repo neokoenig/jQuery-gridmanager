@@ -29,6 +29,6 @@
 	padding: 5px;  
 	min-height: 20px; margin-bottom: 10px;}
 #gm-canvas div.gm-tools {padding:3px;   min-height: 30px; display:block; clear:both;}
-#gm-canvas div.gm-tools a:hover {cursor: pointer;}
+#gm-canvas div.gm-tools a:hover, #gm-canvas, .layout-mode a:hover {cursor: pointer;}
 #gm-canvas div.gm-tools label, #gm-canvas div.gm-tools input {font-size:14px;}
 #gm-canvas textarea {width:100%; height: 100%;}
