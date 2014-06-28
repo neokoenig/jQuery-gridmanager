@@ -28,41 +28,78 @@
     <!-- Bootstrap JS -->
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
  
+ <!---
      <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
      <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
+    -->
   
     <!-- Grid Manager JS -->
      <script src="gridmanager.js"></script> 
- 
-     
-
+  
   
   </head>
-<body>  
-  
-   <div class="container"> 
-    <div id="mycanvas">
+<body>   
+      <div class="container"> 
+    <div id="mycanvas" class="clearfix">
+      
         <div class="row">
-          <div class="col-md-4"><p>Awaiting Content1</p></div>
-          <div class="col-md-8"><p>Awaiting Content</p></div>
+            <!-- parent col -->
+                <div class="col-md-8">
+                        <h1>Heading</h1>
+                        <p>Content which is before the nested row</p> 
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam hendrerit odio nulla, quis tincidunt orci vehicula vitae. Etiam nunc nulla, molestie nec enim id, porta molestie odio. Phasellus quis lorem suscipit, dictum massa id, ullamcorper nibh. Nulla tempus volutpat ultricies. </p>
+                        <!-- nested row -->
+                   <div class="row">
+                                <!-- nested col -->
+                                <div class="col-md-6">
+                                  <img src="http://placekitten.com/400/400" class="img-responsive" />
+                                   
+                        <h2>Heading</h2>  
+                                   <p>Nested Level 1</p>
+        <!-- SUB nested row -->
+                   <div class="row">
+                                <!-- SUB nested col -->
+                                <div class="col-md-6">        
+                                  <img src="http://placekitten.com/200/300" class="img-responsive" />                         
+                                     
+                        <h3>Heading</h3>  
+                                   <p>Nested Level 2</p>
+                                 </div>
+                                <!-- SUB nested col -->
+                                <div class="col-md-6">
+                                  <img src="http://placekitten.com/200/300" class="img-responsive" />
+                               
+                                   <p>Nested Level 2</p>
+                               </div>
+                     </div>
+                   </div>
+                    <!-- nested col -->
+                                <div class="col-md-6">
+                                  <p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p><p>Stuff</p>
+                                </div>
+                  </div>
+                        <h1>Heading</h1>
+                        <h2>Heading</h2> 
+                        <h3>Heading</h3> 
+                        <h4>Heading</h4> 
+                   <p>Content which is afterthe nested row</p>
+                </div>
+               
+                <!-- normal col-->
+                <div class="col-md-4"> 
+                        <h3>Heading</h3>  
+                        <p>Other column content</p>
+                        <p>Suspendisse convallis sit amet enim non vestibulum. Donec aliquam, ligula id luctus semper, magna lorem congue quam, nec rhoncus odio purus eu quam. In hac habitasse platea dictumst. Maecenas lacinia, leo eget porttitor porta, quam justo interdum velit, eget viverra tellus dolor id tortor. Vestibulum sit amet sodales mauris, in feugiat nulla. Aliquam accumsan tempor felis, sit amet porttitor enim malesuada vel. Aliquam congue mi at neque cursus consequat. Phasellus et mi suscipit augue vehicula placerat. Etiam ultrices metus eu leo lobortis congue. Pellentesque faucibus mauris vel libero vehicula viverra.</p>
+                </div>
         </div>
-        <div class="row">
-          <div class="col-md-8"><p>Awaiting Content</p></div>
-          <div class="col-md-4"><p>Awaiting Content</p></div>
-        </div>
-        <div class="row">
-          <div class="col-md-4"><p>Awaiting Content</p></div>
-          <div class="col-md-8"><p>Awaiting Content</p></div>
-        </div>
-      </div>
+       </div> 
     </div>
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){  
 
    $("#mycanvas").gridmanager({
-         debug: 1,
-         addResponsiveClasses: true}
+         debug: 1 }
     ); 
 });
 </script>  
