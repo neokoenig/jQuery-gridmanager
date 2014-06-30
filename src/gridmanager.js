@@ -557,26 +557,29 @@
             $.each(cols, function(i, column){    
               //work out whether it's got a nested div.row
               if($(column).children().hasClass("row")){  
+                gm.log("Nested column");
                     // If has nested, loop over column children and assign editable regions before and after
                     $.each($(column).children(), function(i, val){ 
                         if($(val).hasClass("row")){
                          var prev=Array.prototype.reverse.call($(val).prevUntil(".row"));  
                          var after=$(val).nextUntil(".row");   
-
-                            $(val).before(gm.toolFactory(gm.options.colButtonsPrepend))
-                                  .after(gm.toolFactory(gm.options.colButtonsAppend))
-                                  .before($("<div />").addClass(gm.options.gmEditRegion).html(prev))
-                                  .after($("<div />").addClass(gm.options.gmEditRegion).html(after)); 
- 
+                              if(!$(prev).hasClass("gm-editable-region")){
+                                $(val).before(gm.toolFactory(gm.options.colButtonsPrepend))
+                                      .before($("<div />").addClass(gm.options.gmEditRegion).html(prev));  
+                              }
+                              if(!$(after).hasClass("gm-editable-region")){
+                                $(val).after($("<div />").addClass(gm.options.gmEditRegion).html(after));  
+                              } 
                         } 
                     }); 
               } else {
                 // Column has no nested rows, assign a single default editable region                
-                gm.log("Non-nested column");
+                gm.log("Non-nested column"); 
                 $(column).wrapInner($("<div />").addClass(gm.options.gmEditRegion))
-                         .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
-                         .append(gm.toolFactory(gm.options.colButtonsAppend));
+                         .prepend(gm.toolFactory(gm.options.colButtonsPrepend));
               } 
+
+              $(column).append(gm.toolFactory(gm.options.colButtonsAppend));
             });   
            gm.log("++ Activate Cols Ran"); 
         };
