@@ -560,13 +560,14 @@
                     // If has nested, loop over column children and assign editable regions before and after
                     $.each($(column).children(), function(i, val){ 
                         if($(val).hasClass("row")){
-                         var prev=Array.prototype.reverse.call($(val).prevAll()); 
-                            //var prev=$(val).prevAll(); 
-                            var after=$(val).nextAll(); 
+                         var prev=Array.prototype.reverse.call($(val).prevUntil(".row"));  
+                         var after=$(val).nextUntil(".row");   
+
                             $(val).before(gm.toolFactory(gm.options.colButtonsPrepend))
                                   .after(gm.toolFactory(gm.options.colButtonsAppend))
                                   .before($("<div />").addClass(gm.options.gmEditRegion).html(prev))
-                                  .after($("<div />").addClass(gm.options.gmEditRegion).html(after));
+                                  .after($("<div />").addClass(gm.options.gmEditRegion).html(after)); 
+ 
                         } 
                     }); 
               } else {
