@@ -21,7 +21,7 @@
           var cols = canvas.find(gm.options.colSelector);
           $.each(cols, function(i){
             if($(this).hasClass(gm.options.gmEditClassSelected)) {
-              $('.gm-editholder', this).append(html);
+              $('.'+gm.options.gmEditRegion, this).append(html);
             }
           });
         }; 
@@ -326,16 +326,17 @@
                  gm.log("Row Removed");
 
             // Individual Column Select     
-            }).on('click',('#' + gm.options.canvasId + ' [class^="'+gm.options.currentClassMode+'"]'), function() {
+            }).on('click',('#' + gm.options.canvasId + ' .'+gm.options.colClass), function() {
               if(gm.options.colSelectEnabled) {
                 $(this).toggleClass(gm.options.gmEditClassSelected);
+                return false;
               }
 
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-removeRow, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
                  return v.indexOf('gm-') === 0;
-             }).join()); 
+               }).join());
                e.preventDefault();
             }); 
 
@@ -910,6 +911,8 @@
   /*
      Columns--------------
   */    
+        // Column Class
+        colClass: "column",
 
         // Adds any missing classes in columns for muti-device support.
         addResponsiveClasses: true, 
