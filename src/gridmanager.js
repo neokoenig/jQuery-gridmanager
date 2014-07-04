@@ -343,6 +343,143 @@
         };
 
         /*
+          Add any custom buttons globally on all rows / cols
+
+          returns void
+         */
+
+        gm.initGlobalCustomControls=function(){
+          var canvas=gm.$el.find("#" + gm.options.canvasId),
+              elems=[],
+              callback = null;
+
+          $.each(['row','col'], function(i, control_type) {
+            if(typeof gm.options.customControls['global_'+control_type] !== 'undefined') {
+              elems=canvas.find(gm.options[control_type+'Selector']);
+              $.each(gm.options.customControls['global_'+control_type], function(i, curr_control) {
+                // controls with no valid callbacks set are skipped
+                if(typeof curr_control.callback === 'undefined') { return; }
+
+                if(typeof curr_control.loc === 'undefined') {
+                  curr_control.loc = 'top';
+                }
+                if(typeof curr_control.iconClass === 'undefined') {
+                  curr_control.iconClass = 'fa fa-file-code-o';
+                }
+                if(typeof curr_control.btnLabel == 'undefined') {
+                  curr_control.btnLabel = '';
+                }
+
+                btnObj = {
+                  element: 'a',
+                  btnClass: 'gm-'+curr_control.callback,
+                  iconClass: curr_control.iconClass,
+                  btnLabel: curr_control.btnLabel
+                };
+
+                $.each(elems, function(i, current_elem) {
+                  gm.setupCustomBtn(current_elem, curr_control.loc, 'window', curr_control.callback, btnObj);
+                });
+              });
+            }
+          });
+        };
+
+        /*
+          Add any custom buttons configured on the data attributes
+
+          returns void
+         */
+
+        gm.initCustomControls=function(){
+          var canvas=gm.$el.find("#" + gm.options.canvasId),
+              callbackParams = '',
+              callbackScp = '',
+              callbackFunc = '',
+              btnLoc = '',
+              btnObj = {},
+              iconClass = '',
+              btnLabel = '';
+
+          $( ('.'+gm.options.colClass+':data,'+' .'+gm.options.rowClass+':data'), canvas).each(function(){
+            for(prop in $(this).data()) {
+              if(prop.indexOf('gmButton') === 0) {
+                callbackFunc = prop.replace('gmButton','');
+                callbackParams = $(this).data()[prop].split('|');
+                // Cannot accept 0 params or empty callback function name
+                if(callbackParams.length === 0 || callbackFunc === '') { break; }
+
+                btnLoc =    (typeof callbackParams[3] !== 'undefined')? callbackParams[3] : 'top';
+                iconClass = (typeof callbackParams[2] !== 'undefined')? callbackParams[2] : 'fa fa-file-code-o';
+                btnLabel =  (typeof callbackParams[1] !== 'undefined')? callbackParams[1] : '';
+                callbackScp = callbackParams[0];
+                btnObj = {
+                  element: 'a',
+                  btnClass: ('gm-'+callbackFunc),
+                  iconClass:  iconClass,
+                  btnLabel: btnLabel
+                };
+                gm.setupCustomBtn(this, btnLoc, callbackScp, callbackFunc, btnObj);
+                break;
+              }
+            }
+          });
+        };
+
+        /*
+          Configures custom button click callback function
+
+            @container    - container element that wraps the toolbar
+            @btnLoc       - button location: "top" for the upper toolbar and "bottom" for the lower one
+            @callbackScp  - function scope to use. "window" for global scope
+            @callbackFunc - function name to call when the user clicks the custom button
+            @btnObj       - button object that contains properties for: tag name, title, icon class, button class and label
+
+            returns bool, true on success false on failure
+         */
+        gm.setupCustomBtn=function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
+          callbackFunc = callbackFunc.toLowerCase();
+          var callback = gm.isValidCallback(callbackScp, callbackFunc);
+          // Ensure we have a valid callback, if not skip
+          if(typeof callback !== 'function') { return false; }
+
+          // Set default button location to the top toolbar
+          btnLoc = (btnLoc === 'bottom')? ':last' : ':first';
+
+          // Add the button to the selected toolbar
+          $( ('.'+gm.options.gmToolClass+btnLoc), container).append(gm.buttonFactory([btnObj])).find(':last').on('click', function(e) {
+            callback(container, this);
+            e.preventDefault();
+          });
+          return true;
+        };
+
+        /*
+          Checks that a callback exists and returns it if available
+
+          @callbackScp  - function scope to use. "window" for global scope
+          @callbackFunc - function name to call when the user clicks the custom button
+
+          returns function
+         */
+        gm.isValidCallback=function(callbackScp, callbackFunc){
+          var callback = null;
+
+          if(callbackScp === 'window') {
+            if(typeof window[callbackFunc] === 'function') {
+              callback = window[callbackFunc];
+            } else { // If the global function is not valid there is nothing to do
+              return false;
+            }
+          } else if(typeof window[callbackScp][callbackFunc] === 'function') {
+            callback = window[callbackScp][callbackFunc];
+          } else { // If there is no valid callback there is nothing to do
+            return false;
+          }
+          return callback;
+        };
+
+      /*
         Get the col-md-6 class, returning 6 as well from column
           @col - column to look at
           
@@ -394,7 +531,9 @@
                 cursor: "move"
               });  
             gm.status=true;
-            gm.mode="visual"; 
+            gm.mode="visual";
+            gm.initCustomControls();
+            gm.initGlobalCustomControls();
         };
 
         /*
