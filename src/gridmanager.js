@@ -786,7 +786,8 @@
         gm.buttonFactory=function(btns){  
           var buttons=[];
           $.each(btns, function(i, val){  
-            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + "</" + val.element + "> ");
+            val.btnLabel = (typeof val.btnLabel === 'undefined')? '' : val.btnLabel;
+            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + val.btnLabel + "</" + val.element + "> ");
           }); 
           return buttons.join("");
         };
