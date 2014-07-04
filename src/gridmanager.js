@@ -969,6 +969,9 @@
         // Array of buttons for row templates
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
 
+        // Custom Global Controls for rows & cols - available props: global_row, global_col
+        customControls: {},
+
         // Default control button class
         controlButtonClass: "btn  btn-xs  btn-primary",
 
