@@ -17,8 +17,10 @@ module.exports = function (grunt) {
       ' Licensed MIT */\n',
     // Task configuration.
     clean: {
-      files: ['dist']
+      files: ['dist'],
+      docs: ['docs']
     },
+
     copy: {
       main: {
         src: 'src/gridmanager.css',
@@ -100,10 +102,10 @@ module.exports = function (grunt) {
 
     jsdoc : {
       dist : {
-        src: ['./*.js'],
+        src: ['src/*.js'],
         jsdoc: './node_modules/.bin/jsdoc',
         options: {
-          destination: 'doc',
+          destination: 'docs',
           configure: './node_modules/jsdoc/conf.json',
           template: './node_modules/ink-docstrap/template'
         }
@@ -123,6 +125,7 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
+  grunt.registerTask('docs', ['clean:docs', 'jsdoc']);
   grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify', 'jsdoc']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
