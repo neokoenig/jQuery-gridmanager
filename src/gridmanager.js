@@ -366,15 +366,19 @@
                 if(typeof curr_control.iconClass === 'undefined') {
                   curr_control.iconClass = 'fa fa-file-code-o';
                 }
-                if(typeof curr_control.btnLabel == 'undefined') {
+                if(typeof curr_control.btnLabel === 'undefined') {
                   curr_control.btnLabel = '';
+                }
+                if(typeof curr_control.title === 'undefined') {
+                  curr_control.title = '';
                 }
 
                 btnObj = {
                   element: 'a',
                   btnClass: 'gm-'+curr_control.callback,
                   iconClass: curr_control.iconClass,
-                  btnLabel: curr_control.btnLabel
+                  btnLabel: curr_control.btnLabel,
+                  title: curr_control.title
                 };
 
                 $.each(elems, function(i, current_elem) {
@@ -786,7 +790,9 @@
         gm.buttonFactory=function(btns){  
           var buttons=[];
           $.each(btns, function(i, val){  
-            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + "</" + val.element + "> ");
+            val.btnLabel = (typeof val.btnLabel === 'undefined')? '' : val.btnLabel;
+            val.title = (typeof val.title === 'undefined')? '' : val.title;
+            buttons.push("<" + val.element +" title='" + val.title + "' class='" + val.btnClass + "'><span class='"+val.iconClass+"'></span>&nbsp;" + val.btnLabel + "</" + val.element + "> ");
           }); 
           return buttons.join("");
         };
