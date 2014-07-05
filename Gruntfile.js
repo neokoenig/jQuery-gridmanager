@@ -97,6 +97,19 @@ module.exports = function (grunt) {
         tasks: ['jshint:test', 'qunit']
       }
     },
+
+    jsdoc : {
+      dist : {
+        src: ['./*.js'],
+        jsdoc: './node_modules/.bin/jsdoc',
+        options: {
+          destination: 'doc',
+          configure: './node_modules/jsdoc/conf.json',
+          template: './node_modules/ink-docstrap/template'
+        }
+      }
+    },
+
     connect: {
       server: {
         options: {
@@ -106,10 +119,11 @@ module.exports = function (grunt) {
       }
     }
   });
+ 
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
-  grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify']);
+  grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify', 'jsdoc']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
