@@ -26,13 +26,45 @@ module.exports = function (grunt) {
         src: 'src/gridmanager.css',
         dest: 'dist/css/jquery.gridmanager.css'
       },
-      ckeditor: {
-        src: 'src/ckeditorconfig.js',
-        dest: 'dist/js/ckeditorconfig.js'
-      },
       democss: {
         src: 'src/demo.css',
-        dest: 'demo/demo.css'
+        dest: 'demo/css/demo.css'
+      },
+      demobootstrap: {
+        src: 'bower_components/bootstrap/dist/css/bootstrap.min.css',
+        dest: 'demo/css/bootstrap.css'
+      },
+      demofoundation: {
+        src: 'bower_components/foundation/css/foundation.css',
+        dest: 'demo/css/foundation.css'
+      },
+      demobootstrapjs: {
+        src: 'bower_components/bootstrap/dist/js/bootstrap.min.js',
+        dest: 'demo/js/bootstrap.js'
+      },
+      demofoundationjs: {
+        src: 'bower_components/foundation/js/foundation.min.js',
+        dest: 'demo/js/foundation.js'
+      },
+      demockeditor: {
+        cwd: 'bower_components/ckeditor',
+        src: '**/*',
+        dest: 'demo/js/ckeditor/',
+        expand: true
+      },
+      demotinymce: {
+        cwd: 'bower_components/tinymce',
+        src: '**/*',
+        dest: 'demo/js/tinymce/',
+        expand: true
+      },
+      demojquery: {
+        src: 'bower_components/jquery/dist/jquery.min.js',
+        dest: 'demo/js/jquery.js'
+      },
+      demojqueryui: {
+        src: 'bower_components/jquery-ui/ui/minified/jquery-ui.min.js',
+        dest: 'demo/js/jquery-ui.js'
       }
       
     },
@@ -106,7 +138,7 @@ module.exports = function (grunt) {
         jsdoc: './node_modules/.bin/jsdoc',
         options: {
           destination: 'docs',
-          configure: './node_modules/jsdoc/conf.json',
+          configure: './jsdoc.json',
           template: './node_modules/ink-docstrap/template'
         }
       }
@@ -126,6 +158,7 @@ module.exports = function (grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
   grunt.registerTask('docs', ['clean:docs', 'jsdoc']);
+  grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs', 'copy:demockeditor', 'copy:demotinymce', 'copy:demojquery', 'copy:demojqueryui']);
   grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify', 'jsdoc']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');

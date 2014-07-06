@@ -2,6 +2,7 @@
 
 ## Important notes
 Please don't edit files in the `dist` subdirectory as they are generated via Grunt. You'll find source code in the `src` subdirectory!
+Likewise, main documentation is generated into the `docs` directory.
 
 ### Code style
 Regarding code style like indentation and whitespace, **follow the conventions you see used in the source already.**
@@ -20,6 +21,11 @@ Test that Grunt's CLI and Bower are installed by running `grunt --version` and `
 1. Run `grunt` to grunt this project.
 
 Assuming that you don't see any red, you're ready to go. Just be sure to run `grunt` after making any changes, to ensure that nothing is broken.
+
+Useful grunt tasks:
+
+1. `grunt dist` - Create a new version of the 'dist' folder and recompile everything from source.
+1. `grunt docs` - Run the documentation generator.
 
 ## Submitting pull requests
 
