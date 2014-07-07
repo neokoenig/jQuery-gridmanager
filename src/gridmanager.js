@@ -533,7 +533,16 @@
                 opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"
-              });  
+              });
+              // Make rows sortable
+              cols.sortable({
+                items: gm.options.rowSelector,
+                axis: 'y',
+                handle: "." + gm.options.gmToolClass,
+                forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
+                tolerance: "pointer",
+                cursor: "move"
+              });
             gm.status=true;
             gm.mode="visual";
             gm.initCustomControls();
