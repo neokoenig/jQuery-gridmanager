@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Simple - Gridmanager with Custom Controls</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+
+    <link href="css/bootstrap.css" rel="stylesheet">    
+    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">  
+    <link href="css/demo.css" rel="stylesheet">  
+     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+ 
+    <script src="js/jquery.js"></script> 
+    <script src="js/jquery-ui.js"></script> 
+    <script src="js/bootstrap.js"></script> 
+    <script src="../dist/js/jquery.gridmanager.js"></script> 
+ 
+  </head>
+<body> 
+  
+<div class="container">  
+    <div id="mycanvas">
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 column">
+                <p>Awaiting Content</p>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 column" data-gm-button-test_callback="window">
+                <p>Awaiting Content</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6 column">
+                <p>Awaiting Content</p>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6 column">
+                <p>Awaiting Content</p>
+            </div>
+        </div>
+    </div> 
+</div> 
+ 
+<!--================== JS ================--> 
+<script> 
+$(document).ready(function(){  
+    $("#mycanvas").gridmanager({
+        debug:1,  
+        customControls: {
+            global_row: [{ callback: 'test_callback', loc: 'bottom' }],
+            global_col: [{ callback: 'test_callback', loc: 'top' }]
+        }
+    });
+});
+
+function test_callback(container, btnElem) {
+    alert('hello world! from custom control');
+}
+</script> 
+</body>
+</html>
+  

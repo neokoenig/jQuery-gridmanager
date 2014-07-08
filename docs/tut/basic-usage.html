@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
+
+        <title>gridmanager.js : Basic Usage</title>
+        <meta name="description" content="Structural editor for rows and columns in popular CSS frameworks">
+
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/syntax.css">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/main.css">
+    </head>
+    <body>
+
+        <div class="container">
+            <div class=row-fluid>
+                <div id=header class=span12>
+                    <h4><a class=brand href="/jQuery-gridmanager/docs/">gridmanager.js</a>
+    <small>Structural editor for rows and columns in popular CSS frameworks</small>
+</h4>
+
+
+                </div>
+            </div>
+
+            <div class=row-fluid>
+                
+                
+                    <div id=navigation class=span2>
+                        <ul class="nav nav-list">
+    <li><a href="/jQuery-gridmanager/docs/">Home</a></li>
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Documentation</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/doc/installation.html">Installation</a></li>
+        
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Examples</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/using-foundation.html">Using Foundation</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/fluid-widths.html">Fluid Widths</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/basic-usage.html">Basic Usage</a></li>
+        
+    
+        
+        
+
+        
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Developers</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/options-reference.html">Options Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/function-reference.html">Function Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/extending-gridmanager.html">Extending Gridmanager</a></li>
+        
+    
+        
+        
+
+        
+    
+<!-- List additional links. It is recommended to add a divider
+    e.g. <li class=divider></li> first to break up the content. -->
+</ul>
+
+                    </div>
+
+                    <div id=content class=span10>
+                        <div class=page-header>
+    <h2>Basic Usage
+        
+    </h2>
+</div>
+
+<p>Assumes you have jQuery, jQueryUI and Bootstrap 3.x already on your page.</p>
+
+<p>Link the gridmanager JS and CSS files:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;link href=&quot;dist/css/jquery.gridmanager.css&quot; rel=&quot;stylesheet&quot;&gt;  
+&lt;script src=&quot;dist/js/jquery.gridmanager.min.js&quot;&gt;&lt;/script&gt; 
+</code></pre></div>
+<p>Create a <code>&lt;div&gt;</code> element which gridmanager will attach to:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;div id=&quot;mycanvas&quot;&gt;&lt;/div&gt;
+</code></pre></div>
+<p>If you have HTML which needs to be loaded into the editor, simply include it between the <code>&lt;div&gt;</code> tags:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;div id=&quot;mycanvas&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div>
+<p>Now tie in the id or class into gridmanger: you can do this two ways:</p>
+
+<h4 id="simple-implementation">Simple implementation</h4>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt; 
+    $(document).ready(function(){
+        $(&quot;#mycanvas&quot;).gridmanager();
+    });
+&lt;/script&gt; 
+</code></pre></div>
+<h4 id="extended-implementation">Extended implementation</h4>
+
+<p>for when you want to use internal gridmanager functions:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt;
+    $(document).ready(function(){ 
+        var gm = jQuery(&quot;#mycanvas&quot;).gridmanager().data(&#39;gridmanager&#39;);
+
+        $(&quot;.myexternalcontrol&quot;).on(&quot;click&quot;, function(e){
+            // Example use of internal gridmanager function:
+            gm.appendHTMLSelectedCols(&#39;&lt;p&gt;my content to append to all my selected cols&lt;/p&gt;&#39;);
+        });
+    });
+&lt;/script&gt; 
+</code></pre></div>
+
+                    </div>
+                
+            </div>
+
+            <div class=row-fluid>
+                <div id=footer class=span12>
+                    Documentation for <a href="https://github.com/bruth/jekyll-docs-template">gridmanager.js</a>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function orderNav() {
+                var list,
+                    section,
+                    header,
+                    sections = [],
+                    lists = {},
+                    headers = {};
+
+                var navUl = document.querySelectorAll('#navigation ul')[0],
+                    navLis = document.querySelectorAll('#navigation ul li');
+
+                if (!navUl) return;
+
+                for (var i = 0; i < navLis.length; i++) {
+                    var order, li = navLis[i];
+
+                    if (li.classList.contains('nav-header')) {
+                        section = li.textContent || li.innerText;
+                        sections.push(section);
+                        headers[section] = li;
+                        continue;
+                    }
+
+                    if (!lists[section]) {
+                        lists[section] = [];
+                    }
+
+                    order = parseFloat(li.getAttribute('data-order'))
+                    lists[section].push([order, li]);
+                }
+
+                for (var i = 0; i < sections.length; i++) {
+                    section = sections[i];
+                    list = lists[section].sort(function(a, b) {
+                        return a[0] - b[0];
+                    });
+
+                    if (header = headers[section]) {
+                        navUl.appendChild(header);
+                    }
+                    for (var j = 0; j < list.length; j++) {
+                        navUl.appendChild(list[j][1]);
+                    }
+                }
+            }
+
+            if (document.querySelectorAll) orderNav();
+        </script>
+    </body>
+</html>

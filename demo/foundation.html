@@ -6,28 +6,19 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">  
 
-    <!-- Foundation CSS --> 
-
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/foundation/5.2.3/css/foundation.min.css" rel="stylesheet"> 
-    <link href="http://cdnjs.cloudflare.com/ajax/libs/foundicons/3.0.0/foundation-icons.min.css" rel="stylesheet"> 
-
-    <!-- Grid Manager CSS -->
-    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet"> 
-    <!-- Just for Demo purposes-->
-    <link href="demo.css" rel="stylesheet"> 
-
+    <link href="css/foundation.css" rel="stylesheet">    
+    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">  
+    <link href="css/demo.css" rel="stylesheet">  
      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <!-- jQuery -->
-     <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    <!-- jQuery UI -->
-     <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script> 
-    <!-- Grid Manager JS -->
-     <script src="../dist/js/jquery.gridmanager.js"></script> 
+ 
+    <script src="js/jquery.js"></script> 
+    <script src="js/jquery-ui.js"></script> 
+    <script src="js/foundation.js"></script> 
+    <script src="../dist/js/jquery.gridmanager.js"></script> 
  
   </head>
 <body> 
@@ -68,10 +59,10 @@
 </div>
     </div>
     </div>
-<!--================== JS ================--> 
-<script> 
+ <script> 
 $(document).ready(function(){  
 
+ 
 
    $("#mycanvas").gridmanager({
           /*
@@ -82,12 +73,7 @@ $(document).ready(function(){
 
         // URL to save to
         remoteURL: "/replace-with-your-url",
-  /*
-     Canvas---------------
-    */
-
-        // Shortcut for modal window markup
-        canvasModal: "<div id='canvasModal' class='reveal-modal' data-reveal> <h4 class='modal-title' id='myModalLabel'>GridManager</h4><div class='modal-body'></div></div>",      
+ 
      
   /*
      Control Bar---------------
@@ -98,14 +84,7 @@ $(document).ready(function(){
 
         // Default control button class
         controlButtonClass: "tiny button",
-
-        // Default control button icon
-        controlButtonSpanClass: "fi-plus",
-
-        // Control bar RH  
-        //controlAppend: "<div class='right'><a class='button tiny gm-switch'><span class='fi-pencil'></span> On/Off</a><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span> Save</a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span> Reset</a> </div>",
-        // Control bar RH dropdown markup
-        controlAppend: "<div class='button-group right'><button title='Edit Source Code' type='button' class='button tiny gm-mode'><span class='fi-pencil'></span></span></button><button title='Preview' type='button' class='button tiny gm-preview'><span class='fi-eye'></span></button><a title='Save'  href='#' class='gm-save button tiny'><span class='fi-check'></span></a><a title='Reset Grid' href='#' class='gm-resetgrid button tiny'><span class='fi-trash'></span></a> </div></div> ",
+ 
         
    /*
      General editing classes---------------
@@ -116,6 +95,10 @@ $(document).ready(function(){
         gmFloatRight: "right",
         gmBtnGroup:  "button-group", 
         gmDangerClass: "alert",
+         // Control bar RH dropdown markup
+        controlAppend: "<div class='button-group right'><button title='Edit Source Code' type='button' class='button tiny gm-edit-mode'><span class='fa fa-code'></span></button><button title='Preview' type='button' class='button tiny gm-preview'><span class='fa fa-eye'></span></button><div class='button-group right gm-layout-mode'><a class='button tiny' data-width='auto' title='Desktop'><span class='fa fa-desktop'></span></a><a class='button tiny'  title='Tablet' data-width='768'><span class='fa fa-tablet'></span></a><a title='Phone' class='button tiny' data-width='640'><span class='fa fa-mobile-phone'></span></a></div><a  class='gm-save button tiny'  title='Save'  href='#'><span class='fa fa-save'></span></a><a  class='button tiny gm-resetgrid'  title='Reset Grid' href='#'><span class='fa fa-trash-o'></span></a>",
+
+
 
   /*
      Rows---------------
@@ -129,13 +112,13 @@ $(document).ready(function(){
                    title:"New Column", 
                    element: "a", 
                    btnClass: "gm-addColumn left  ",
-                   iconClass: "fi-plus"
+                   iconClass: "fa fa-plus"
                 }, 
                  {
                    title:"Row Settings", 
                    element: "a", 
                    btnClass: "right gm-rowSettings",
-                   iconClass: "fi-widget"
+                   iconClass: "fa fa-cog"
                 }
                 
             ],
@@ -146,7 +129,7 @@ $(document).ready(function(){
                  title:"Remove row", 
                  element: "a", 
                  btnClass: "right gm-removeRow",
-                 iconClass: "fi-trash"
+                 iconClass: "fa fa-trash-o"
                 }
             ],
 
@@ -156,41 +139,67 @@ $(document).ready(function(){
   /*
      Columns--------------
   */    
-        // Generic row prefix: this should be the general span class, i.e span6 in BS2, col-md-6 (or you could change the whole thing to col-lg- etc)
-        colClass: "large-",
-        
-        // Additional column class to add (foundation needs columns, bs3 doesn't)
-        colAdditionalClass: "columns",
+         // Adds any missing classes in columns for muti-device support.
+        addResponsiveClasses: true, 
 
-        // Wild card column selector - this means we can find all columns irrespective of col-md or col-lg etc.
-        colSelector: "div[class*=large-]",
+          // Additional column class to add (foundation needs columns, bs3 doesn't)
+        colAdditionalClass: "column",
 
+       // Generic desktop size layout class
+        colDesktopClass: "large-",
+
+        // Generic tablet size layout class
+        colTabletClass: "medium-",
+
+        // Generic phone size layout class
+        colPhoneClass: "small-", 
+
+        // Wild card column desktop selector
+        colDesktopSelector: "div[class*=large]",
+
+        // Wildcard column tablet selector
+        colTabletSelector: "div[class*=medium]",
+
+        // Wildcard column phone selector
+        colPhoneSelector: "div[class*=small]",
+     
         // Buttons to prepend to each column
         colButtonsPrepend: [                
                {
                  title:"Make Column Narrower", 
                  element: "a", 
                  btnClass: "gm-colDecrease left",
-                 iconClass: "fi-minus"
+                 iconClass: "fa fa-minus"
               },
               {
                title:"Make Column Wider", 
                element: "a", 
                btnClass: "gm-colIncrease left",
-               iconClass: "fi-plus"
-              }
+               iconClass: "fa fa-plus"
+              },
+              {
+                   title:"Column Settings", 
+                   element: "a", 
+                   btnClass: "right gm-colSettings",
+                   iconClass: "fa fa-cog"
+                }
             ],
 
         // Buttons to append to each column
         colButtonsAppend: [ 
                 {
+                 title:"Add Nested Row", 
+                 element: "a", 
+                 btnClass: "left gm-addRow",
+                 iconClass: "fa fa-plus-square"
+                },
+                {
                  title:"Remove Column", 
                  element: "a", 
                  btnClass: "right gm-removeCol",
-                 iconClass: "fi-trash"
+                 iconClass: "fa fa-trash-o"
                 }
             ], 
-
         
         // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,

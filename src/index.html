@@ -19,7 +19,7 @@
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
+    <![endif]-->  
 
     <!-- jQuery -->
      <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
@@ -27,30 +27,81 @@
      <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <!-- Bootstrap JS -->
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
- 
+  
      <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
      <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
-  
+ 
     <!-- Grid Manager JS -->
      <script src="gridmanager.js"></script> 
- 
-     
-
+  
   
   </head>
-<body>  
-  
-      <div class="container"> 
-    <div id="mycanvas">
-            <div id="TestID" class="row blue"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-8"><p>Awaiting Content</p></div><div class="col-md-4"><p>Awaiting Content</p></div></div><div class="row"><div class="col-md-4"><p>Awaiting Content</p></div><div class="col-md-8"><p>Awaiting Content</p></div></div>
-       </div>
-    </div>
+<body>   
+
+  <div class="container"> 
+    <div id="mycanvas" class="clearfix">
+       <div class="row">
+        <div class="col-md-12 col-sm-12 col-xs-12">
+            <p>Pre Nested 1</p>
+              <p>Pre Nested 2</p>
+              <p>Pre Nested 3</p>
+          <div class="row">
+            <div class="col-md-6 col-sm-6 col-xs-6">
+              <p>Pre Nested 1</p>
+              <p>Pre Nested 2</p>
+              <p>Pre Nested 3</p>
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content1</p></div>
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content2</p></div> 
+              </div>
+              <p>Post Nested 1</p>
+              <p>Post Nested 2</p>
+              <p>Post Nested 3</p>
+            </div>
+            <div class="col-md-6 col-sm-6 col-xs-6">
+                <p>Pre Nested 1</p>
+              <p>Pre Nested 2</p>
+              <p>Pre Nested 3</p>
+              <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content1</p></div>
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content2</p></div> 
+              </div>
+              
+              <p>Post Nested 1</p>
+              <p>Post Nested 2</p>
+              <p>Post Nested 3</p>
+               <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content1</p></div>
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content2</p></div> 
+              </div> 
+               <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content1</p></div>
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content2</p></div> 
+              </div>
+               <div class="row">
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content1</p></div>
+                <div class="col-md-6 col-sm-6 col-xs-6"><p>Awaiting Content2</p></div> 
+              </div>
+              <p>Post Nested 1</p>
+              <p>Post Nested 2</p>
+              <p>Post Nested 3</p>
+            </div> 
+          </div> 
+           
+              <p>Post Nested 1</p>
+              <p>Post Nested 2</p>
+              <p>Post Nested 3</p>
+        </div>
+      </div>
+    </div> 
+  </div>
+
 <!--================== JS ================--> 
 <script> 
 $(document).ready(function(){  
 
    $("#mycanvas").gridmanager({
-         debug: 1}
+         debug: 1 }
     ); 
 });
 </script>  

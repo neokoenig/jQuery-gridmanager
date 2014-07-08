@@ -5,28 +5,54 @@
  * Copyright (c) 2014 Tom King
  * Licensed under the MIT license.
  */
- 
+
+/* Controls */ 
 #gm-controls {margin:5px 0; }
-#gm-controls button,  #gm-controls a {font-size: 16px;}
+#gm-controls button,  #gm-controls a {font-size: 14px;}
+
+/* Main Editing Space */
 #gm-canvas {min-height: 100px;} 
-#gm-canvas .gm-editing {
-	-webkit-box-shadow: inset 0px 0px 5px 0px rgba(50, 50, 50, 0.75);
-	-moz-box-shadow:  inset  0px 0px 5px 0px rgba(50, 50, 50, 0.75);
-	box-shadow:      inset   0px 0px 5px 0px rgba(50, 50, 50, 0.75); 
+
+/* rows & cols */  
+#gm-canvas .gm-editing {  
+	-webkit-box-shadow: 0px 0px 3px 0px rgba(0,0,0, 0.50);
+	-moz-box-shadow:    0px 0px 3px 0px rgba(0,0,0, 0.50);
+	box-shadow:         0px 0px 3px 0px rgba(0,0,0, 0.50);
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
 	padding:4px 15px;   
 	min-height: 30px;
 	}  
- 
+/* selected element */ 
+#gm-canvas .gm-editing-selected{
+	-webkit-box-shadow:  0px 0px 5px 0px rgba(255, 0, 0, 1);
+	-moz-box-shadow:     0px 0px 5px 0px rgba(255, 0, 0, 1);
+	box-shadow:          0px 0px 5px 0px rgba(255, 0, 0, 1);
+	 }
+
+/* main editable region */
+#gm-canvas .gm-editable-region{
+	-webkit-box-shadow: 0px 0px 2px 0px rgba(255, 0, 0, 1);
+	-moz-box-shadow:    0px 0px 2px 0px rgba(255, 0, 0, 1);
+	box-shadow:         0px 0px 2px 0px rgba(255, 0, 0, 1);
+	min-height:20px; }
+
+/* rows */
 #gm-canvas div.row.gm-editing, 
 #gm-canvas div.row-fluid.gm-editing {
-	padding: 5px;  
-	min-height: 20px; margin-bottom: 10px;}
+	padding: 2px;  
+	min-height: 20px; margin-bottom: 10px;
+-webkit-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.85);
+-moz-box-shadow:    0px 0px 3px 0px rgba(0, 0, 0, 0.85);
+box-shadow:         0px 0px 3px 0px rgba(0, 0, 0, 0.85);}
+ 
+
+/* Row and col tools */
 #gm-canvas div.gm-tools {padding:3px;   min-height: 30px; display:block; clear:both;}
-#gm-canvas div.gm-tools a:hover {cursor: pointer;}
+#gm-canvas div.gm-tools a:hover, #gm-canvas, .layout-mode a:hover {cursor: pointer;}
 #gm-canvas div.gm-tools label, #gm-canvas div.gm-tools input {font-size:14px;}
 #gm-canvas textarea {width:100%; height: 100%;}
 
- 
+/* icon colour hovers */
+#gm-canvas .fa-trash-o:hover {color:red;}
