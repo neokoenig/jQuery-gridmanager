@@ -7,7 +7,7 @@ title: "Gridmanager.js Documentation"
 
 ### What is it?
 
-Gridmanager allows you to create, reorder, update & delete rows and columns in grid layouts used by frameworks such as Bootstrap 3.x or Foundation 5.x
+Gridmanager allows you to create, reorder, update & delete rows and columns in grid layouts used by frameworks such as Bootstrap 3.x or Foundation 5.x. It is *not* another Rich Text Editor (although it can use them), and is designed to work more as a structural / page building device for use in web applications, custom CMS system etc.
 
 #### You can:
 
@@ -64,3 +64,8 @@ Released under the MIT licence. Go wild.
 
 + [Tom King](https://github.com/neokoenig/)
 + [Percy D Brea](https://github.com/pbreah/) 
+
+#### Blog Posts
++ http://www.oxalto.co.uk/2014/05/gridmanager-js-0-2-1-released/
++ http://www.oxalto.co.uk/2014/05/gridmanager-js-0-2-0-released/
++ http://www.oxalto.co.uk/2014/05/introducing-gridmanager-js/
