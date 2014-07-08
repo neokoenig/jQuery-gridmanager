@@ -24,6 +24,38 @@ Gridmanager allows you to create, reorder, update & delete rows and columns in g
 - Use fluid rows if you want
 - Create your own custom controls for easily extending functionality
 
+#### Changelog
+
++ 0.3.0 
+  - Nested row & column support & new add nested row button
+  - Added ability to add custom controls on rows & columns (with your own callbacks) 
+  - Added Custom column classes in addition to row classes
+  - RTE's are now attached to their own editable regions within columns
+  - Responsive class support added
+  - Responsive class layout mode added
+  - Font Awesome now the icon default
+  - Documentation now available at http://neokoenig.github.io/jQuery-gridmanager/docs
++ 0.2.2
+  - Modal removed; 
+  - Source code editing now available directly. 
+  - Basic (very basic) foundation support with correct config. 
+  - Editable Custom row classes. 
+  - Editable Custom Row IDs
++ 0.2.1 
+  - Fluid rows now supported. 
+  - Columns are now resizable. 
+  - Column moving improved. 
+  - Source code alert now modal
++ 0.2.0 
+  - TinyMCE, CKEditor now supported. 
+  - Columns now moveable. 
+  - Added reset, alert features, redid CSS and most of the plugin
++ 0.1.1 
+  - CSS moved to it's own file. 
+  - Slight visual tweaks.
++ 0.1.0 
+  - initial alpha test.
+
 #### Licence
 
 Released under the MIT licence. Go wild.
