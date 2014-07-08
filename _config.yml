@@ -1,7 +1,8 @@
 # Site title and subtitle. This is used in _includes/header.html
 title: 'gridmanager.js'
 subtitle: 'Structural editor for rows and columns in popular CSS frameworks'
-
+source: "./src/docs"
+destination: "./docs"
 # Enable/show navigation. There are there options:
 #   0 - always hide
 #   1 - always show
@@ -22,7 +23,7 @@ sections: [
 
 # Keep as an empty string if served up at the root. If served up at a specific
 # path (e.g. on GitHub pages) leave off the trailing slash, e.g. /my-project
-baseurl: '/jQuery-gridmanager/jekyll/_site/'
+baseurl: '/jQuery-gridmanager/docs'
 
 # Dates are not included in permalinks
 permalink: none

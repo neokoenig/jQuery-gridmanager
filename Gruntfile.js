@@ -131,18 +131,7 @@ module.exports = function (grunt) {
         tasks: ['jshint:test', 'qunit']
       }
     },
-
-    jsdoc : {
-      dist : {
-        src: ['src/*.js'],
-        jsdoc: './node_modules/.bin/jsdoc',
-        options: {
-          destination: 'docs',
-          configure: './jsdoc.json',
-          template: './node_modules/ink-docstrap/template'
-        }
-      }
-    },
+  
 
     connect: {
       server: {
@@ -157,7 +146,6 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
-  grunt.registerTask('docs', ['clean:docs', 'jsdoc']);
   grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs', 'copy:demockeditor', 'copy:demotinymce', 'copy:demojquery', 'copy:demojqueryui']);
   grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify', 'jsdoc']);
   grunt.registerTask('server', function () {

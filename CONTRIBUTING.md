@@ -25,7 +25,7 @@ Assuming that you don't see any red, you're ready to go. Just be sure to run `gr
 Useful grunt tasks:
 
 1. `grunt dist` - Create a new version of the 'dist' folder and recompile everything from source.
-1. `grunt docs` - Run the documentation generator.
+1. `jekyll build` - Run the documentation generator.
 
 ## Submitting pull requests
 

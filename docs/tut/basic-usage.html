@@ -5,19 +5,19 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width">
 
-        <title>gridmanager.js : Fluid Widths</title>
+        <title>gridmanager.js : Basic Usage</title>
         <meta name="description" content="Structural editor for rows and columns in popular CSS frameworks">
 
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
-        <link rel="stylesheet" href="/jQuery-gridmanager/jekyll/_site//css/syntax.css">
-        <link rel="stylesheet" href="/jQuery-gridmanager/jekyll/_site//css/main.css">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/syntax.css">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/main.css">
     </head>
     <body>
 
         <div class="container">
             <div class=row-fluid>
                 <div id=header class=span12>
-                    <h4><a class=brand href="/jQuery-gridmanager/jekyll/_site//">gridmanager.js</a>
+                    <h4><a class=brand href="/jQuery-gridmanager/docs/">gridmanager.js</a>
     <small>Structural editor for rows and columns in popular CSS frameworks</small>
 </h4>
 
@@ -30,7 +30,7 @@
                 
                     <div id=navigation class=span2>
                         <ul class="nav nav-list">
-    <li><a href="/jQuery-gridmanager/jekyll/_site//">Home</a></li>
+    <li><a href="/jQuery-gridmanager/docs/">Home</a></li>
     
         
         
@@ -39,7 +39,7 @@
             
                 <li class=nav-header>Documentation</li>
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//doc/installation.html">Installation</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/doc/installation.html">Installation</a></li>
         
     
         
@@ -49,13 +49,13 @@
             
                 <li class=nav-header>Examples</li>
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//tut/using-foundation.html">Using Foundation</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/using-foundation.html">Using Foundation</a></li>
         
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//tut/fluid-widths.html">Fluid Widths</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/fluid-widths.html">Fluid Widths</a></li>
         
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//tut/basic-usage.html">Basic Usage</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/basic-usage.html">Basic Usage</a></li>
         
     
         
@@ -70,13 +70,13 @@
             
                 <li class=nav-header>Developers</li>
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//dev/options-reference.html">Options Reference</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/options-reference.html">Options Reference</a></li>
         
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//dev/function-reference.html">Function Reference</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/function-reference.html">Function Reference</a></li>
         
             
-            <li data-order=""><a href="/jQuery-gridmanager/jekyll/_site//dev/extending-gridmanager.html">Extending Gridmanager</a></li>
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/extending-gridmanager.html">Extending Gridmanager</a></li>
         
     
         
@@ -92,22 +92,49 @@
 
                     <div id=content class=span10>
                         <div class=page-header>
-    <h2>Fluid Widths
+    <h2>Basic Usage
         
     </h2>
 </div>
 
-<p>To use a fluid layout (this assumes you&#39;re using Boostrap 3.x), simply change the options classes to incorporate bootstrap&#39;s <code>row-fluid</code> class</p>
+<p>Assumes you have jQuery, jQueryUI and Bootstrap 3.x already on your page.</p>
+
+<p>Link the gridmanager JS and CSS files:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;link href=&quot;dist/css/jquery.gridmanager.css&quot; rel=&quot;stylesheet&quot;&gt;  
+&lt;script src=&quot;dist/js/jquery.gridmanager.min.js&quot;&gt;&lt;/script&gt; 
+</code></pre></div>
+<p>Create a <code>&lt;div&gt;</code> element which gridmanager will attach to:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;div id=&quot;mycanvas&quot;&gt;&lt;/div&gt;
+</code></pre></div>
+<p>If you have HTML which needs to be loaded into the editor, simply include it between the <code>&lt;div&gt;</code> tags:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;div id=&quot;mycanvas&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;
+        &lt;div class=&quot;col-md-6&quot;&gt;&lt;p&gt;Content&lt;/p&gt;&lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+</code></pre></div>
+<p>Now tie in the id or class into gridmanger: you can do this two ways:</p>
+
+<h4 id="simple-implementation">Simple implementation</h4>
 <div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt; 
-$(document).ready(function(){   
-   $(&quot;#mycanvas&quot;).gridmanager({ 
-        controlPrepend: &quot;&lt;div class=&#39;row-fluid&#39;&gt;&lt;div class=&#39;col-md-12&#39;&gt;&lt;div id=&#39;gm-addnew&#39; class=&#39;btn-group &#39;&gt;&quot;, 
-        rowClass:    &quot;row-fluid&quot;,
-        rowSelector: &quot;div.row-fluid&quot;,
-        rowPrepend:  &quot;&lt;div class=&#39;row-fluid gm-editing&#39;&gt;&quot;
-    }  
-  ); 
-});
+    $(document).ready(function(){
+        $(&quot;#mycanvas&quot;).gridmanager();
+    });
+&lt;/script&gt; 
+</code></pre></div>
+<h4 id="extended-implementation">Extended implementation</h4>
+
+<p>for when you want to use internal gridmanager functions:</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt;
+    $(document).ready(function(){ 
+        var gm = jQuery(&quot;#mycanvas&quot;).gridmanager().data(&#39;gridmanager&#39;);
+
+        $(&quot;.myexternalcontrol&quot;).on(&quot;click&quot;, function(e){
+            // Example use of internal gridmanager function:
+            gm.appendHTMLSelectedCols(&#39;&lt;p&gt;my content to append to all my selected cols&lt;/p&gt;&#39;);
+        });
+    });
 &lt;/script&gt; 
 </code></pre></div>
 

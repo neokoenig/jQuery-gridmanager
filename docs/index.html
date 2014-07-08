@@ -1,330 +1,190 @@
 <!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
 
-<html lang="en">
-<head>
-	<meta charset="utf-8">
-	<title>gridmanager.js Index</title>
+        <title>gridmanager.js : Gridmanager.js Documentation</title>
+        <meta name="description" content="Structural editor for rows and columns in popular CSS frameworks">
 
-	<!--[if lt IE 9]>
-	<script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-	<![endif]-->
-	<link type="text/css" rel="stylesheet" href="styles/sunlight.default.css">
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/syntax.css">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/main.css">
+    </head>
+    <body>
 
-	<link type="text/css" rel="stylesheet" href="styles/site.cerulean.css">
-
-</head>
-
-<body>
-<div class="container-fluid">
-	<div class="navbar navbar-fixed-top navbar-inverse">
-		<div class="navbar-inner">
-			<a class="brand" href="index.html">gridmanager.js</a>
-			<ul class="nav">
-				
-				<li class="dropdown">
-					<a href="classes.list.html" class="dropdown-toggle" data-toggle="dropdown">Classes<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="jQuery.fn.gridmanager.html">jQuery.fn.gridmanager</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-				<li class="dropdown">
-					<a href="global.html" class="dropdown-toggle" data-toggle="dropdown">Global<b
-						class="caret"></b></a>
-
-					<ul class="dropdown-menu ">
-						
-						<li>
-							<a href="global.html#activateCols">activateCols</a>
-						</li>
-						
-						<li>
-							<a href="global.html#activateRows">activateRows</a>
-						</li>
-						
-						<li>
-							<a href="global.html#addCSS">addCSS</a>
-						</li>
-						
-						<li>
-							<a href="global.html#addResponsiveness">addResponsiveness</a>
-						</li>
-						
-						<li>
-							<a href="global.html#appendHTMLSelectedCols">appendHTMLSelectedCols</a>
-						</li>
-						
-						<li>
-							<a href="global.html#buttonFactory">buttonFactory</a>
-						</li>
-						
-						<li>
-							<a href="global.html#cleanSubstring">cleanSubstring</a>
-						</li>
-						
-						<li>
-							<a href="global.html#cleanup">cleanup</a>
-						</li>
-						
-						<li>
-							<a href="global.html#createCanvas">createCanvas</a>
-						</li>
-						
-						<li>
-							<a href="global.html#createCol">createCol</a>
-						</li>
-						
-						<li>
-							<a href="global.html#createControls">createControls</a>
-						</li>
-						
-						<li>
-							<a href="global.html#createRow">createRow</a>
-						</li>
-						
-						<li>
-							<a href="global.html#deactivateCols">deactivateCols</a>
-						</li>
-						
-						<li>
-							<a href="global.html#deactivateRows">deactivateRows</a>
-						</li>
-						
-						<li>
-							<a href="global.html#deinitCanvas">deinitCanvas</a>
-						</li>
-						
-						<li>
-							<a href="global.html#generateButtonClass">generateButtonClass</a>
-						</li>
-						
-						<li>
-							<a href="global.html#generateClickHandler">generateClickHandler</a>
-						</li>
-						
-						<li>
-							<a href="global.html#generateColSettings">generateColSettings</a>
-						</li>
-						
-						<li>
-							<a href="global.html#generateRowSettings">generateRowSettings</a>
-						</li>
-						
-						<li>
-							<a href="global.html#getColClass">getColClass</a>
-						</li>
-						
-						<li>
-							<a href="global.html#gridmanager">gridmanager</a>
-						</li>
-						
-						<li>
-							<a href="global.html#init">init</a>
-						</li>
-						
-						<li>
-							<a href="global.html#initCanvas">initCanvas</a>
-						</li>
-						
-						<li>
-							<a href="global.html#initControls">initControls</a>
-						</li>
-						
-						<li>
-							<a href="global.html#initCustomControls">initCustomControls</a>
-						</li>
-						
-						<li>
-							<a href="global.html#initGlobalCustomControls">initGlobalCustomControls</a>
-						</li>
-						
-						<li>
-							<a href="global.html#isValidCallback">isValidCallback</a>
-						</li>
-						
-						<li>
-							<a href="global.html#log">log</a>
-						</li>
-						
-						<li>
-							<a href="global.html#regex">regex</a>
-						</li>
-						
-						<li>
-							<a href="global.html#reset">reset</a>
-						</li>
-						
-						<li>
-							<a href="global.html#rteControl">rteControl</a>
-						</li>
-						
-						<li>
-							<a href="global.html#saveremote">saveremote</a>
-						</li>
-						
-						<li>
-							<a href="global.html#setupCustomBtn">setupCustomBtn</a>
-						</li>
-						
-						<li>
-							<a href="global.html#switchLayoutMode">switchLayoutMode</a>
-						</li>
-						
-						<li>
-							<a href="global.html#toolFactory">toolFactory</a>
-						</li>
-						
-
-					</ul>
-				</li>
-				
-			</ul>
-		</div>
-	</div>
-
-	<div class="row-fluid">
-
-		
-		<div class="span8">
-			
-				<div id="main">
-					
+        <div class="container">
+            <div class=row-fluid>
+                <div id=header class=span12>
+                    <h4><a class=brand href="/jQuery-gridmanager/docs/">gridmanager.js</a>
+    <small>Structural editor for rows and columns in popular CSS frameworks</small>
+</h4>
 
 
-	
-	<span class="page-title">Index</span>
-	
-	
+                </div>
+            </div>
 
+            <div class=row-fluid>
+                
+                
+                    <div id=navigation class=span2>
+                        <ul class="nav nav-list">
+    <li><a href="/jQuery-gridmanager/docs/">Home</a></li>
+    
+        
+        
 
+        
+            
+                <li class=nav-header>Documentation</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/doc/installation.html">Installation</a></li>
+        
+    
+        
+        
 
+        
+            
+                <li class=nav-header>Examples</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/using-foundation.html">Using Foundation</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/fluid-widths.html">Fluid Widths</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/basic-usage.html">Basic Usage</a></li>
+        
+    
+        
+        
 
+        
+    
+        
+        
 
+        
+            
+                <li class=nav-header>Developers</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/options-reference.html">Options Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/function-reference.html">Function Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/extending-gridmanager.html">Extending Gridmanager</a></li>
+        
+    
+        
+        
 
+        
+    
+<!-- List additional links. It is recommended to add a divider
+    e.g. <li class=divider></li> first to break up the content. -->
+</ul>
 
+                    </div>
 
+                    <div id=content class=span10>
+                        <h2 id="gridmanager.js">gridmanager.js</h2>
 
+<h3 id="what-is-it?">What is it?</h3>
 
+<p>Gridmanager allows you to create, reorder, update &amp; delete rows and columns in grid layouts used by frameworks such as Bootstrap 3.x or Foundation 5.x</p>
 
+<h4 id="you-can:">You can:</h4>
 
-	
-	
+<ul>
+<li>Drag and drop columns &amp; rows</li>
+<li>Resize, delete and add columns on the fly</li>
+<li>Apply custom column and row classes</li>
+<li>Nest rows within columns</li>
+<li>Quickly edit the source code directly</li>
+<li>Add row templates for common column width layouts</li>
+<li>Add/Alter the ID of a column or row directly</li>
+<li>Use the dynamically inserted editable regions to change column/row text</li>
+<li>Tie in Rich Text Editors such as TinyMCE &amp; CKEditor to those editable regions</li>
+<li>Change layout modes for easy editing &amp; previewing of responsive classes</li>
+<li>Use fluid rows if you want</li>
+<li>Create your own custom controls for easily extending functionality</li>
+</ul>
 
+<h4 id="licence">Licence</h4>
 
+<p>Released under the MIT licence. Go wild.</p>
 
+<h4 id="contributors">Contributors</h4>
 
+<ul>
+<li><a href="https://github.com/neokoenig/">Tom King</a></li>
+<li><a href="https://github.com/pbreah/">Percy D Brea</a> </li>
+</ul>
 
+                    </div>
+                
+            </div>
 
+            <div class=row-fluid>
+                <div id=footer class=span12>
+                    Documentation for <a href="https://github.com/bruth/jekyll-docs-template">gridmanager.js</a>
 
+                </div>
+            </div>
+        </div>
 
+        <script>
+            function orderNav() {
+                var list,
+                    section,
+                    header,
+                    sections = [],
+                    lists = {},
+                    headers = {};
 
+                var navUl = document.querySelectorAll('#navigation ul')[0],
+                    navLis = document.querySelectorAll('#navigation ul li');
 
+                if (!navUl) return;
 
-				</div>
+                for (var i = 0; i < navLis.length; i++) {
+                    var order, li = navLis[i];
 
-				<div class="clearfix"></div>
-				<footer>
-					
-					A way of building rows and grids with built in editable regions; requires jQuery, jQueryUI, and works with Bootstrap 3, Foundation 5 or your own CSS framework
-					<br />
-					
-					
-		<span class="copyright">
-		Licensed under the MIT license; use, enjoy, spread the love.
-		</span>
-					<br />
-					
-		<span class="jsdoc-message">
-		Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.3.0-alpha9</a>
-		on 2014-07-06T10:03:18+01:00 using the <a
-			href="https://github.com/terryweiss/docstrap">DocStrap template</a>.
-		</span>
-				</footer>
-			</div>
+                    if (li.classList.contains('nav-header')) {
+                        section = li.textContent || li.innerText;
+                        sections.push(section);
+                        headers[section] = li;
+                        continue;
+                    }
 
-			
-			<div class="span3">
-				<div id="toc"></div>
-			</div>
-			
-			<br clear="both">
-		</div>
+                    if (!lists[section]) {
+                        lists[section] = [];
+                    }
 
-	</div>
-	<!--<script src="scripts/sunlight.js"></script>-->
-	<script src="scripts/docstrap.lib.js"></script>
-	<script src="scripts/bootstrap-dropdown.js"></script>
-	<script src="scripts/toc.js"></script>
+                    order = parseFloat(li.getAttribute('data-order'))
+                    lists[section].push([order, li]);
+                }
 
-	<script>
-		$( function () {
-			$( "[id*='$']" ).each( function () {
-				var $this = $( this );
+                for (var i = 0; i < sections.length; i++) {
+                    section = sections[i];
+                    list = lists[section].sort(function(a, b) {
+                        return a[0] - b[0];
+                    });
 
-				$this.attr( "id", $this.attr( "id" ).replace( "$", "__" ) );
-			} );
+                    if (header = headers[section]) {
+                        navUl.appendChild(header);
+                    }
+                    for (var j = 0; j < list.length; j++) {
+                        navUl.appendChild(list[j][1]);
+                    }
+                }
+            }
 
-			$( "#toc" ).toc( {
-				anchorName  : function ( i, heading, prefix ) {
-					return $( heading ).attr( "id" ) || ( prefix + i );
-				},
-				selectors   : "h1,h2,h3,h4",
-				showAndHide : false,
-				scrollTo    : "100px"
-			} );
-
-			$( "#toc>ul" ).addClass( "nav nav-pills nav-stacked" );
-			$( "#main span[id^='toc']" ).addClass( "toc-shim" );
-			$( '.dropdown-toggle' ).dropdown();
-//			$( ".tutorial-section pre, .readme-section pre" ).addClass( "sunlight-highlight-javascript" ).addClass( "linenums" );
-
-			$( ".tutorial-section pre, .readme-section pre" ).each( function () {
-				var $this = $( this );
-
-				var example = $this.find( "code" );
-				exampleText = example.html();
-				var lang = /{@lang (.*?)}/.exec( exampleText );
-				if ( lang && lang[1] ) {
-					exampleText = exampleText.replace( lang[0], "" );
-					example.html( exampleText );
-					lang = lang[1];
-				} else {
-					lang = "javascript";
-				}
-
-				if ( lang ) {
-
-					$this
-						.addClass( "sunlight-highlight-" + lang )
-						.addClass( "linenums" )
-						.html( example.html() );
-
-				}
-			} );
-
-			Sunlight.highlightAll( {
-				lineNumbers : true,
-				showMenu : true,
-				enableDoclinks : true
-			} );
-		} );
-	 </script>
-
-
-
-	<!--Navigation and Symbol Display-->
-	
-
-
-	<!--Google Analytics-->
-	
-
-</body>
+            if (document.querySelectorAll) orderNav();
+        </script>
+    </body>
 </html>

@@ -1,0 +1,175 @@
+- name: "gm.activateCols()"
+  desc: ""
+  params: "@cols - columns to activate (usually all of them selected via the colSelector class)"
+  return: ""
+  ispublic: 1
+- name: "gm.activateRows()"
+  desc: ""
+  params: "@rows - rows to activate (usually all of them selected via the rowSelector class)"
+  return: ""
+  ispublic: 1
+- name: "gm.addCSS()"
+  desc: "Adds a CSS file or CSS Framework required for specific customizations"
+  params: "@myStylesLocation (string) - path to external CSS"
+  return: ""
+  ispublic: 1
+- name: "gm.addResponsiveness()"
+  desc: "Adds missing reponsive classes to existing HTML"
+  params: "@html - html contents to perform regex search on"
+  return: ""
+  ispublic: 1
+- name: "gm.appendHTMLSelectedCols()"
+  desc: "Injects HTML into selected columns"
+  params: "@html - HTML to append to selected columns"
+  return: ""
+  ispublic: 1
+- name: "gm.buttonFactory()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.cleanSubstring(regex, source, replacement)"
+  desc: "Clean all occurrences of a substring"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.cleanup()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.createCanvas()"
+  desc: "Build and append the canvas, making sure existing HTML in the user's div is wrapped. Will also trigger Responsive classes to existing markup if specified"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.createCol()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.createControls()"
+  desc: "Build and prepend the control panel"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.createRow()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.deactivateCols()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.deactivateRows()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.deinitCanvas()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.generateButtonClass()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.generateClickHandler()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.generateColSettings()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.generateRowSettings()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.getColClass()"
+  desc: "Get the col-md-6 class, returning 6 as well from column"
+  params: "@col"
+  return: "colClass:colClass, colWidth:colWidth"
+  ispublic: 1
+- name: "gm.gridmanager()"
+  desc: "The main gridmanager function"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.init()"
+  desc: "Main initialising function to create the canvas, controls and initialise all click handlers"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.initCanvas()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.initControls()"
+  desc: "Add click functionality to the buttons"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.initCustomControls()"
+  desc: "Add any custom buttons configured on the data attributes"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.initGlobalCustomControls()"
+  desc: "Add any custom buttons globally on all rows / cols"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.isValidCallback()"
+  desc: "Checks that a callback exists and returns it if available"
+  params: "@callbackScp - function scope to use. 'window' for global scope<br />@callbackFunc - function name to call when the user clicks the custom button"
+  return: "function"
+  ispublic: 1
+- name: "gm.log()"
+  desc: "Generic Logging function which checks for console availability & sends to console if appropriate"
+  params: "@logvar (string or object)"
+  return: ""
+  ispublic: 1
+- name: "gm.regex()"
+  desc: ""
+  params: "@elem<br />@index<br />@match"
+  return: ""
+  ispublic: 1
+- name: "gm.reset()"
+  desc: ""
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.rteControl()"
+  desc: ""
+  params: "@action - one of <code>init</code> - looks for RTEs and sets an necessary options (such as CKEditor <code>disableAutoInline=true</code>), <code>stop</code> - destroys the currently loaded RTE, <code>attach</code> - attaches an RTE to the specified element<br />@element - element to attach RTE to"
+  return: ""
+  ispublic: 1
+- name: "gm.saveremote()"
+  desc: "Runs the default jQuery POST action to options.remoteURL"
+  params: ""
+  return: ""
+  ispublic: 1
+- name: "gm.setupCustomBtn()"
+  desc: "Configures custom button click callback function"
+  params: "@container - container element that wraps the toolbar<br/>@btnLoc - button location: <code>top</code> for the upper toolbar and <code>bottom</code> for the lower one<br/>@callbackScp - function scope to use. 'window' for global scope<br/>@callbackFunc - function name to call when the user clicks the custom button<br/>@btnObj - button object that contains properties for: tag name, title, icon class, button class and label"
+  return: ""
+  ispublic: 1
+- name: "gm.switchLayoutMode()"
+  desc: "Switches the layout mode for Desktop, Tablets or Mobile Phones"
+  params: "@mode"
+  return: ""
+  ispublic: 1
+- name: "gm.toolFactory()"
+  desc: ""
+  params: "@btns"
+  return: ""
+  ispublic: 1

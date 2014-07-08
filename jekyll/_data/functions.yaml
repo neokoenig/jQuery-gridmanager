@@ -1,6 +1,0 @@
-- name: myFunction(row)
-  params: row (object)
-  desc: An example Function
-- name: myFunction()
-  params:
-  desc:

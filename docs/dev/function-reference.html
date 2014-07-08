@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <meta name="viewport" content="width=device-width">
+
+        <title>gridmanager.js : Function Reference</title>
+        <meta name="description" content="Structural editor for rows and columns in popular CSS frameworks">
+
+        <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/syntax.css">
+        <link rel="stylesheet" href="/jQuery-gridmanager/docs/css/main.css">
+    </head>
+    <body>
+
+        <div class="container">
+            <div class=row-fluid>
+                <div id=header class=span12>
+                    <h4><a class=brand href="/jQuery-gridmanager/docs/">gridmanager.js</a>
+    <small>Structural editor for rows and columns in popular CSS frameworks</small>
+</h4>
+
+
+                </div>
+            </div>
+
+            <div class=row-fluid>
+                
+                
+                    <div id=navigation class=span2>
+                        <ul class="nav nav-list">
+    <li><a href="/jQuery-gridmanager/docs/">Home</a></li>
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Documentation</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/doc/installation.html">Installation</a></li>
+        
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Examples</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/using-foundation.html">Using Foundation</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/fluid-widths.html">Fluid Widths</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/tut/basic-usage.html">Basic Usage</a></li>
+        
+    
+        
+        
+
+        
+    
+        
+        
+
+        
+            
+                <li class=nav-header>Developers</li>
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/options-reference.html">Options Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/function-reference.html">Function Reference</a></li>
+        
+            
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/extending-gridmanager.html">Extending Gridmanager</a></li>
+        
+    
+        
+        
+
+        
+    
+<!-- List additional links. It is recommended to add a divider
+    e.g. <li class=divider></li> first to break up the content. -->
+</ul>
+
+                    </div>
+
+                    <div id=content class=span10>
+                        <div class=page-header>
+    <h2>Function Reference
+        
+    </h2>
+</div>
+
+<h4 id="using-gridmanager-functions">Using gridmanager functions</h4>
+
+<p>Sometimes you may want to use gridmanager&#39;s internal functions; examples where you might want to do this could include:</p>
+
+<p>Building your own control bar for elsewhere in the page to trigger resets, saving, layout mode switches etc.</p>
+
+<p>More advanced CMS integration where you might need to stop certain processes from firing, such as the preview and cleanup modes.</p>
+<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt;
+    $(document).ready(function(){ 
+        var gm = jQuery(&quot;#mycanvas&quot;).gridmanager().data(&#39;gridmanager&#39;);
+
+        $(&quot;.myexternalcontrol&quot;).on(&quot;click&quot;, function(e){
+            // Example use of internal gridmanager function:
+            gm.appendHTMLSelectedCols(&#39;&lt;p&gt;my content to append to all my selected cols&lt;/p&gt;&#39;);
+        });
+    });
+&lt;/script&gt; 
+</code></pre></div>
+<h4 id="useful-functions:">Useful functions:</h4>
+
+<table class="table"> 
+    <thead>
+    <tr>
+        <th>
+            Function
+        </th>
+        <th>
+            Params
+        </th>
+        <th>
+            Returns
+        </th>
+        <th>
+            Description
+        </th>
+    </tr>
+    </thead>
+         
+    <tbody>
+<tr><td colspan="4"><h3>Public Functions<h3></td></tr>
+
+    
+        <tr>
+            <td><code>gm.activateCols()</code></td>
+            <td>@cols - columns to activate (usually all of them selected via the colSelector class)</td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.activateRows()</code></td>
+            <td>@rows - rows to activate (usually all of them selected via the rowSelector class)</td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.addCSS()</code></td>
+            <td>@myStylesLocation (string) - path to external CSS</td>
+            <td><code></code></td>
+            <td>Adds a CSS file or CSS Framework required for specific customizations</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.addResponsiveness()</code></td>
+            <td>@html - html contents to perform regex search on</td>
+            <td><code></code></td>
+            <td>Adds missing reponsive classes to existing HTML</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.appendHTMLSelectedCols()</code></td>
+            <td>@html - HTML to append to selected columns</td>
+            <td><code></code></td>
+            <td>Injects HTML into selected columns</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.buttonFactory()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.cleanSubstring(regex, source, replacement)</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Clean all occurrences of a substring</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.cleanup()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.createCanvas()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Build and append the canvas, making sure existing HTML in the user's div is wrapped. Will also trigger Responsive classes to existing markup if specified</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.createCol()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.createControls()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Build and prepend the control panel</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.createRow()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.deactivateCols()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.deactivateRows()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.deinitCanvas()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.generateButtonClass()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.generateClickHandler()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.generateColSettings()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.generateRowSettings()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.getColClass()</code></td>
+            <td>@col</td>
+            <td><code></code></td>
+            <td>Get the col-md-6 class, returning 6 as well from column</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.gridmanager()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>The main gridmanager function</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.init()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Main initialising function to create the canvas, controls and initialise all click handlers</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.initCanvas()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.initControls()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Add click functionality to the buttons</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.initCustomControls()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Add any custom buttons configured on the data attributes</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.initGlobalCustomControls()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Add any custom buttons globally on all rows / cols</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.isValidCallback()</code></td>
+            <td>@callbackScp - function scope to use. 'window' for global scope<br />@callbackFunc - function name to call when the user clicks the custom button</td>
+            <td><code></code></td>
+            <td>Checks that a callback exists and returns it if available</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.log()</code></td>
+            <td>@logvar (string or object)</td>
+            <td><code></code></td>
+            <td>Generic Logging function which checks for console availability & sends to console if appropriate</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.regex()</code></td>
+            <td>@elem<br />@index<br />@match</td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.reset()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.rteControl()</code></td>
+            <td>@action - one of <code>init</code> - looks for RTEs and sets an necessary options (such as CKEditor <code>disableAutoInline=true</code>), <code>stop</code> - destroys the currently loaded RTE, <code>attach</code> - attaches an RTE to the specified element<br />@element - element to attach RTE to</td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.saveremote()</code></td>
+            <td></td>
+            <td><code></code></td>
+            <td>Runs the default jQuery POST action to options.remoteURL</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.setupCustomBtn()</code></td>
+            <td>@container - container element that wraps the toolbar<br/>@btnLoc - button location: <code>top</code> for the upper toolbar and <code>bottom</code> for the lower one<br/>@callbackScp - function scope to use. 'window' for global scope<br/>@callbackFunc - function name to call when the user clicks the custom button<br/>@btnObj - button object that contains properties for: tag name, title, icon class, button class and label</td>
+            <td><code></code></td>
+            <td>Configures custom button click callback function</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.switchLayoutMode()</code></td>
+            <td>@mode</td>
+            <td><code></code></td>
+            <td>Switches the layout mode for Desktop, Tablets or Mobile Phones</td>   
+        </tr>
+     
+
+    
+        <tr>
+            <td><code>gm.toolFactory()</code></td>
+            <td>@btns</td>
+            <td><code></code></td>
+            <td></td>   
+        </tr>
+     
+  
+
+    <tr><td colspan="4"><h3>Internal Functions</h3></td></tr>
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+
+     
+  
+ 
+
+    </tbody>
+</table> 
+
+
+                    </div>
+                
+            </div>
+
+            <div class=row-fluid>
+                <div id=footer class=span12>
+                    Documentation for <a href="https://github.com/bruth/jekyll-docs-template">gridmanager.js</a>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function orderNav() {
+                var list,
+                    section,
+                    header,
+                    sections = [],
+                    lists = {},
+                    headers = {};
+
+                var navUl = document.querySelectorAll('#navigation ul')[0],
+                    navLis = document.querySelectorAll('#navigation ul li');
+
+                if (!navUl) return;
+
+                for (var i = 0; i < navLis.length; i++) {
+                    var order, li = navLis[i];
+
+                    if (li.classList.contains('nav-header')) {
+                        section = li.textContent || li.innerText;
+                        sections.push(section);
+                        headers[section] = li;
+                        continue;
+                    }
+
+                    if (!lists[section]) {
+                        lists[section] = [];
+                    }
+
+                    order = parseFloat(li.getAttribute('data-order'))
+                    lists[section].push([order, li]);
+                }
+
+                for (var i = 0; i < sections.length; i++) {
+                    section = sections[i];
+                    list = lists[section].sort(function(a, b) {
+                        return a[0] - b[0];
+                    });
+
+                    if (header = headers[section]) {
+                        navUl.appendChild(header);
+                    }
+                    for (var j = 0; j < list.length; j++) {
+                        navUl.appendChild(list[j][1]);
+                    }
+                }
+            }
+
+            if (document.querySelectorAll) orderNav();
+        </script>
+    </body>
+</html>
