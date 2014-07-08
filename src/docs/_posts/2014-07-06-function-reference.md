@@ -24,7 +24,7 @@ More advanced CMS integration where you might need to stop certain processes fro
 		});
 	</script> 
 
-#### Useful functions:
+#### Available functions:
 
 <table class="table"> 
 	<thead>
@@ -44,26 +44,13 @@ More advanced CMS integration where you might need to stop certain processes fro
 	</tr>
 	</thead>
 		 
-	<tbody>
-<tr><td colspan="4"><h3>Public Functions<h3></td></tr>
+	<tbody> 
 {% for function in site.data.functions %}
 	{% if function.ispublic == 1 %}
 		<tr>
 			<td><code>{{ function.name }}</code></td>
 			<td>{{ function.params}}</td>
 			<td><code>{{ function.returns }}</code></td>
-			<td>{{ function.desc }}</td>   
-		</tr>
-	{% endif %} 
-{% endfor %}  
-
-	<tr><td colspan="4"><h3>Internal Functions</h3></td></tr>
-{% for function in site.data.functions %}
-	{% if function.ispublic == 0 %}
-		<tr>
-			<td><code>{{ function.name }}</code></td>
-			<td>{{ function.requires }}</td>
-			<td><code>{{ function.default }}</code></td>
 			<td>{{ function.desc }}</td>   
 		</tr>
 	{% endif %} 

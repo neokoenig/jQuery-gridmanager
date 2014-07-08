@@ -115,7 +115,7 @@
     });
 &lt;/script&gt; 
 </code></pre></div>
-<h4 id="useful-functions:">Useful functions:</h4>
+<h4 id="available-functions:">Available functions:</h4>
 
 <table class="table"> 
     <thead>
@@ -135,15 +135,14 @@
     </tr>
     </thead>
          
-    <tbody>
-<tr><td colspan="4"><h3>Public Functions<h3></td></tr>
+    <tbody> 
 
     
         <tr>
             <td><code>gm.activateCols()</code></td>
             <td>@cols - columns to activate (usually all of them selected via the colSelector class)</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Activates columns - looks for the passed in columns and creates editable regions, editing tools etc</td>   
         </tr>
      
 
@@ -152,7 +151,7 @@
             <td><code>gm.activateRows()</code></td>
             <td>@rows - rows to activate (usually all of them selected via the rowSelector class)</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Activates rows - looks for the passed in rows and creates editable regions, editing tools etc</td>   
         </tr>
      
 
@@ -186,16 +185,16 @@
     
         <tr>
             <td><code>gm.buttonFactory()</code></td>
-            <td></td>
+            <td>@param btns - Array of button configurations (see options)</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Creates markup for dynamic buttons</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.cleanSubstring(regex, source, replacement)</code></td>
-            <td></td>
+            <td>@regex<br />@source<br />@replacement</td>
             <td><code></code></td>
             <td>Clean all occurrences of a substring</td>   
         </tr>
@@ -206,7 +205,7 @@
             <td><code>gm.cleanup()</code></td>
             <td></td>
             <td><code></code></td>
-            <td></td>   
+            <td>Remove all extraneous markup, i.e RTE classes and divs, editing tools, row/col buttons</td>   
         </tr>
      
 
@@ -222,9 +221,9 @@
     
         <tr>
             <td><code>gm.createCol()</code></td>
-            <td></td>
+            <td>@size (integer) - width of column class (i.e 6)</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Creates a single column with appropriate editing tools</td>   
         </tr>
      
 
@@ -242,25 +241,25 @@
             <td><code>gm.createRow()</code></td>
             <td></td>
             <td><code></code></td>
-            <td></td>   
+            <td>Creates a single row with appropriate editing tools</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.deactivateCols()</code></td>
-            <td></td>
+            <td>@cols - columns to act on</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Opposite of activateCols</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.deactivateRows()</code></td>
-            <td></td>
+            <td>@rows - rows to act on</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Opposite of activateRows</td>   
         </tr>
      
 
@@ -269,43 +268,43 @@
             <td><code>gm.deinitCanvas()</code></td>
             <td></td>
             <td><code></code></td>
-            <td></td>   
+            <td>Removes all editing markup and runs cleanup</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.generateButtonClass()</code></td>
-            <td></td>
+            <td>@arr - array of column widths, i.e [2,3,2]</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Basically just turns [2,4,6] into 2-4-6</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.generateClickHandler()</code></td>
-            <td></td>
+            <td>@colWidths - array of column widths, i.e [2,3,2]</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Adds click handlers for dynamic row template buttons</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.generateColSettings()</code></td>
-            <td></td>
+            <td>@col - the column to append to</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Create the col specific settings box</td>   
         </tr>
      
 
     
         <tr>
             <td><code>gm.generateRowSettings()</code></td>
-            <td></td>
+            <td>@row - the row to append to</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Create the row specific settings box</td>   
         </tr>
      
 
@@ -341,7 +340,7 @@
             <td><code>gm.initCanvas()</code></td>
             <td></td>
             <td><code></code></td>
-            <td></td>   
+            <td>Makes rows and cols active, adds sortable attributes, triggers creation of custom controls</td>   
         </tr>
      
 
@@ -395,7 +394,7 @@
             <td><code>gm.regex()</code></td>
             <td>@elem<br />@index<br />@match</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Generic regex helper</td>   
         </tr>
      
 
@@ -404,7 +403,7 @@
             <td><code>gm.reset()</code></td>
             <td></td>
             <td><code></code></td>
-            <td></td>   
+            <td>Shortcut to running deinit and init canvas</td>   
         </tr>
      
 
@@ -413,7 +412,7 @@
             <td><code>gm.rteControl()</code></td>
             <td>@action - one of <code>init</code> - looks for RTEs and sets an necessary options (such as CKEditor <code>disableAutoInline=true</code>), <code>stop</code> - destroys the currently loaded RTE, <code>attach</code> - attaches an RTE to the specified element<br />@element - element to attach RTE to</td>
             <td><code></code></td>
-            <td></td>   
+            <td>Starts, stops, attaches RTE editors</td>   
         </tr>
      
 
@@ -451,79 +450,6 @@
             <td><code></code></td>
             <td></td>   
         </tr>
-     
-  
-
-    <tr><td colspan="4"><h3>Internal Functions</h3></td></tr>
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
-     
-
      
   
  

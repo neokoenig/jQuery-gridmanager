@@ -1,10 +1,10 @@
 - name: "gm.activateCols()"
-  desc: ""
+  desc: "Activates columns - looks for the passed in columns and creates editable regions, editing tools etc"
   params: "@cols - columns to activate (usually all of them selected via the colSelector class)"
   return: ""
   ispublic: 1
 - name: "gm.activateRows()"
-  desc: ""
+  desc: "Activates rows - looks for the passed in rows and creates editable regions, editing tools etc"
   params: "@rows - rows to activate (usually all of them selected via the rowSelector class)"
   return: ""
   ispublic: 1
@@ -24,17 +24,17 @@
   return: ""
   ispublic: 1
 - name: "gm.buttonFactory()"
-  desc: ""
-  params: ""
+  desc: "Creates markup for dynamic buttons"
+  params: "@param btns - Array of button configurations (see options)"
   return: ""
   ispublic: 1
 - name: "gm.cleanSubstring(regex, source, replacement)"
   desc: "Clean all occurrences of a substring"
-  params: ""
+  params: "@regex<br />@source<br />@replacement"
   return: ""
   ispublic: 1
 - name: "gm.cleanup()"
-  desc: ""
+  desc: "Remove all extraneous markup, i.e RTE classes and divs, editing tools, row/col buttons"
   params: ""
   return: ""
   ispublic: 1
@@ -44,8 +44,8 @@
   return: ""
   ispublic: 1
 - name: "gm.createCol()"
-  desc: ""
-  params: ""
+  desc: "Creates a single column with appropriate editing tools"
+  params: "@size (integer) - width of column class (i.e 6)"
   return: ""
   ispublic: 1
 - name: "gm.createControls()"
@@ -54,44 +54,44 @@
   return: ""
   ispublic: 1
 - name: "gm.createRow()"
-  desc: ""
+  desc: "Creates a single row with appropriate editing tools"
   params: ""
   return: ""
   ispublic: 1
 - name: "gm.deactivateCols()"
-  desc: ""
-  params: ""
+  desc: "Opposite of activateCols"
+  params: "@cols - columns to act on"
   return: ""
   ispublic: 1
 - name: "gm.deactivateRows()"
-  desc: ""
-  params: ""
+  desc: "Opposite of activateRows"
+  params: "@rows - rows to act on"
   return: ""
   ispublic: 1
 - name: "gm.deinitCanvas()"
-  desc: ""
+  desc: "Removes all editing markup and runs cleanup"
   params: ""
   return: ""
   ispublic: 1
 - name: "gm.generateButtonClass()"
-  desc: ""
-  params: ""
+  desc: "Basically just turns [2,4,6] into 2-4-6"
+  params: "@arr - array of column widths, i.e [2,3,2]"
   return: ""
   ispublic: 1
 - name: "gm.generateClickHandler()"
-  desc: ""
-  params: ""
+  desc: "Adds click handlers for dynamic row template buttons"
+  params: "@colWidths - array of column widths, i.e [2,3,2]"
   return: ""
   ispublic: 1
 - name: "gm.generateColSettings()"
-  desc: ""
-  params: ""
-  return: ""
+  desc: "Create the col specific settings box"
+  params: "@col - the column to append to"
+  return: "html"
   ispublic: 1
 - name: "gm.generateRowSettings()"
-  desc: ""
-  params: ""
-  return: ""
+  desc: "Create the row specific settings box"
+  params: "@row - the row to append to"
+  return: "html"
   ispublic: 1
 - name: "gm.getColClass()"
   desc: "Get the col-md-6 class, returning 6 as well from column"
@@ -109,7 +109,7 @@
   return: ""
   ispublic: 1
 - name: "gm.initCanvas()"
-  desc: ""
+  desc: "Makes rows and cols active, adds sortable attributes, triggers creation of custom controls"
   params: ""
   return: ""
   ispublic: 1
@@ -139,17 +139,17 @@
   return: ""
   ispublic: 1
 - name: "gm.regex()"
-  desc: ""
+  desc: "Generic regex helper"
   params: "@elem<br />@index<br />@match"
   return: ""
   ispublic: 1
 - name: "gm.reset()"
-  desc: ""
+  desc: "Shortcut to running deinit and init canvas"
   params: ""
   return: ""
   ispublic: 1
 - name: "gm.rteControl()"
-  desc: ""
+  desc: "Starts, stops, attaches RTE editors"
   params: "@action - one of <code>init</code> - looks for RTEs and sets an necessary options (such as CKEditor <code>disableAutoInline=true</code>), <code>stop</code> - destroys the currently loaded RTE, <code>attach</code> - attaches an RTE to the specified element<br />@element - element to attach RTE to"
   return: ""
   ispublic: 1
