@@ -17,8 +17,7 @@ module.exports = function (grunt) {
       ' Licensed MIT */\n',
     // Task configuration.
     clean: {
-      files: ['dist'],
-      docs: ['docs']
+      files: ['dist'] 
     },
 
     copy: {
@@ -147,7 +146,7 @@ module.exports = function (grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
   grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs', 'copy:demockeditor', 'copy:demotinymce', 'copy:demojquery', 'copy:demojqueryui']);
-  grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify', 'jsdoc']);
+  grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
