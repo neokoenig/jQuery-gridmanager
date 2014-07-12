@@ -34,6 +34,7 @@
             gm.createCanvas();
             gm.createControls();
             gm.initControls(); 
+            gm.initDefaultButtons();
             gm.initCanvas(); 
             gm.log("FINISHED"); 
         };
@@ -591,7 +592,6 @@
               });
             gm.status=true;
             gm.mode="visual";
-            gm.initDefaultButtons();
             gm.initCustomControls();
             gm.initGlobalCustomControls();
         };
