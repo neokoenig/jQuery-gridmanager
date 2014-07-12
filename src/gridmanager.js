@@ -55,6 +55,34 @@
         };
 
         /*
+          Init global default buttons on cols, rows or both
+         */
+
+        gm.initDefaultButtons = function(){
+          if(gm.options.colSelectEnabled) {
+            gm.options.customControls.global_col.push({callback: gm.selectColClick, loc: 'top', iconClass: 'fa fa-square-o', title: 'Select Column'});
+          }
+        };
+
+        /*
+          Callback called when a the column selection button is clicked
+
+            @container - container element that wraps the select button
+            @btn       - button element that was clicked
+
+            returns void
+         */
+
+        gm.selectColClick = function(container, btn) {
+          $(btn).toggleClass('fa fa-square-o fa fa-check-square-o');
+          if($(btn).hasClass('fa-check-square-o')) {
+            $(container).addClass(gm.options.gmEditClassSelected);
+          } else {
+            $(container).removeClass(gm.options.gmEditClassSelected);
+          }
+        };
+
+        /*
           Add missing reponsive classes to existing HTML
          */
         gm.addResponsiveness = function(html) {
@@ -325,13 +353,6 @@
                 }); 
                  gm.log("Row Removed");
 
-            // Individual Column Select     
-            }).on('click',('#' + gm.options.canvasId + ' .'+gm.options.colClass), function() {
-              if(gm.options.colSelectEnabled) {
-                $(this).toggleClass(gm.options.gmEditClassSelected);
-                return false;
-              }
-
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-removeRow, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
@@ -351,7 +372,8 @@
         gm.initGlobalCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               elems=[],
-              callback = null;
+              callback = null,
+              btnClass = '';
 
           $.each(['row','col'], function(i, control_type) {
             if(typeof gm.options.customControls['global_'+control_type] !== 'undefined') {
@@ -373,9 +395,11 @@
                   curr_control.title = '';
                 }
 
+                btnClass = (typeof curr_control.callback === 'function')? (i+'_btn') : (curr_control.callback);
+
                 btnObj = {
                   element: 'a',
-                  btnClass: 'gm-'+curr_control.callback,
+                  btnClass: 'gm-'+btnClass,
                   iconClass: curr_control.iconClass,
                   btnLabel: curr_control.btnLabel,
                   title: curr_control.title
@@ -442,11 +466,16 @@
             returns bool, true on success false on failure
          */
         gm.setupCustomBtn=function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
-          callbackFunc = callbackFunc.toLowerCase();
-          var callback = gm.isValidCallback(callbackScp, callbackFunc);
-          // Ensure we have a valid callback, if not skip
-          if(typeof callback !== 'function') { return false; }
+          var callback = null;
 
+          // Ensure we have a valid callback, if not skip
+          if(typeof callbackFunc === 'string') {
+            callback = gm.isValidCallback(callbackScp, callbackFunc.toLowerCase());
+          } else if(typeof callbackFunc === 'function') {
+            callback = callbackFunc;
+          } else {
+            return false;
+          }
           // Set default button location to the top toolbar
           btnLoc = (btnLoc === 'bottom')? ':last' : ':first';
 
@@ -497,6 +526,21 @@
             var colWidth=colClass.replace(gm.options.currentClassMode, "");
                 return {colClass:colClass, colWidth:colWidth};
         };
+
+        /*
+          Run (if set) any custom init/deinit filters on the gridmanager canvas
+            @canvasElem - canvas wrapper container with the entire layout html
+            @isInit - flag that indicates if the method is running during init or deinit.
+                      true - if its running during the init process, or false - during the deinit (cleanup) process
+
+            returns void
+         */
+
+        gm.runFilter=function(canvasElem, isInit){
+          if(typeof gm.options.filterCallback === 'function') {
+            gm.options.filterCallback(canvasElem, isInit);
+          }
+        };
   
         /*
         Turns canvas into gm-editing mode - does most of the hard work here
@@ -514,6 +558,8 @@
               gm.activateRows(rows); 
               // Now Columns
               gm.activateCols(cols);  
+              // Run custom init callback filter
+              gm.runFilter(canvas, true);
               // Make Rows sortable
               canvas.sortable({
                 items: gm.options.rowSelector, 
@@ -545,6 +591,7 @@
               });
             gm.status=true;
             gm.mode="visual";
+            gm.initDefaultButtons();
             gm.initCustomControls();
             gm.initGlobalCustomControls();
         };
@@ -566,7 +613,8 @@
               // Now Columns
               gm.deactivateCols(cols);
               // Clean markup
-              gm.cleanup();  
+              gm.cleanup();
+              gm.runFilter(canvas, false);
               gm.status=false; 
         };  
 
@@ -969,6 +1017,9 @@
 
         // Custom CSS to load
         cssInclude: "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+
+        // Filter callback. Callback receives two params: the template grid element and whether is called from the init or deinit method
+        filterCallback: null,
   /*
      Canvas---------------
     */
@@ -985,7 +1036,7 @@
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
 
         // Custom Global Controls for rows & cols - available props: global_row, global_col
-        customControls: {},
+        customControls: { global_col: [], global_col: [] },
 
         // Default control button class
         controlButtonClass: "btn  btn-xs  btn-primary",
