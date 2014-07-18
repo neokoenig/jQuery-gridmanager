@@ -654,9 +654,12 @@
               // Sort Rows First
               gm.activateRows(rows); 
               // Now Columns
-              gm.activateCols(cols);  
+              gm.activateCols(cols);
               // Run custom init callback filter
               gm.runFilter(canvas, true);
+              // Get cols & rows again after filter execution
+              cols=canvas.find(gm.options.colSelector);
+              rows=canvas.find(gm.options.rowSelector);
               // Make Rows sortable
               canvas.sortable({
                 items: gm.options.rowSelector, 
@@ -690,7 +693,7 @@
             gm.mode="visual";
             gm.initCustomControls();
             gm.initGlobalCustomControls();
-            gm.initNewContentElem()
+            gm.initNewContentElem();
         };
 
         /*
