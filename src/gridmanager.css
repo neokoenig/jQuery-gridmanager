@@ -10,6 +10,14 @@
 #gm-controls {margin:5px 0; }
 #gm-controls button,  #gm-controls a {font-size: 14px;}
 
+/* Content elements controls */
+.gm-controls-element {
+	float: right;
+	width: 35px;
+	top: 0px;
+	right: 0px;
+}
+
 /* Main Editing Space */
 #gm-canvas {min-height: 100px;} 
 
@@ -41,8 +49,7 @@
 /* rows */
 #gm-canvas div.row.gm-editing, 
 #gm-canvas div.row-fluid.gm-editing {
-	padding: 2px;  
-	min-height: 20px; margin-bottom: 10px;
+	min-height: 20px; margin: 3px;
 -webkit-box-shadow: 0px 0px 3px 0px rgba(0, 0, 0, 0.85);
 -moz-box-shadow:    0px 0px 3px 0px rgba(0, 0, 0, 0.85);
 box-shadow:         0px 0px 3px 0px rgba(0, 0, 0, 0.85);}
