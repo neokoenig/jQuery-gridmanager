@@ -6,16 +6,27 @@
  * Licensed under the MIT license.
  */
  
-
 (function($  ){
 
+      /**
+      * Main Gridmanager function 
+      * @method gridmanager 
+      * @returns gridmanager
+     * @class gridmanager
+     * @memberOf jQuery.fn
+     */
     $.gridmanager = function(el, options){ 
         var gm = this;  
         gm.$el = $(el);
         gm.el = el; 
         gm.$el.data("gridmanager", gm);
        
-/*------------------------------------------ API ----------------------------------------*/
+         /**
+         * API 
+         * @method appendHTMLSelectedCols
+         * @param {string} html - HTML to append to selected columns  
+         * @returns null 
+         */
         gm.appendHTMLSelectedCols = function(html) {
           var canvas=gm.$el.find("#" + gm.options.canvasId);
           var cols = canvas.find(gm.options.colSelector);
@@ -25,7 +36,11 @@
             }
           });
         }; 
-/*------------------------------------------ INIT ---------------------------------------*/
+         /**
+         * INIT - Main initialising function to create the canvas, controls and initialise all click handlers
+         * @method init
+         * @returns null 
+         */
         gm.init = function(){
             gm.options = $.extend({},$.gridmanager.defaultOptions, options); 
             gm.log("INIT");
@@ -41,8 +56,10 @@
 
 /*------------------------------------------ Canvas & Controls ---------------------------------------*/ 
         
-        /*
-         Build and append the canvas, making sure existing HTML in the user's div is wrapped
+        /**
+         * Build and append the canvas, making sure existing HTML in the user's div is wrapped. Will also trigger Responsive classes to existing markup if specified
+         * @method createCanvas
+         * @returns null 
          */
         gm.createCanvas = function(){   
           gm.log("+ Create Canvas"); 
@@ -104,8 +121,11 @@
           gm.initNewContentElem(elem);
         };
 
-        /*
-          Add missing reponsive classes to existing HTML
+        /**
+         * Add missing reponsive classes to existing HTML
+         * @method addResponsiveness
+         * @param {} html
+         * @returns CallExpression
          */
         gm.addResponsiveness = function(html) {
           if(html === '') { return; } 
@@ -134,9 +154,11 @@
           });
         };
 
-        /*
-         Build and prepend the control panel
-        */
+        /**
+         * Build and prepend the control panel
+         * @method createControls
+         * @returns null 
+         */
         gm.createControls = function(){  
           gm.log("+ Create Controls");    
             var buttons=[];  
@@ -167,8 +189,11 @@
               );
             };
 
-        /*
-          Adds a CSS file or CSS Framework required for specific customizations
+        /**
+         * Adds a CSS file or CSS Framework required for specific customizations
+         * @method addCSS
+         * @param {} myStylesLocation
+         * @returns string 
          */
         gm.addCSS = function(myStylesLocation) {
           if(myStylesLocation !== '') {
@@ -176,15 +201,23 @@
           }
         };
 
-        /*
-          Clean all occurrences of a substring
+        /**
+         * Clean all occurrences of a substring
+         * @method cleanSubstring
+         * @param {} regex
+         * @param {} source
+         * @param {} replacement
+         * @returns CallExpression
          */
         gm.cleanSubstring = function(regex, source, replacement) {
           return source.replace(new RegExp(regex, 'g'), replacement);
         };
 
-        /*
-          Switches the layout mode for Desktop, Tablets or Mobile Phones
+        /**
+         * Switches the layout mode for Desktop, Tablets or Mobile Phones
+         * @method switchLayoutMode
+         * @param {} mode
+         * @returns null 
          */
         gm.switchLayoutMode = function(mode) {
           var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex1 = '', regex2 = '', uimode = '';
@@ -220,9 +253,11 @@
           canvas.html(temp_html);
         };
                 
-        /*
-         Add click functionality to the buttons        
-        */
+        /**
+         * Add click functionality to the buttons        
+         * @method initControls
+         * @returns null 
+         */
         gm.initControls = function(){ 
           var canvas=gm.$el.find("#" + gm.options.canvasId);
            gm.log("+ InitControls Running");    
@@ -385,12 +420,12 @@
 
         };
 
-        /*
-          Add any custom buttons globally on all rows / cols
-
-          returns void
+        /**
+         * Add any custom buttons globally on all rows / cols
+         * returns void
+         * @method initGlobalCustomControls
+         * @returns null 
          */
-
         gm.initGlobalCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               elems=[],
@@ -435,12 +470,12 @@
           });
         };
 
-        /*
-          Add any custom buttons configured on the data attributes
-
-          returns void
+        /**
+         * Add any custom buttons configured on the data attributes
+         * returns void
+         * @method initCustomControls
+         * @returns null 
          */
-
         gm.initCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               callbackParams = '',
@@ -533,16 +568,21 @@
           $('.'+gm.options.gmEditRegion).before(cTagOpen).after(cTagClose);
         };
 
-        /*
-          Configures custom button click callback function
-
-            @container    - container element that wraps the toolbar
-            @btnLoc       - button location: "top" for the upper toolbar and "bottom" for the lower one
-            @callbackScp  - function scope to use. "window" for global scope
-            @callbackFunc - function name to call when the user clicks the custom button
-            @btnObj       - button object that contains properties for: tag name, title, icon class, button class and label
-
-            returns bool, true on success false on failure
+        /**
+         * Configures custom button click callback function
+         * returns bool, true on success false on failure
+         * @container - container element that wraps the toolbar
+         * @btnLoc - button location: "top" for the upper toolbar and "bottom" for the lower one
+         * @callbackScp - function scope to use. "window" for global scope
+         * @callbackFunc - function name to call when the user clicks the custom button
+         * @btnObj - button object that contains properties for: tag name, title, icon class, button class and label
+         * @method setupCustomBtn
+         * @param {} container
+         * @param {} btnLoc
+         * @param {} callbackScp
+         * @param {} callbackFunc
+         * @param {} btnObj
+         * @returns Literal
          */
         gm.setupCustomBtn=function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
           var callback = null;
@@ -580,14 +620,15 @@
           }).remove()
         };
 
-
-        /*
-          Checks that a callback exists and returns it if available
-
-          @callbackScp  - function scope to use. "window" for global scope
-          @callbackFunc - function name to call when the user clicks the custom button
-
-          returns function
+        /**
+         * Checks that a callback exists and returns it if available
+         * returns function
+         * @callbackScp - function scope to use. "window" for global scope
+         * @callbackFunc - function name to call when the user clicks the custom button
+         * @method isValidCallback
+         * @param {} callbackScp
+         * @param {} callbackFunc
+         * @returns callback
          */
         gm.isValidCallback=function(callbackScp, callbackFunc){
           var callback = null;
@@ -606,13 +647,15 @@
           return callback;
         };
 
-      /*
-        Get the col-md-6 class, returning 6 as well from column
-          @col - column to look at
-          
-          returns colDesktopClass: the full col-md-6 class
-                  colWidth: just the last integer of classname
-        */ 
+      /**
+         * Get the col-md-6 class, returning 6 as well from column
+         * returns colDesktopClass: the full col-md-6 class
+         * colWidth: just the last integer of classname
+         * @col - column to look at
+         * @method getColClass
+         * @param {} col
+         * @return ObjectExpression
+         */
         gm.getColClass=function(col){ 
             var colClass=$.grep(col.attr("class").split(" "), function(v){
                 return v.indexOf(gm.options.currentClassMode) === 0;
@@ -639,9 +682,11 @@
           }
         };
   
-        /*
-        Turns canvas into gm-editing mode - does most of the hard work here
-        */
+        /**
+         * Turns canvas into gm-editing mode - does most of the hard work here
+         * @method initCanvas
+         * @returns null 
+         */
         gm.initCanvas = function(){    
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -696,9 +741,11 @@
             gm.initNewContentElem();
         };
 
-        /*
-        Removes canvas editing mode
-        */
+        /**
+         * Removes canvas editing mode
+         * @method deinitCanvas
+         * @returns null 
+         */
         gm.deinitCanvas = function(){ 
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -718,9 +765,11 @@
               gm.status=false; 
         };  
 
-        /*
-         Push cleaned div content somewhere to save it
-        */
+        /**
+         * Push cleaned div content somewhere to save it
+         * @method saveremote
+         * @returns null 
+         */
         gm.saveremote =  function(){  
         var canvas=gm.$el.find("#" + gm.options.canvasId); 
             $.ajax({
@@ -753,10 +802,13 @@
         };
 
 /*------------------------------------------ ROWS ---------------------------------------*/
-        /* 
-        Look for pre-existing rows and add editing tools as appropriate
-          @rows: elements to act on
-        */
+        /**
+         * Look for pre-existing rows and add editing tools as appropriate
+         * @rows: elements to act on
+         * @method activateRows 
+         * @param {object} rows - rows to act on
+         * @returns null 
+         */
         gm.activateRows = function(rows){
            gm.log("++ Activate Rows"); 
            rows.addClass(gm.options.gmEditClass)
@@ -764,10 +816,13 @@
                .append(gm.toolFactory(gm.options.rowButtonsAppend));  
         };
 
-         /* 
-        Look for pre-existing rows and remove editing classes as appropriate
-          @rows: elements to act on
-        */        
+         /**
+         * Look for pre-existing rows and remove editing classes as appropriate
+         * @rows: elements to act on
+         * @method deactivateRows
+         * @param {object} rows - rows to act on
+         * @returns null  
+         */
         gm.deactivateRows = function(rows){
            gm.log("-- DeActivate Rows"); 
            rows.removeClass(gm.options.gmEditClass)
@@ -775,10 +830,12 @@
                .removeAttr("style");  
         };
 
-        /* 
-        Create a single row with appropriate editing tools & nested columns
-          @colWidths : array of css class integers, i.e [2,4,5]
-        */
+        /**
+         * Create a single row with appropriate editing tools & nested columns
+         * @method createRow
+         * @param {array} colWidths - array of css class integers, i.e [2,4,5]
+         * @returns row
+         */
         gm.createRow = function(colWidths){ 
           var row= $("<div/>", {"class": gm.options.rowClass + " " + gm.options.gmEditClass});
              $.each(colWidths, function(i, val){
@@ -788,9 +845,12 @@
           return row;
         };
 
-        /*
-        Create the row specific settings box
-        */
+        /**
+         * Create the row specific settings box
+         * @method generateRowSettings
+         * @param {object} row - row to act on
+         * @return MemberExpression
+         */
         gm.generateRowSettings = function(row){
          // Row class toggle buttons
           var classBtns=[];
@@ -826,9 +886,12 @@
           return html[0].outerHTML; 
         };
 
-         /*
-        Create the col specific settings box
-        */
+         /**
+         * Create the col specific settings box
+         * @method generateColSettings
+         * @param {object} col - Column to act on
+         * @return MemberExpression
+         */
         gm.generateColSettings = function(col){
          // Col class toggle buttons
           var classBtns=[];
@@ -869,10 +932,12 @@
 
  
 
-        /* 
-        Look for pre-existing columns and add editing tools as appropriate
-          @rows: elements to act on
-        */
+        /**
+         * Look for pre-existing columns and add editing tools as appropriate 
+         * @method activateCols
+         * @param {object} cols - elements to act on
+         * @returns null 
+         */
         gm.activateCols = function(cols){ 
          cols.addClass(gm.options.gmEditClass);  
             // For each column, 
@@ -890,10 +955,12 @@
            gm.log("++ Activate Cols Ran"); 
         };
 
-        /* 
-        Look for pre-existing columns and removeediting tools as appropriate
-          @rows: elements to act on
-        */
+        /**
+         * Look for pre-existing columns and removeediting tools as appropriate
+         * @method deactivateCols
+         * @param {object} cols - elements to act on
+         * @returns null  
+         */
         gm.deactivateCols = function(cols){ 
            cols.removeClass(gm.options.gmEditClass)
                .removeClass(gm.options.gmEditClassSelected);  
@@ -911,9 +978,12 @@
            gm.log("-- deActivate Cols Ran");  
         };
 
-        /* 
-        Create a single column with appropriate editing tools
-        */
+        /**
+          * Create a single column with appropriate editing tools
+          * @method createCol
+          * @param {integer} size - width of the column to create, i.e 6
+          * @returns null 
+          */
          gm.createCol =  function(size){  
          var col= $("<div/>")
             .addClass(gm.options.colDesktopClass + size)
@@ -930,10 +1000,12 @@
  
 
 /*------------------------------------------ BTNs ---------------------------------------*/ 
-        /*
-         Returns an editing div with appropriate btns as passed in
-         @btns Array of buttons (see options)
-        */
+        /**
+         * Returns an editing div with appropriate btns as passed in
+         * @method toolFactory
+         * @param {array} btns - Array of buttons (see options)
+         * @return MemberExpression
+         */
         gm.toolFactory=function(btns){
            var tools=$("<div/>")
               .addClass(gm.options.gmToolClass)
@@ -942,10 +1014,12 @@
            return tools[0].outerHTML;
         };
 
-        /*
-         Returns html string of buttons 
-         @btns Array of button configurations (see options)
-        */
+        /**
+         * Returns html string of buttons 
+         * @method buttonFactory
+         * @param {array} btns - Array of button configurations (see options)
+         * @return CallExpression
+         */
         gm.buttonFactory=function(btns){  
           var buttons=[];
           $.each(btns, function(i, val){  
@@ -956,9 +1030,12 @@
           return buttons.join("");
         };
  
-        /*
-         Basically just turns [2,4,6] into 2-4-6
-        */
+        /**
+         * Basically just turns [2,4,6] into 2-4-6
+         * @method generateButtonClass
+         * @param {array} arr - An array of widths
+         * @return string
+         */
         gm.generateButtonClass=function(arr){
             var string="";
               $.each(arr, function( i , val ) {
@@ -967,10 +1044,12 @@
               return string;
         };
 
-        /*
-         click handlers for dynamic row template buttons
-         @colWidths - array of column widths, i.e [2,3,2]
-        */
+        /**
+         * click handlers for dynamic row template buttons
+         * @method generateClickHandler
+         * @param {array} colWidths - array of column widths, i.e [2,3,2]
+         * @returns null 
+         */
         gm.generateClickHandler= function(colWidths){  
           var string="a.add" + gm.generateButtonClass(colWidths);
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -984,11 +1063,13 @@
 
 
 /*------------------------------------------ RTEs ---------------------------------------*/
-        /*
-         Starts, stops, looks for and  attaches RTEs
-         @action - one of init|attach|stop
-         @element object to attach to
-        */
+        /**
+         * Starts, stops, looks for and  attaches RTEs
+         * @method rteControl
+         * @param {string} action  - options are init, attach, stop
+         * @param {object} element  - object to attach an RTE to
+         * @returns null 
+         */
         gm.rteControl=function(action, element){
           gm.log("RTE " + gm.options.rte + ' ' +action);
         
@@ -1050,18 +1131,22 @@
  
 /*------------------------------------------ Useful functions ---------------------------------------*/
         
-        /*
-         Quick reset
-        */
+        /**
+         * Quick reset - deinit & init the canvas
+         * @method reset
+         * @returns null 
+         */
         gm.reset=function(){ 
             gm.log("~~RESET~~");
             gm.deinitCanvas();  
             gm.initCanvas();  
         };
 
-        /*
-        Remove all extraneous markup
-        */
+        /**
+         * Remove all extraneous markup
+         * @method cleanup
+         * @returns null  
+         */
         gm.cleanup =  function(){  
           // cache canvas
           var canvas=gm.$el.find("#" + gm.options.canvasId);
@@ -1085,9 +1170,13 @@
               gm.log("~~Cleanup Ran~~");
         };
 
-        /*
-         Generic logging function
-        */
+        /**
+         * Generic logging function
+         * @method log
+         * @param {object} logvar - The Object or string you want to pass to the console
+         * @returns null 
+         * @property {boolean} gm.options.debug
+         */
         gm.log = function(logvar){
           if(gm.options.debug){
             if ((window['console'] !== undefined)) {
@@ -1101,14 +1190,14 @@
 
     
 
-    /*
+    /**
      Options which can be overridden by the .gridmanager() call on the requesting page------------------------------------------------------
-    */
+    */ 
     $.gridmanager.defaultOptions = {
      /*
      General Options---------------
     */
-        // Debug to console
+          
         debug: 0,
 
         // Are you columns selectable
@@ -1342,8 +1431,13 @@
               customConfig: ""
         }
     };
-    
-    // Expose as jquery function
+     
+    /**
+     * Exposes gridmanager as jquery function
+     * @method gridmanager
+     * @param {object} options
+     * @returns CallExpression
+     */
     $.fn.gridmanager = function(options){
         return this.each(function(){
           var element = $(this);
@@ -1352,6 +1446,14 @@
         });
     };
 
+    /**
+     * General Utility Regex function used to get custom callback attributes
+     * @method regex
+     * @param {} elem
+     * @param {} index
+     * @param {} match
+     * @returns CallExpression
+     */
     $.expr[':'].regex = function(elem, index, match) {
       var matchParams = match[3].split(','),
         validLabels = /^(data|css):/,
