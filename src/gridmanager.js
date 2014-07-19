@@ -707,33 +707,34 @@
               rows=canvas.find(gm.options.rowSelector);
               // Make Rows sortable
               canvas.sortable({
-                items: gm.options.rowSelector, 
+                items: rows, 
                 axis: 'y',
                 placeholder: gm.options.rowSortingClass,
-                handle: "." + gm.options.gmToolClass,
+                handle: ".gm-moveRow",
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"  
                });
               // Make columns sortable
               rows.sortable({
-                items: gm.options.colSelector, 
-                axis: 'x',
-                handle: "." + gm.options.gmToolClass,
-                forcePlaceholderSize: true,
-                opacity: 0.7,  revert: true,
-                tolerance: "pointer",
-                cursor: "move"
-              });
-              // Make rows sortable
-              cols.sortable({
-                items: gm.options.rowSelector,
-                axis: 'y',
-                handle: "." + gm.options.gmToolClass,
+                items: cols, 
+                axis: 'x', 
+                placeholder: gm.options.rowSortingClass,
+                handle: ".gm-moveCol",
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"
-              });
+              }); 
+              gm.log(cols);
+              /* Make rows sortable
+              cols.sortable({
+                items: gm.options.rowSelector,
+                axis: 'y',
+                handle: ".gm-moveRow",
+                forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
+                tolerance: "pointer",
+                cursor: "move"
+              });*/
             gm.status=true;
             gm.mode="visual";
             gm.initCustomControls();
@@ -943,13 +944,10 @@
             // For each column, 
             $.each(cols, function(i, column){    
               //work out whether it's got a nested div.row
-              if($(column).children().hasClass("row")){  
-                gm.log("Nested column");
-              } else {
-                gm.log("Non-nested column"); 
+              if($(column).children().hasClass("row")){   
+              } else { 
                 $(column).prepend(gm.toolFactory(gm.options.colButtonsPrepend));
-              } 
-
+              }  
               $(column).append(gm.toolFactory(gm.options.colButtonsAppend));
             });   
            gm.log("++ Activate Cols Ran"); 
@@ -1292,6 +1290,12 @@
         // Buttons at the top of each row
         rowButtonsPrepend: [
                 {
+                 title:"Move", 
+                 element: "a", 
+                 btnClass: "gm-moveRow pull-left",
+                 iconClass: "fa fa-arrows "
+              },  
+                {
                    title:"New Column", 
                    element: "a", 
                    btnClass: "gm-addColumn pull-left  ",
@@ -1365,7 +1369,13 @@
         colAdditionalClass: "",
 
         // Buttons to prepend to each column
-        colButtonsPrepend: [                
+        colButtonsPrepend: [     
+              {
+                 title:"Move", 
+                 element: "a", 
+                 btnClass: "gm-moveCol pull-left",
+                 iconClass: "fa fa-arrows "
+              },               
                {
                  title:"Make Column Narrower", 
                  element: "a", 
