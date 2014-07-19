@@ -17,7 +17,7 @@ module.exports = function (grunt) {
       ' Licensed MIT */\n',
     // Task configuration.
     clean: {
-      files: ['dist'] 
+      files: ['dist']
     },
 
     copy: {
@@ -44,18 +44,6 @@ module.exports = function (grunt) {
       demofoundationjs: {
         src: 'bower_components/foundation/js/foundation.min.js',
         dest: 'demo/js/foundation.js'
-      },
-      demockeditor: {
-        cwd: 'bower_components/ckeditor',
-        src: '**/*',
-        dest: 'demo/js/ckeditor/',
-        expand: true
-      },
-      demotinymce: {
-        cwd: 'bower_components/tinymce',
-        src: '**/*',
-        dest: 'demo/js/tinymce/',
-        expand: true
       },
       demojquery: {
         src: 'bower_components/jquery/dist/jquery.min.js',
@@ -145,7 +133,7 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
-  grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs', 'copy:demockeditor', 'copy:demotinymce', 'copy:demojquery', 'copy:demojqueryui']);
+  grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs',    'copy:demojquery', 'copy:demojqueryui']);
   grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');

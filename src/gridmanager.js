@@ -524,21 +524,21 @@
           var parentCol = null;
 
           if(typeof newElem !== 'undefined') {
-            parentCol = $(newElem).closest('.'+gm.options.colClass);
+            parentCol = $(newElem).closest('.'+gm.options.gmEditClass);
+        
           } else {
-            parentCol = $('.'+gm.options.colClass);
-            newElem = $('.'+gm.options.contentDraggableClass);
+            parentCol = $('.'+gm.options.gmEditClass);
+            newElem = $('.'+gm.options.contentDraggableClass); 
           }
 
           $.each(newElem, function(i, val) {
-            var myParent = newElem.closest('.'+gm.options.colClass);
+            var myParent = newElem.closest('.'+gm.options.gmEditClass);
             $(val).on('click', '.gm-delete', function(e) {
               $(val).closest('.'+gm.options.contentDraggableClass).remove();
               gm.resetCommentTags(myParent);
               e.preventDefault();
             });
           });
-
           parentCol.sortable({
             items: '.'+gm.options.contentDraggableClass,
             axis: 'y',
@@ -548,7 +548,7 @@
             tolerance: "pointer",
             cursor: "move",
             stop: function() { gm.resetCommentTags(parentCol); }
-           });
+           }); 
         };
 
         /*
