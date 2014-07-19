@@ -63,6 +63,7 @@ box-shadow:         0px 0px 3px 0px rgba(0, 0, 0, 0.85);}
 
 /* icon colour hovers */
 #gm-canvas .fa-trash-o:hover {color:red;}
+#gm-canvas .gm-tools a {cursor: pointer;} 
 
 /* Hover draggable */
-#gm-canvas .gm-moveCol, #gm-canvas .gm-moveRow {cursor: move;} 
+#gm-canvas .gm-tools .gm-moveCol, #gm-canvas .gm-tools .gm-moveRow {cursor: move;} 
