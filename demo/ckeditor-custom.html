@@ -19,8 +19,8 @@
     <script src="js/jquery.js"></script> 
     <script src="js/jquery-ui.js"></script> 
     <script src="js/bootstrap.js"></script> 
-    <script src="js/ckeditor/ckeditor.js"></script> 
-    <script src="js/ckeditor/adapters/jquery.js"></script> 
+    <script src="//cdn.ckeditor.com/4.4.3/standard/ckeditor.js"></script> 
+    <script src="//cdn.ckeditor.com/4.4.3/standard/adapters/jquery.js"></script> 
     <script src="../dist/js/jquery.gridmanager.js"></script> 
  
   </head>
@@ -41,9 +41,9 @@ $(document).ready(function(){
  
    $("#mycanvas").gridmanager(
     { 
-      ckeditor: {
         debug: 1,
-        customConfig: "../../js/example-ckeditor.js"
+      ckeditor: {
+        customConfig: "/jQuery-gridmanager/demo/js/example-ckeditor.js"
       } 
     }
   );

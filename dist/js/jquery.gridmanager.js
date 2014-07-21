@@ -1,4 +1,4 @@
-/*! gridmanager - v0.2.2 - 2014-07-08
+/*! gridmanager - v0.3.0 - 2014-07-20
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -44,6 +44,7 @@
             gm.createCanvas();
             gm.createControls();
             gm.initControls(); 
+            gm.initDefaultButtons();
             gm.initCanvas(); 
             gm.log("FINISHED"); 
         };
@@ -65,6 +66,20 @@
                    gm.addResponsiveness(gm.$el.find("#" + gm.options.canvasId));
                 }
         };
+
+        /*
+          Init global default buttons on cols, rows or both
+         */
+
+        gm.initDefaultButtons = function(){
+          if(gm.options.colSelectEnabled) {
+            gm.options.customControls.global_col.push({callback: gm.selectColClick, loc: 'top', iconClass: 'fa fa-square-o', title: 'Select Column'});
+          }
+          if(gm.options.editableRegionEnabled) {
+            gm.options.customControls.global_col.push({callback: gm.addEditableAreaClick, loc: 'top', iconClass: 'fa fa-edit', title: 'Add Editable Region'});
+          }
+        };
+ 
 
         /**
          * Add missing reponsive classes to existing HTML
@@ -239,7 +254,7 @@
               $(this).toggleClass(gm.options.gmDangerClass);
 
             // Make region editable
-            }).on("click", "." + gm.options.gmEditRegion, function(){
+            }).on("click", "." + gm.options.gmEditRegion + ' .'+gm.options.gmContentRegion, function(){
               //gm.log("clicked editable");
                 if(!$(this).attr("contenteditable")){ 
                     $(this).attr("contenteditable", true); 
@@ -306,8 +321,8 @@
             // Add new column to existing row    
             }).on("click", "a.gm-addColumn", function(){   
                 $(this).parent().after(gm.createCol(2)); 
-                gm.reset();
                 gm.switchLayoutMode(gm.options.layoutDefaultMode);
+                gm.reset();
 
             // Add a nested row
             }).on("click", "a.gm-addRow", function(){  
@@ -355,13 +370,6 @@
                 }); 
                  gm.log("Row Removed");
 
-            // Individual Column Select     
-            }).on('click',('#' + gm.options.canvasId + ' .'+gm.options.colClass), function() {
-              if(gm.options.colSelectEnabled) {
-                $(this).toggleClass(gm.options.gmEditClassSelected);
-                return false;
-              }
-
             // For all the above, prevent default.
             }).on("click", "a.gm-resetgrid, a.gm-remove, a.gm-removeRow, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){ 
                gm.log("Clicked: "   + $.grep((this).className.split(" "), function(v){
@@ -381,7 +389,8 @@
         gm.initGlobalCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               elems=[],
-              callback = null;
+              callback = null,
+              btnClass = '';
 
           $.each(['row','col'], function(i, control_type) {
             if(typeof gm.options.customControls['global_'+control_type] !== 'undefined') {
@@ -403,9 +412,11 @@
                   curr_control.title = '';
                 }
 
+                btnClass = (typeof curr_control.callback === 'function')? (i+'_btn') : (curr_control.callback);
+
                 btnObj = {
                   element: 'a',
-                  btnClass: 'gm-'+curr_control.callback,
+                  btnClass: 'gm-'+btnClass,
                   iconClass: curr_control.iconClass,
                   btnLabel: curr_control.btnLabel,
                   title: curr_control.title
@@ -460,6 +471,8 @@
           });
         };
 
+       
+
         /**
          * Configures custom button click callback function
          * returns bool, true on success false on failure
@@ -477,11 +490,16 @@
          * @returns Literal
          */
         gm.setupCustomBtn=function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
-          callbackFunc = callbackFunc.toLowerCase();
-          var callback = gm.isValidCallback(callbackScp, callbackFunc);
-          // Ensure we have a valid callback, if not skip
-          if(typeof callback !== 'function') { return false; }
+          var callback = null;
 
+          // Ensure we have a valid callback, if not skip
+          if(typeof callbackFunc === 'string') {
+            callback = gm.isValidCallback(callbackScp, callbackFunc.toLowerCase());
+          } else if(typeof callbackFunc === 'function') {
+            callback = callbackFunc;
+          } else {
+            return false;
+          }
           // Set default button location to the top toolbar
           btnLoc = (btnLoc === 'bottom')? ':last' : ':first';
 
@@ -491,6 +509,20 @@
             e.preventDefault();
           });
           return true;
+        };
+
+        /*
+          Clears any comments inside a given element
+
+          @elem - element to clear html comments on
+
+          returns void
+         */
+
+        gm.clearComments = function(elem) {
+          $(elem, '#'+gm.options.canvasId).contents().filter(function() {
+            return this.nodeType == 8;
+          }).remove()
         };
 
         /**
@@ -536,6 +568,24 @@
             var colWidth=colClass.replace(gm.options.currentClassMode, "");
                 return {colClass:colClass, colWidth:colWidth};
         };
+
+        /*
+          Run (if set) any custom init/deinit filters on the gridmanager canvas
+            @canvasElem - canvas wrapper container with the entire layout html
+            @isInit - flag that indicates if the method is running during init or deinit.
+                      true - if its running during the init process, or false - during the deinit (cleanup) process
+
+            returns void
+         */
+
+        gm.runFilter=function(canvasElem, isInit){
+          if(typeof gm.options.filterCallback === 'function') {
+            gm.options.filterCallback(canvasElem, isInit);
+          }
+          if(gm.options.editableRegionEnabled) {
+            gm.editableAreaFilter(canvasElem, isInit);
+          }
+        };
   
         /**
          * Turns canvas into gm-editing mode - does most of the hard work here
@@ -554,31 +604,51 @@
               // Sort Rows First
               gm.activateRows(rows); 
               // Now Columns
-              gm.activateCols(cols);  
+              gm.activateCols(cols);
+              // Run custom init callback filter
+              gm.runFilter(canvas, true);
+              // Get cols & rows again after filter execution
+              cols=canvas.find(gm.options.colSelector);
+              rows=canvas.find(gm.options.rowSelector);
               // Make Rows sortable
               canvas.sortable({
-                items: gm.options.rowSelector, 
+                items: rows, 
                 axis: 'y',
                 placeholder: gm.options.rowSortingClass,
-                handle: "." + gm.options.gmToolClass,
+                handle: ".gm-moveRow",
                 forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"  
                });
-              // Make columns sortable
-              rows.sortable({
-                items: gm.options.colSelector, 
-                axis: 'x',
-                handle: "." + gm.options.gmToolClass,
-                forcePlaceholderSize: true,
-                opacity: 0.7,  revert: true,
+              /* 
+              Make columns sortable
+              This needs to be applied to each element, otherwise containment leaks
+              */
+              $.each(rows, function(i, val){
+                  $(val).sortable({
+                  items: $(val).find(gm.options.colSelector), 
+                  axis: 'x', 
+                  handle: ".gm-moveCol",  
+                  forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
+                  tolerance: "pointer",
+                  containment: $(val),  
+                  cursor: "move"  
+                });
+              });
+              /* Make rows sortable 
+              cols.sortable({
+                items: gm.options.rowSelector,
+                axis: 'y',
+                handle: ".gm-moveRow",
+                forcePlaceholderSize: true,   opacity: 0.7,  revert: true,
                 tolerance: "pointer",
                 cursor: "move"
-              });  
+              }); */
             gm.status=true;
             gm.mode="visual";
             gm.initCustomControls();
             gm.initGlobalCustomControls();
+           // gm.initNewContentElem();
         };
 
         /**
@@ -600,7 +670,8 @@
               // Now Columns
               gm.deactivateCols(cols);
               // Clean markup
-              gm.cleanup();  
+              gm.cleanup();
+              gm.runFilter(canvas, false);
               gm.status=false; 
         };  
 
@@ -618,6 +689,7 @@
             });
             gm.log("Save Function Called"); 
         }; 
+
 
 /*------------------------------------------ ROWS ---------------------------------------*/
         /**
@@ -761,31 +833,13 @@
             // For each column, 
             $.each(cols, function(i, column){    
               //work out whether it's got a nested div.row
-              if($(column).children().hasClass("row")){  
-                gm.log("Nested column");
-                    // If has nested, loop over column children and assign editable regions before and after
-                    $.each($(column).children(), function(i, val){ 
-                        if($(val).hasClass("row")){
-                         var prev=Array.prototype.reverse.call($(val).prevUntil(".row"));  
-                         var after=$(val).nextUntil(".row");   
-                              if(!$(prev).hasClass("gm-editable-region")){
-                                $(val).before(gm.toolFactory(gm.options.colButtonsPrepend))
-                                      .before($("<div />").addClass(gm.options.gmEditRegion).html(prev));  
-                              }
-                              if(!$(after).hasClass("gm-editable-region")){
-                                $(val).after($("<div />").addClass(gm.options.gmEditRegion).html(after));  
-                              } 
-                        } 
-                    }); 
-              } else {
-                // Column has no nested rows, assign a single default editable region                
-                gm.log("Non-nested column"); 
-                $(column).wrapInner($("<div />").addClass(gm.options.gmEditRegion))
-                         .prepend(gm.toolFactory(gm.options.colButtonsPrepend));
-              } 
-
+              if($(column).children().hasClass("row")){   
+              } else { 
+                $(column).prepend(gm.toolFactory(gm.options.colButtonsPrepend));
+              }  
               $(column).append(gm.toolFactory(gm.options.colButtonsAppend));
-            });   
+
+            });    
            gm.log("++ Activate Cols Ran"); 
         };
 
@@ -797,11 +851,12 @@
          */
         gm.deactivateCols = function(cols){ 
            cols.removeClass(gm.options.gmEditClass)
-               .removeClass(gm.options.gmEditClassSelected);  
+               .removeClass(gm.options.gmEditClassSelected)
+               .removeClass("ui-sortable");
            $.each(cols.children(), function(i, val){  
             // Grab contents of editable regions and unwrap
             if($(val).hasClass(gm.options.gmEditRegion)){
-              if($(val).children().length > 0){
+              if($(val).html() !== ''){
                 $(val).contents().unwrap(); 
               } else {
                 // Deals with empty editable regions
@@ -826,15 +881,122 @@
             .addClass(gm.options.gmEditClass)
             .addClass(gm.options.colAdditionalClass)
             .html(gm.toolFactory(gm.options.colButtonsPrepend))
-            .append(
-                $("<div />").addClass(gm.options.gmEditRegion))
-                         .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
-                         .append(gm.toolFactory(gm.options.colButtonsAppend))
-                         .html("<p>Awaiting Content</p>");  
+            .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
+            .append(gm.toolFactory(gm.options.colButtonsAppend));
             gm.log("++ Created Column " + size); 
             return col;
         };
  
+
+/*------------------------------------------ Editable Regions ---------------------------------------*/ 
+
+        /*
+          Callback called when a the new editable area button is clicked
+
+            @container - container element that wraps the select button
+            @btn       - button element that was clicked
+
+            returns void
+         */
+        gm.addEditableAreaClick = function(container, btn) {
+          var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
+              cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
+              elem = null;
+          $(('.'+gm.options.gmToolClass+':last'),container)
+          .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
+            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
+          gm.initNewContentElem(elem);
+        };
+
+          /*
+          Prepares any new content element inside columns so inner toolbars buttons work
+          and any drag & drop functionality.
+            @newElem  - Container of the new content element added into a col
+            returns void
+         */
+
+        gm.initNewContentElem = function(newElem) {
+          var parentCol = null;
+
+          if(typeof newElem !== 'undefined') {
+            parentCol = $(newElem).closest('.'+gm.options.gmEditClass);
+        
+          } else {
+            parentCol = $('.'+gm.options.gmEditClass);
+            newElem = $('.'+gm.options.contentDraggableClass); 
+          }
+
+          $.each(newElem, function(i, val) {
+            var myParent = newElem.closest('.'+gm.options.gmEditClass);
+            $(val).on('click', '.gm-delete', function(e) {
+              $(val).closest('.'+gm.options.contentDraggableClass).remove();
+              gm.resetCommentTags(myParent);
+              e.preventDefault();
+            });
+          });
+          parentCol.sortable({
+            items: '.'+gm.options.contentDraggableClass,
+            axis: 'y',
+            placeholder: gm.options.rowSortingClass,
+            handle: "."+gm.options.controlMove,
+            forcePlaceholderSize: true, opacity: 0.7, revert: true,
+            tolerance: "pointer",
+            cursor: "move",
+            stop: function() { gm.resetCommentTags(parentCol); }
+           }); 
+        };
+
+        /*
+          Resets the comment tags for editable elements
+          @elem - Element to reset the editable comments on
+          returns void
+         */
+
+        gm.resetCommentTags = function(elem) {
+          var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
+              cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->';
+          // First remove all existing comments
+          gm.clearComments(elem);
+          // Now replace these comment tags
+          $('.'+gm.options.gmEditRegion).before(cTagOpen).after(cTagClose);
+        };
+
+        /*
+          Callback called when a the column selection button is clicked
+            @container - container element that wraps the select button
+            @btn       - button element that was clicked
+            returns void
+         */
+
+        gm.selectColClick = function(container, btn) {
+          $(btn).toggleClass('fa fa-square-o fa fa-check-square-o');
+          if($(btn).hasClass('fa-check-square-o')) {
+            $(container).addClass(gm.options.gmEditClassSelected);
+          } else {
+            $(container).removeClass(gm.options.gmEditClassSelected);
+          }
+        };
+
+
+        /*
+          Filter method to restore editable regions in edit mode.
+         */
+        gm.editableAreaFilter = function(canvasElem, isInit) {
+          if(isInit) {
+            var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
+                cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
+                regex = new RegExp('(?:'+cTagOpen+')\\s*(.+?)\\s*(?:'+cTagClose+')', 'g'),
+                html = $(canvasElem).html(),
+                rep = cTagOpen+'<div class="'+gm.options.gmEditRegion+' '+gm.options.contentDraggableClass+'">'+gm.options.controlContentElem +'<div class="'+gm.options.gmContentRegion+'">$1</div></div>'+cTagClose;
+
+            html = html.replace(regex, rep);
+            $(canvasElem).html(html); 
+
+          } else {
+            $('.'+gm.options.controlNestedEditable, canvasElem).remove();
+            $('.'+gm.options.gmContentRegion).contents().unwrap();
+          }
+        };
 
 /*------------------------------------------ BTNs ---------------------------------------*/ 
         /**
@@ -1040,11 +1202,17 @@
         // Are you columns selectable
         colSelectEnabled: true,
 
+        // Can add editable regions?
+        editableRegionEnabled: true,
+
         // URL to save to
         remoteURL: "/replace-with-your-url",
 
         // Custom CSS to load
         cssInclude: "//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css",
+
+        // Filter callback. Callback receives two params: the template grid element and whether is called from the init or deinit method
+        filterCallback: null,
   /*
      Canvas---------------
     */
@@ -1057,11 +1225,17 @@
         // Top Control Row ID
         controlId:  "gm-controls",
 
+        // Move handle class
+        controlMove: 'gm-move',
+
+        // Editable element toolbar class
+        controlNestedEditable: 'gm-controls-element',
+
         // Array of buttons for row templates
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
 
         // Custom Global Controls for rows & cols - available props: global_row, global_col
-        customControls: {},
+        customControls: { global_row: [], global_col: [] },
 
         // Default control button class
         controlButtonClass: "btn  btn-xs  btn-primary",
@@ -1071,6 +1245,9 @@
 
         // Control bar RH dropdown markup
         controlAppend: "<div class='btn-group pull-right'><button title='Edit Source Code' type='button' class='btn btn-xs btn-primary gm-edit-mode'><span class='fa fa-code'></span></button><button title='Preview' type='button' class='btn btn-xs btn-primary gm-preview'><span class='fa fa-eye'></span></button>     <div class='dropdown pull-left gm-layout-mode'><button type='button' class='btn btn-xs btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span></button> <ul class='dropdown-menu' role='menu'><li><a data-width='auto' title='Desktop'><span class='fa fa-desktop'></span> Desktop</a></li><li><a title='Tablet' data-width='768'><span class='fa fa-tablet'></span> Tablet</a></li><li><a title='Phone' data-width='640'><span class='fa fa-mobile-phone'></span> Phone</a></li></ul></div>    <button type='button' class='btn  btn-xs  btn-primary dropdown-toggle' data-toggle='dropdown'><span class='caret'></span><span class='sr-only'>Toggle Dropdown</span></button><ul class='dropdown-menu' role='menu'><li><a title='Save'  href='#' class='gm-save'><span class='fa fa-save'></span> Save</a></li><li><a title='Reset Grid' href='#' class='gm-resetgrid'><span class='fa fa-trash-o'></span> Reset</a></li></ul></div>",
+
+        // Controls for content elements
+        controlContentElem: '<div class="gm-controls-element"> <a class="gm-move fa fa-arrows" href="#" title="Move"></a> <a class="gm-delete fa fa-times" href="#" title="Delete"></a> </div>',
    /*
      General editing classes---------------
   */      
@@ -1082,6 +1259,9 @@
 
         // Editable region class
         gmEditRegion: "gm-editable-region",
+
+        // Editable container class
+        gmContentRegion: "gm-content",
 
         // Tool bar class which are inserted dynamically
         gmToolClass: "gm-tools",
@@ -1106,10 +1286,16 @@
         rowSelector: "div.row",     
 
         // class of background element when sorting rows
-        rowSortingClass: "bg-warning",   
+        rowSortingClass: "alert-warning",   
 
         // Buttons at the top of each row
         rowButtonsPrepend: [
+                {
+                 title:"Move", 
+                 element: "a", 
+                 btnClass: "gm-moveRow pull-left",
+                 iconClass: "fa fa-arrows "
+              },  
                 {
                    title:"New Column", 
                    element: "a", 
@@ -1134,9 +1320,7 @@
                  iconClass: "fa fa-trash-o"
                 }
             ],
-
-        // Not sure about this one yet
-        rowSettingControls: "Reserved for future use",
+ 
 
         // CUstom row classes - add your own to make them available in the row settings
         rowCustomClasses: ["example-class","test-class"],
@@ -1146,6 +1330,9 @@
   */    
         // Column Class
         colClass: "column",
+
+        // Class to allow content to be draggable
+        contentDraggableClass: 'gm-content-draggable',
 
         // Adds any missing classes in columns for muti-device support.
         addResponsiveClasses: true, 
@@ -1181,7 +1368,19 @@
         colAdditionalClass: "",
 
         // Buttons to prepend to each column
-        colButtonsPrepend: [                
+        colButtonsPrepend: [     
+              {
+                 title:"Move", 
+                 element: "a", 
+                 btnClass: "gm-moveCol pull-left",
+                 iconClass: "fa fa-arrows "
+              },      
+              {
+                   title:"Column Settings", 
+                   element: "a", 
+                   btnClass: "pull-right gm-colSettings",
+                   iconClass: "fa fa-cog"
+                },         
                {
                  title:"Make Column Narrower", 
                  element: "a", 
@@ -1193,13 +1392,7 @@
                element: "a", 
                btnClass: "gm-colIncrease pull-left",
                iconClass: "fa fa-plus"
-              },
-              {
-                   title:"Column Settings", 
-                   element: "a", 
-                   btnClass: "pull-right gm-colSettings",
-                   iconClass: "fa fa-cog"
-                }
+              }
             ],
 
         // Buttons to append to each column

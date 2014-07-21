@@ -17,13 +17,46 @@ module.exports = function (grunt) {
       ' Licensed MIT */\n',
     // Task configuration.
     clean: {
-      files: ['dist'] 
+      files: ['dist']
     },
-
+    less: {
+      themeDefault: {
+        options: {
+          compress: true,
+        },
+        files: {
+          'src/gridmanager.css':'src/less/gridmanager-default.less'
+        }
+      },
+      themeLight: {
+        options: {
+          compress: true,
+        },
+        files: {
+          'src/gridmanager_light.css':'src/less/gridmanager-light.less'
+        }
+      },
+      themeDark: {
+        options: {
+          compress: true,
+        },
+        files: {
+          'src/gridmanager_dark.css':'src/less/gridmanager-dark.less'
+        }
+      }
+    },
     copy: {
       main: {
         src: 'src/gridmanager.css',
         dest: 'dist/css/jquery.gridmanager.css'
+      },
+      themeLight: {
+        src: 'src/gridmanager_light.css',
+        dest: 'dist/css/jquery.gridmanager-light.css'
+      },
+      themeDark: {
+        src: 'src/gridmanager_dark.css',
+        dest: 'dist/css/jquery.gridmanager-dark.css'
       },
       democss: {
         src: 'src/demo.css',
@@ -44,18 +77,6 @@ module.exports = function (grunt) {
       demofoundationjs: {
         src: 'bower_components/foundation/js/foundation.min.js',
         dest: 'demo/js/foundation.js'
-      },
-      demockeditor: {
-        cwd: 'bower_components/ckeditor',
-        src: '**/*',
-        dest: 'demo/js/ckeditor/',
-        expand: true
-      },
-      demotinymce: {
-        cwd: 'bower_components/tinymce',
-        src: '**/*',
-        dest: 'demo/js/tinymce/',
-        expand: true
       },
       demojquery: {
         src: 'bower_components/jquery/dist/jquery.min.js',
@@ -121,6 +142,10 @@ module.exports = function (grunt) {
         files: '<%= jshint.gruntfile.src %>',
         tasks: ['jshint:gruntfile']
       },
+      less: {
+        files: 'src/less/*.less',
+        tasks: ['less']
+      },
       src: {
         files: '<%= jshint.src.src %>',
         tasks: ['jshint:src', 'qunit']
@@ -145,8 +170,8 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
-  grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs', 'copy:demockeditor', 'copy:demotinymce', 'copy:demojquery', 'copy:demojqueryui']);
-  grunt.registerTask('dist', ['jshint', 'clean', 'copy', 'concat', 'uglify']);
+  grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs',    'copy:demojquery', 'copy:demojqueryui']);
+  grunt.registerTask('dist', ['jshint', 'clean', 'less', 'copy', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
