@@ -1,4 +1,4 @@
-/*! gridmanager - v0.3.0 - 2014-07-20
+/*! gridmanager - v0.3.0 - 2014-07-22
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -648,7 +648,7 @@
             gm.mode="visual";
             gm.initCustomControls();
             gm.initGlobalCustomControls();
-           // gm.initNewContentElem();
+            gm.initNewContentElem();
         };
 
         /**
@@ -832,13 +832,8 @@
          cols.addClass(gm.options.gmEditClass);  
             // For each column, 
             $.each(cols, function(i, column){    
-              //work out whether it's got a nested div.row
-              if($(column).children().hasClass("row")){   
-              } else { 
-                $(column).prepend(gm.toolFactory(gm.options.colButtonsPrepend));
-              }  
+              $(column).prepend(gm.toolFactory(gm.options.colButtonsPrepend));
               $(column).append(gm.toolFactory(gm.options.colButtonsAppend));
-
             });    
            gm.log("++ Activate Cols Ran"); 
         };
@@ -922,7 +917,7 @@
             parentCol = $(newElem).closest('.'+gm.options.gmEditClass);
         
           } else {
-            parentCol = $('.'+gm.options.gmEditClass);
+            parentCol = $('.'+gm.options.colClass);
             newElem = $('.'+gm.options.contentDraggableClass); 
           }
 
@@ -935,7 +930,7 @@
             });
           });
           parentCol.sortable({
-            items: '.'+gm.options.contentDraggableClass,
+            items: '> .'+gm.options.contentDraggableClass,
             axis: 'y',
             placeholder: gm.options.rowSortingClass,
             handle: "."+gm.options.controlMove,
