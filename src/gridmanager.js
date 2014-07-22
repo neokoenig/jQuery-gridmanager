@@ -875,6 +875,7 @@
           */
          gm.createCol =  function(size){  
          var col= $("<div/>")
+            .addClass(gm.options.colClass)
             .addClass(gm.options.colDesktopClass + size)
             .addClass(gm.options.colTabletClass + size)
             .addClass(gm.options.colPhoneClass + size)
@@ -916,34 +917,34 @@
          */
 
         gm.initNewContentElem = function(newElem) {
-          var parentCol = null;
+          var parentCols = null;
 
-          if(typeof newElem !== 'undefined') {
-            parentCol = $(newElem).closest('.'+gm.options.gmEditClass);
-        
+          if(typeof newElem === 'undefined') {
+            parentCols = gm.$el.find('.'+gm.options.colClass);
           } else {
-            parentCol = $('.'+gm.options.colClass);
-            newElem = $('.'+gm.options.contentDraggableClass); 
+            parentCols = newElem.closest('.'+gm.options.colClass);
           }
 
-          $.each(newElem, function(i, val) {
-            var myParent = newElem.closest('.'+gm.options.gmEditClass);
-            $(val).on('click', '.gm-delete', function(e) {
-              $(val).closest('.'+gm.options.contentDraggableClass).remove();
-              gm.resetCommentTags(myParent);
+          $.each(parentCols, function(i, col) {
+            $(col).on('click', '.gm-delete', function(e) {
+              $(this).closest('.'+gm.options.gmEditRegion).remove();
+              gm.resetCommentTags(col);
               e.preventDefault();
             });
+            $(col).sortable({
+              items: '.'+gm.options.contentDraggableClass,
+              axis: 'y',
+              placeholder: gm.options.rowSortingClass,
+              handle: "."+gm.options.controlMove,
+              forcePlaceholderSize: true, opacity: 0.7, revert: true,
+              tolerance: "pointer",
+              cursor: "move",
+              stop: function(e, ui) {
+                gm.resetCommentTags($(ui.item).parent());
+              }
+             });
           });
-          parentCol.sortable({
-            items: '> .'+gm.options.contentDraggableClass,
-            axis: 'y',
-            placeholder: gm.options.rowSortingClass,
-            handle: "."+gm.options.controlMove,
-            forcePlaceholderSize: true, opacity: 0.7, revert: true,
-            tolerance: "pointer",
-            cursor: "move",
-            stop: function() { gm.resetCommentTags(parentCol); }
-           }); 
+
         };
 
         /*
@@ -958,7 +959,7 @@
           // First remove all existing comments
           gm.clearComments(elem);
           // Now replace these comment tags
-          $('.'+gm.options.gmEditRegion).before(cTagOpen).after(cTagClose);
+          $('.'+gm.options.gmEditRegion, elem).before(cTagOpen).after(cTagClose);
         };
 
         /*
