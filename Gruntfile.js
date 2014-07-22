@@ -25,7 +25,7 @@ module.exports = function (grunt) {
           compress: true,
         },
         files: {
-          'src/gridmanager.css':'src/less/gridmanager-default.less'
+          'src/gridmanager.css':'src/less/themes/default.less'
         }
       },
       themeLight: {
@@ -33,7 +33,7 @@ module.exports = function (grunt) {
           compress: true,
         },
         files: {
-          'src/gridmanager_light.css':'src/less/gridmanager-light.less'
+          'src/gridmanager_light.css':'src/less/themes/light.less'
         }
       },
       themeDark: {
@@ -41,7 +41,7 @@ module.exports = function (grunt) {
           compress: true,
         },
         files: {
-          'src/gridmanager_dark.css':'src/less/gridmanager-dark.less'
+          'src/gridmanager_dark.css':'src/less/themes/dark.less'
         }
       }
     },
@@ -143,7 +143,7 @@ module.exports = function (grunt) {
         tasks: ['jshint:gruntfile']
       },
       less: {
-        files: 'src/less/*.less',
+        files: 'src/less/**/*.less',
         tasks: ['less']
       },
       src: {
