@@ -690,7 +690,7 @@
             $.ajax({
               type: "POST",
               url:  gm.options.remoteURL,
-              data: canvas.html() 
+              data: {content: canvas.html()} 
             });
             gm.log("Save Function Called"); 
         }; 
