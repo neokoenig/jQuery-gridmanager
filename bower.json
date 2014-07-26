@@ -5,7 +5,7 @@
     "qunit": "~1.12.0",
     "ckeditor": "~4.4.0",
     "jquery": "~2.1.1",
-    "bootstrap": "~3.1.1",
-    "jquery-ui": "~1.10.4" 
+    "bootstrap": "~3.1.1", 
+    "jquery-ui": "~1.10.4"  
   }
 }

@@ -24,24 +24,24 @@ module.exports = function (grunt) {
         options: {
           compress: true,
         },
-        files: {
-          'src/gridmanager.css':'src/less/themes/default.less'
+        files: { 
+          'src/gridmanager.css':'src/less/themes/default.less' 
         }
       },
       themeLight: {
         options: {
           compress: true,
         },
-        files: {
-          'src/gridmanager_light.css':'src/less/themes/light.less'
+        files: { 
+          'src/gridmanager_light.css':'src/less/themes/light.less' 
         }
       },
       themeDark: {
         options: {
           compress: true,
         },
-        files: {
-          'src/gridmanager_dark.css':'src/less/themes/dark.less'
+        files: { 
+          'src/gridmanager_dark.css':'src/less/themes/dark.less' 
         }
       }
     },

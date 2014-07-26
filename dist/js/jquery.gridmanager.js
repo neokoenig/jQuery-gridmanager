@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*! gridmanager - v0.3.0 - 2014-07-26
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
