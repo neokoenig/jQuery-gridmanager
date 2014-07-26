@@ -1,4 +1,4 @@
-/*! gridmanager - v0.3.0 - 2014-07-22
+/*! gridmanager - v0.3.0 - 2014-07-26
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -25,7 +25,7 @@
         gm.appendHTMLSelectedCols = function(html) {
           var canvas=gm.$el.find("#" + gm.options.canvasId);
           var cols = canvas.find(gm.options.colSelector);
-          $.each(cols, function(i){
+          $.each(cols, function(){
             if($(this).hasClass(gm.options.gmEditClassSelected)) {
               $('.'+gm.options.gmEditRegion, this).append(html);
             }
@@ -41,16 +41,17 @@
             gm.log("INIT");
             gm.addCSS(gm.options.cssInclude);
             gm.rteControl("init"); 
-            gm.createCanvas();
+            gm.createCanvas();      
             gm.createControls();
             gm.initControls(); 
-            gm.initDefaultButtons();
+            gm.initDefaultButtons();  
             gm.initCanvas(); 
             gm.log("FINISHED"); 
         };
 
 /*------------------------------------------ Canvas & Controls ---------------------------------------*/ 
-        
+         
+         
         /**
          * Build and append the canvas, making sure existing HTML in the user's div is wrapped. Will also trigger Responsive classes to existing markup if specified
          * @method createCanvas
@@ -60,13 +61,77 @@
           gm.log("+ Create Canvas"); 
            var html=gm.$el.html();
                 gm.$el.html(""); 
-                $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el);
+                $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el); 
                 // Add responsive classes after initial loading of HTML, otherwise we lose the rows 
                 if(gm.options.addResponsiveClasses) {
                    gm.addResponsiveness(gm.$el.find("#" + gm.options.canvasId));
                 }
+                // Add default editable regions: we try and do this early on, as then we don't need to replicate logic to add regions
+                if(gm.options.autoEdit){
+                   gm.initMarkup(
+                   gm.$el.find("#" + gm.options.canvasId)
+                         .find("."+gm.options.colClass)
+                         .not("."+gm.options.rowClass)
+                      ); 
+                }
+               
         };
 
+        /**
+         * Looks for and wraps non gm commented markup
+         * @method initMarkup
+         * @returns null 
+         */
+        gm.initMarkup = function(cols){   
+        var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
+            cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->';
+
+               // Loop over each column
+               $.each(cols, function(i, col){  
+                    var hasGmComment = false,
+                        hasNested = $(col).children().hasClass(gm.options.rowClass);
+
+                      // Search for comments within column contents
+                      // NB, at the moment this is just finding "any" comment for testing, but should search for <!--gm-* 
+                      $.each($(col).contents(), function(x, node){ 
+                        if($(node)[0].nodeType === 8){
+                            hasGmComment = true;
+                        }  
+                      });
+
+                    // Apply default commenting markup
+                    if(!hasGmComment){   
+                        if(hasNested){ 
+                           // Apply nested wrap 
+                           $.each($(col).contents(), function(i, val){     
+                             if($(val).hasClass(gm.options.rowClass)){
+                                var prev=Array.prototype.reverse.call($(val).prevUntil("."+gm.options.rowClass)),
+                                    after=$(val).nextUntil("."+gm.options.rowClass); 
+
+                                if(!$(prev).hasClass(gm.options.gmEditRegion)){ 
+                                    $(prev).first().before(cTagOpen).end()
+                                           .last().after(cTagClose);
+                                }
+                                if(!$(after).hasClass(gm.options.gmEditRegion)){ 
+                                    $(after).first().before(cTagOpen).end()
+                                            .last().after(cTagClose);
+                                }
+                             }
+                           });
+
+                        } 
+                        else {  
+                           // Is there anything to wrap?
+                            if($(col).contents().length !== 0){
+                              // Apply default comment wrap 
+                              $(col).html(cTagOpen+$(col).html()+cTagClose); 
+                            }  
+                        }
+                      }  
+                  });     
+                  gm.log("initMarkup ran");   
+            };
+ 
         /*
           Init global default buttons on cols, rows or both
          */
@@ -94,8 +159,8 @@
               phoneRegex = gm.options.colPhoneClass+'(\\d+)',
               desktopRegexObj = new RegExp(desktopRegex,'i'), 
               tabletRegexObj = new RegExp(tabletRegex, 'i'), 
-              phoneRegexObj = new RegExp(phoneRegex, 'i'), 
-              new_html = ''; 
+              phoneRegexObj = new RegExp(phoneRegex, 'i');
+              //new_html = ''; 
           return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(i, el) {
             var elClasses = $(this).attr('class'), colNum = 2;
             var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
@@ -110,6 +175,12 @@
             }
             if(!hasTablet) {
               $(this).addClass(gm.options.colTabletClass+colNum);
+            }
+            // Adds default column classes - probably shouldn't go here, but since we're doing an expensive search to add the responsive classes, it'll do for now.
+            if(gm.options.addDefaultColumnClass){ 
+              if(!$(this).hasClass(gm.options.colClass)){
+                $(this).addClass(gm.options.colClass);
+              }
             }
           });
         };
@@ -213,6 +284,8 @@
           canvas.html(temp_html);
         };
                 
+     
+
         /**
          * Add click functionality to the buttons        
          * @method initControls
@@ -521,8 +594,8 @@
 
         gm.clearComments = function(elem) {
           $(elem, '#'+gm.options.canvasId).contents().filter(function() {
-            return this.nodeType == 8;
-          }).remove()
+            return this.nodeType === 8;
+          }).remove();
         };
 
         /**
@@ -685,7 +758,7 @@
             $.ajax({
               type: "POST",
               url:  gm.options.remoteURL,
-              data: canvas.html() 
+              data: {content: canvas.html()} 
             });
             gm.log("Save Function Called"); 
         }; 
@@ -870,6 +943,7 @@
           */
          gm.createCol =  function(size){  
          var col= $("<div/>")
+            .addClass(gm.options.colClass)
             .addClass(gm.options.colDesktopClass + size)
             .addClass(gm.options.colTabletClass + size)
             .addClass(gm.options.colPhoneClass + size)
@@ -911,34 +985,34 @@
          */
 
         gm.initNewContentElem = function(newElem) {
-          var parentCol = null;
+          var parentCols = null;
 
-          if(typeof newElem !== 'undefined') {
-            parentCol = $(newElem).closest('.'+gm.options.gmEditClass);
-        
+          if(typeof newElem === 'undefined') {
+            parentCols = gm.$el.find('.'+gm.options.colClass);
           } else {
-            parentCol = $('.'+gm.options.colClass);
-            newElem = $('.'+gm.options.contentDraggableClass); 
+            parentCols = newElem.closest('.'+gm.options.colClass);
           }
 
-          $.each(newElem, function(i, val) {
-            var myParent = newElem.closest('.'+gm.options.gmEditClass);
-            $(val).on('click', '.gm-delete', function(e) {
-              $(val).closest('.'+gm.options.contentDraggableClass).remove();
-              gm.resetCommentTags(myParent);
+          $.each(parentCols, function(i, col) {
+            $(col).on('click', '.gm-delete', function(e) {
+              $(this).closest('.'+gm.options.gmEditRegion).remove();
+              gm.resetCommentTags(col);
               e.preventDefault();
             });
+            $(col).sortable({
+              items: '.'+gm.options.contentDraggableClass,
+              axis: 'y',
+              placeholder: gm.options.rowSortingClass,
+              handle: "."+gm.options.controlMove,
+              forcePlaceholderSize: true, opacity: 0.7, revert: true,
+              tolerance: "pointer",
+              cursor: "move",
+              stop: function(e, ui) {
+                gm.resetCommentTags($(ui.item).parent());
+              }
+             });
           });
-          parentCol.sortable({
-            items: '> .'+gm.options.contentDraggableClass,
-            axis: 'y',
-            placeholder: gm.options.rowSortingClass,
-            handle: "."+gm.options.controlMove,
-            forcePlaceholderSize: true, opacity: 0.7, revert: true,
-            tolerance: "pointer",
-            cursor: "move",
-            stop: function() { gm.resetCommentTags(parentCol); }
-           }); 
+
         };
 
         /*
@@ -953,7 +1027,7 @@
           // First remove all existing comments
           gm.clearComments(elem);
           // Now replace these comment tags
-          $('.'+gm.options.gmEditRegion).before(cTagOpen).after(cTagClose);
+          $('.'+gm.options.gmEditRegion, elem).before(cTagOpen).after(cTagClose);
         };
 
         /*
@@ -986,10 +1060,12 @@
 
             html = html.replace(regex, rep);
             $(canvasElem).html(html); 
-
+            gm.log("editableAreaFilter init ran");
           } else {
             $('.'+gm.options.controlNestedEditable, canvasElem).remove();
             $('.'+gm.options.gmContentRegion).contents().unwrap();
+
+            gm.log("editableAreaFilter deinit ran");
           }
         };
 
@@ -1200,6 +1276,9 @@
         // Can add editable regions?
         editableRegionEnabled: true,
 
+        // Should we try and automatically create editable regions?
+        autoEdit: true,
+
         // URL to save to
         remoteURL: "/replace-with-your-url",
 
@@ -1331,6 +1410,9 @@
 
         // Adds any missing classes in columns for muti-device support.
         addResponsiveClasses: true, 
+
+        // Adds "colClass" to columns if missing: addResponsiveClasses must be true for this to activate
+        addDefaultColumnClass: true,
 
        // Generic desktop size layout class
         colDesktopClass: "col-md-",

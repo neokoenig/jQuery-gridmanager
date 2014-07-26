@@ -5,7 +5,39 @@
  * Copyright (c) 2014 Tom King
  * Licensed under the MIT license.
  */
-
+/*=========== mixins===============*/
+.gm-box-shadow(@arguments) {
+  -webkit-box-shadow: @arguments;
+  -moz-box-shadow: @arguments;
+  box-shadow: @arguments;
+}
+.gm-bordered(@top-color: #EEE, @right-color: #EEE, @bottom-color: #EEE, @left-color: #EEE) {
+  border-top: solid 1px @top-color;
+  border-left: solid 1px @left-color;
+  border-right: solid 1px @right-color;
+  border-bottom: solid 1px @bottom-color;
+}
+.gm-border-radius(@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+  -webkit-border-top-right-radius: @topright;
+  -webkit-border-bottom-right-radius: @bottomright;
+  -webkit-border-bottom-left-radius: @bottomleft;
+  -webkit-border-top-left-radius: @topleft;
+  -moz-border-radius-topright: @topright;
+  -moz-border-radius-bottomright: @bottomright;
+  -moz-border-radius-bottomleft: @bottomleft;
+  -moz-border-radius-topleft: @topleft;
+  border-top-right-radius: @topright;
+  border-bottom-right-radius: @bottomright;
+  border-bottom-left-radius: @bottomleft;
+  border-top-left-radius: @topleft;
+  .gm-background-clip(padding-box);
+}
+.gm-background-clip(@argument: padding-box) {
+  -moz-background-clip: @argument;
+  -webkit-background-clip: @argument;
+  background-clip: @argument;
+}
+/*=========== core css===============*/
 /* Control bar */ 
 #gm-controls {margin:5px 0;
 	button, a {font-size: @control-bar-font-size;} 
@@ -20,7 +52,7 @@
 	/* rows & cols identified by gm: really, this is the column styling as row gets overridden below.
 	   the column selector is inefficent in BS3 as it would need a wild card */  
 	.gm-editing {   
-		.bordered(@col-border-color,@col-border-color,@col-border-color,@col-border-color);
+		.gm-bordered(@col-border-color,@col-border-color,@col-border-color,@col-border-color);
 		 min-height: @minimum-element-height;
 		 background-color: @col-background-color;
 	 
@@ -28,12 +60,12 @@
 
 	/* element selected via checkbox */ 
 	.gm-editing-selected { 
-		.box-shadow(0 0 5px 0 @col-selected-color);   
+		.gm-box-shadow(0 0 5px 0 @col-selected-color);   
 	}
 
 	/* main editable region */
 	.gm-editable-region{     
-		.bordered(@editable-border-color,@editable-border-color,@editable-border-color,@editable-border-color);
+		.gm-bordered(@editable-border-color,@editable-border-color,@editable-border-color,@editable-border-color);
 		border-style: dotted;
 		margin-bottom:2px;
 		min-height: @minimum-element-height -10; 
@@ -42,13 +74,13 @@
 		.gm-controls-element { top: 0;   right: 0;   display: block;
 		 a {color: #fff; font-size: @element-font-size; }
 		.gm-move {
-			.border-radius(0, 0, 6px, 6px);
+			.gm-border-radius(0, 0, 6px, 6px);
 			float:left; 
 			background-color:@editable-border-color; 
 			padding:4px;
 			margin-left:-17px; }
 		.gm-delete {
-			.border-radius(6px, 6px, 0, 0);
+			.gm-border-radius(6px, 6px, 0, 0);
 			float:right; 
 			background-color: @editable-border-color; 
 			padding:4px;  
@@ -91,9 +123,9 @@
 		//margin: 3px; 
 
 		//.box-shadow( inset -1px -1px 14px -1px #2fa4e7);
-		.border-radius(5px,5px,5px,5px);
-		.bordered(@row-border-color,@row-border-color,@row-border-color,@row-border-color);
-		.box-shadow(0 1px 2px @gray);
+		.gm-border-radius(5px,5px,5px,5px);
+		.gm-bordered(@row-border-color,@row-border-color,@row-border-color,@row-border-color);
+		.gm-box-shadow(0 1px 2px @gray);
 		> .gm-tools { 
 			background-color: @row-tools-background-color;
 			margin-right:0; margin-left:0;
