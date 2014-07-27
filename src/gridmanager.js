@@ -166,7 +166,7 @@
               tabletRegexObj = new RegExp(tabletRegex, 'i'),
               phoneRegexObj = new RegExp(phoneRegex, 'i');
               //new_html = '';
-          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(i, el) {
+          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function() {
             var elClasses = $(this).attr('class'), colNum = 2;
             var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
 
@@ -467,8 +467,8 @@
         gm.initGlobalCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               elems=[],
-              callback = null,
-              btnClass = '';
+              btnClass = '',
+              btnObj = null;
 
           $.each(['row','col'], function(i, control_type) {
             if(typeof gm.options.customControls['global_'+control_type] !== 'undefined') {
@@ -525,6 +525,7 @@
               btnLabel = '';
 
           $( ('.'+gm.options.colClass+':data,'+' .'+gm.options.rowClass+':data'), canvas).each(function(){
+            var prop = '';
             for(prop in $(this).data()) {
               if(prop.indexOf('gmButton') === 0) {
                 callbackFunc = prop.replace('gmButton','');
@@ -976,6 +977,7 @@
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
+          btn = null;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
             .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
