@@ -83,10 +83,10 @@ module.exports = function (grunt) {
         dest: 'demo/js/jquery.js'
       },
       demojqueryui: {
-        src: 'bower_components/jquery-ui/ui/minified/jquery-ui.min.js',
+        src: 'bower_components/jquery-ui/jquery-ui.min.js',
         dest: 'demo/js/jquery-ui.js'
       }
-      
+
     },
     concat: {
       options: {
@@ -155,7 +155,7 @@ module.exports = function (grunt) {
         tasks: ['jshint:test', 'qunit']
       }
     },
-  
+
 
     connect: {
       server: {
@@ -166,7 +166,7 @@ module.exports = function (grunt) {
       }
     }
   });
- 
+
 
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);

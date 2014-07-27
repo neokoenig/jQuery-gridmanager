@@ -1,5 +1,4 @@
-<<<<<<< HEAD
-/*! gridmanager - v0.3.0 - 2014-07-26
+/*! gridmanager - v0.3.0 - 2014-07-27
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -1055,7 +1054,7 @@
           if(isInit) {
             var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
                 cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
-                regex = new RegExp('(?:'+cTagOpen+')\\s*(.+?)\\s*(?:'+cTagClose+')', 'g'),
+                regex = new RegExp('(?:'+cTagOpen+')\\s*([\\s\\S]+?)\\s*(?:'+cTagClose+')', 'g'),
                 html = $(canvasElem).html(),
                 rep = cTagOpen+'<div class="'+gm.options.gmEditRegion+' '+gm.options.contentDraggableClass+'">'+gm.options.controlContentElem +'<div class="'+gm.options.gmContentRegion+'">$1</div></div>'+cTagClose;
 

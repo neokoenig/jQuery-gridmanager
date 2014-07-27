@@ -4,26 +4,26 @@
     <meta charset="utf-8">
     <title>Simple - Gridmanager Development</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link href="css/foundation.css" rel="stylesheet">    
-    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">  
-    <link href="css/demo.css" rel="stylesheet">  
+    <link href="css/foundation.css" rel="stylesheet">
+    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">
+    <link href="css/demo.css" rel="stylesheet">
      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
- 
-    <script src="js/jquery.js"></script> 
-    <script src="js/jquery-ui.js"></script> 
-    <script src="js/foundation.js"></script> 
-    <script src="../dist/js/jquery.gridmanager.js"></script> 
- 
-  </head>
-<body> 
 
-      <div class="container"> 
+    <script src="js/jquery.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/foundation.js"></script>
+    <script src="../dist/js/jquery.gridmanager.js"></script>
+
+  </head>
+<body>
+
+      <div class="container">
     <div id="mycanvas">
 
  <div class="row">
@@ -42,10 +42,6 @@
   <div class=" large-2 columns"><p>Kitteh Right</p></div>
 </div>
 <div class="row">
-  <div class="columns">...</div>
-  <div class="columns">...</div>
-</div>
-<div class="row">
   <div class="large-4 columns">...</div>
   <div class="large-8 columns">...</div>
 </div>
@@ -59,10 +55,10 @@
 </div>
     </div>
     </div>
- <script> 
-$(document).ready(function(){  
+ <script>
+$(document).ready(function(){
 
- 
+
 
    $("#mycanvas").gridmanager({
           /*
@@ -73,8 +69,8 @@ $(document).ready(function(){
 
         // URL to save to
         remoteURL: "/replace-with-your-url",
- 
-     
+
+
   /*
      Control Bar---------------
   */
@@ -84,16 +80,16 @@ $(document).ready(function(){
 
         // Default control button class
         controlButtonClass: "tiny button",
- 
-        
+
+
    /*
      General editing classes---------------
-  */      
+  */
 
        // generic float left and right
         gmFloatLeft: "left",
         gmFloatRight: "right",
-        gmBtnGroup:  "button-group", 
+        gmBtnGroup:  "button-group",
         gmDangerClass: "alert",
          // Control bar RH dropdown markup
         controlAppend: "<div class='button-group right'><button title='Edit Source Code' type='button' class='button tiny gm-edit-mode'><span class='fa fa-code'></span></button><button title='Preview' type='button' class='button tiny gm-preview'><span class='fa fa-eye'></span></button><div class='button-group right gm-layout-mode'><a class='button tiny' data-width='auto' title='Desktop'><span class='fa fa-desktop'></span></a><a class='button tiny'  title='Tablet' data-width='768'><span class='fa fa-tablet'></span></a><a title='Phone' class='button tiny' data-width='640'><span class='fa fa-mobile-phone'></span></a></div><a  class='gm-save button tiny'  title='Save'  href='#'><span class='fa fa-save'></span></a><a  class='button tiny gm-resetgrid'  title='Reset Grid' href='#'><span class='fa fa-trash-o'></span></a>",
@@ -104,30 +100,30 @@ $(document).ready(function(){
      Rows---------------
   */
         // class of background element when sorting rows
-        rowSortingClass: "panel callout radius",   
+        rowSortingClass: "panel callout radius",
 
         // Buttons at the top of each row
         rowButtonsPrepend: [
                 {
-                   title:"New Column", 
-                   element: "a", 
+                   title:"New Column",
+                   element: "a",
                    btnClass: "gm-addColumn left  ",
                    iconClass: "fa fa-plus"
-                }, 
+                },
                  {
-                   title:"Row Settings", 
-                   element: "a", 
+                   title:"Row Settings",
+                   element: "a",
                    btnClass: "right gm-rowSettings",
                    iconClass: "fa fa-cog"
                 }
-                
+
             ],
 
         // Buttons at the bottom of each row
-        rowButtonsAppend: [ 
+        rowButtonsAppend: [
                 {
-                 title:"Remove row", 
-                 element: "a", 
+                 title:"Remove row",
+                 element: "a",
                  btnClass: "right gm-removeRow",
                  iconClass: "fa fa-trash-o"
                 }
@@ -138,9 +134,9 @@ $(document).ready(function(){
 
   /*
      Columns--------------
-  */    
+  */
          // Adds any missing classes in columns for muti-device support.
-        addResponsiveClasses: true, 
+        addResponsiveClasses: true,
 
           // Additional column class to add (foundation needs columns, bs3 doesn't)
         colAdditionalClass: "column",
@@ -152,7 +148,7 @@ $(document).ready(function(){
         colTabletClass: "medium-",
 
         // Generic phone size layout class
-        colPhoneClass: "small-", 
+        colPhoneClass: "small-",
 
         // Wild card column desktop selector
         colDesktopSelector: "div[class*=large]",
@@ -162,54 +158,59 @@ $(document).ready(function(){
 
         // Wildcard column phone selector
         colPhoneSelector: "div[class*=small]",
-     
+
         // Buttons to prepend to each column
-        colButtonsPrepend: [                
+        colButtonsPrepend: [
+           {
+                 title:"Move",
+                 element: "a",
+                 btnClass: "gm-moveCol left",
+                 iconClass: "fa fa-arrows "
+              },
                {
-                 title:"Make Column Narrower", 
-                 element: "a", 
+                 title:"Make Column Narrower",
+                 element: "a",
                  btnClass: "gm-colDecrease left",
                  iconClass: "fa fa-minus"
               },
               {
-               title:"Make Column Wider", 
-               element: "a", 
+               title:"Make Column Wider",
+               element: "a",
                btnClass: "gm-colIncrease left",
                iconClass: "fa fa-plus"
               },
               {
-                   title:"Column Settings", 
-                   element: "a", 
+                   title:"Column Settings",
+                   element: "a",
                    btnClass: "right gm-colSettings",
                    iconClass: "fa fa-cog"
                 }
             ],
 
         // Buttons to append to each column
-        colButtonsAppend: [ 
+        colButtonsAppend: [
                 {
-                 title:"Add Nested Row", 
-                 element: "a", 
+                 title:"Add Nested Row",
+                 element: "a",
                  btnClass: "left gm-addRow",
                  iconClass: "fa fa-plus-square"
                 },
                 {
-                 title:"Remove Column", 
-                 element: "a", 
+                 title:"Remove Column",
+                 element: "a",
                  btnClass: "right gm-removeCol",
                  iconClass: "fa fa-trash-o"
                 }
-            ], 
-        
+            ],
+
         // Maximum column span value: if you've got a 24 column grid via customised bootstrap, you could set this to 24.
         colMax: 12,
 
         // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
-        colResizeStep: 1 
- 
-    }); 
+        colResizeStep: 1
+
+    });
 });
-</script> 
+</script>
 </body>
 </html>
-  
