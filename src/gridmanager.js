@@ -1148,10 +1148,25 @@
          * @returns null  
          */
         gm.cleanup =  function(){  
-          // cache canvas
-          var canvas=gm.$el.find("#" + gm.options.canvasId);
+          
+          var canvas,
+              content;
+              
+              // cache canvas
+              canvas = gm.$el.find("#" + gm.options.canvasId);
+
+              /**
+               * Determine the current edit mode and get the content based upon the resultant
+               * context to prevent content in source mode from being lost on save, as such:
+               *
+               * edit mode (source): canvas.find('textarea').val()
+               * edit mode (visual): canvas.html()
+               */
+              content = gm.mode !== "visual" ? canvas.find('textarea').val() : canvas.html();
+
               // Clean any temp class strings
-              canvas.html(gm.cleanSubstring(gm.options.classRenameSuffix, canvas.html(), ''));
+              canvas.html(gm.cleanSubstring(gm.options.classRenameSuffix, content, ''));
+              
               // Clean column markup
               canvas.find(gm.options.colSelector)
                   .removeAttr("style")
