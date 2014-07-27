@@ -18,7 +18,7 @@ Gridmanager allows you to create, reorder, update & delete rows and columns in g
 - Quickly edit the source code directly
 - Add row templates for common column width layouts
 - Add/Alter the ID of a column or row directly
-- Use the dynamically inserted editable regions to change column/row text
+- Add, Edit, Delete, Sort editable regions to change column/row text
 - Tie in Rich Text Editors such as TinyMCE & CKEditor to those editable regions
 - Change layout modes for easy editing & previewing of responsive classes
 - Use fluid rows if you want
@@ -26,6 +26,16 @@ Gridmanager allows you to create, reorder, update & delete rows and columns in g
 
 #### Changelog
 
++ 0.3.1
+  - New style of editable regions which are stackable/editable/deletable
+  - Added: default editable region button
+  - Added: Theming using LESS 
+  - Default, light & dark themes now available
+  - Large visual cleanup
+  - Fixed: remoteURL now posts as proper key/value pair
+  - Added: initMarkup() to autowrap non commented markup
+  - Added: editableRegionEnabled & autoEdit options
+  - Added: additional filterCallback option which runs on init();
 + 0.3.0 
   - Nested row & column support & new add nested row button
   - Added ability to add custom controls on rows & columns (with your own callbacks) 
