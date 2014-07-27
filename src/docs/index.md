@@ -76,6 +76,7 @@ Released under the MIT licence. Go wild.
 + [Percy D Brea](https://github.com/pbreah/) 
 
 #### Blog Posts
++ http://www.oxalto.co.uk/2014/07/gridmanager-js-0-3-0-released/
 + http://www.oxalto.co.uk/2014/05/gridmanager-js-0-2-1-released/
 + http://www.oxalto.co.uk/2014/05/gridmanager-js-0-2-0-released/
 + http://www.oxalto.co.uk/2014/05/introducing-gridmanager-js/

@@ -5,7 +5,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
         <meta name="viewport" content="width=device-width">
 
-        <title>gridmanager.js : Extending Gridmanager</title>
+        <title>gridmanager.js : Themeing with LESS</title>
         <meta name="description" content="Structural editor for rows and columns in popular CSS frameworks">
 
         <link href="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.no-icons.min.css" rel="stylesheet">
@@ -95,12 +95,76 @@
 
                     <div id=content class=span10>
                         <div class=page-header>
-    <h2>Extending Gridmanager
+    <h2>Themeing with LESS
         
     </h2>
 </div>
 
+<p>Gridmanager.js comes with three provided themes, a default theme and a light and dark variant. The default theme is the normal <code>js/jquery.gridmanger.css</code> file. To use the dark theme, simply change this link to <code>js/jquery.gridmanager-dark.css</code>. Each theme includes the full CSS core of gridmanager, so you only need to link to a single file.</p>
 
+<h3 id="creating-your-own-theme">Creating your own theme</h3>
+
+<p>There are a few options to styling the look of gridmanager. If you have no experience with LESS css preprocessing (and if you don&#39;t, I highly recommend you go and have a play), then you can just override any of the gridmanager css classes in your own style sheet. Whilst this isn&#39;t ideal, it will work. However, it makes future updates of the theme more troublesome.</p>
+
+<p>Ideally, you want to leverage the existing LESS files in <code>src/less</code> : </p>
+
+<ul>
+<li>start by creating your own .less file: let&#39;s call it <code>custom.less</code> and place it in the <code>src/themes/</code> folder</li>
+<li>copy and paste the contents of <code>default.less</code> into your <code>custom.less</code> file</li>
+<li>override any variables, such as <code>@canvas-color</code> inbetween the <code>@import</code> calls to <code>variables.less</code> and <code>core.less</code>. </li>
+<li>look at <code>core/variables.less</code> for a list of all the variables you can set.</li>
+</ul>
+
+<p>This is the technique used to create the main gridmanger themes. Just look at <code>src/dark.less</code> as an example.</p>
+
+<p>Once you&#39;ve created your <code>custom.less</code> file, we need to compile it.</p>
+
+<p>There are a couple of options here too - if your project is already compiling LESS (i.e your own custom version of bootstrap) then you can just <code>@import</code> the less file into your bootstrap.less file. </p>
+
+<p>Alternatively, use any LESS css processor of your choice to output the resultant .css file.</p>
+
+<h3 id="less-variables:">LESS variables:</h3>
+<div class="highlight"><pre><code class="language-text" data-lang="text">/* Variables */ 
+@primary: #2fa4e7;
+@danger : #CC0000;
+@gray   : #999;
+
+/* Structure */
+@minimum-element-height:        30px;
+@row-margin-bottom:             5px;  
+
+/* Canvas */
+@canvas-color:                  #fff;
+
+/* Rows */
+@row-border-color:              @gray;
+@row-background-color:          none;     
+@row-tools-background-color:    none;
+@row-icon-color:                darken(@gray, 20%);
+@row-icon-color-bg:             none;
+@row-icon-color-hover:          #fff;
+@row-icon-color-bg-hover:       @primary; 
+
+/* Cols */
+@col-border-color:              @primary;  
+@col-background-color:          none;  
+@col-tools-background-color:    none;
+@col-icon-color:                darken(@primary, 5%);
+@col-icon-color-bg:             none;
+@col-icon-color-hover:          #fff;
+@col-icon-color-bg-hover:       @primary;
+@col-selected-color:            @primary;  
+
+/* Editable Regions */
+@editable-border-color:         @danger;
+@editable-icon-color:           #fff;
+
+/* Icons */
+@control-bar-font-size:         14px;
+@row-icon-font-size:            15px;
+@col-icon-font-size:            14px;
+@element-font-size:             10px;
+</code></pre></div>
 
                     </div>
                 

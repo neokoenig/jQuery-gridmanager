@@ -70,6 +70,9 @@
             
                 <li class=nav-header>Developers</li>
             
+            <li data-order=""><a href="/jQuery-gridmanager/docs/dev/themeing-with-less.html">Themeing with LESS</a></li>
+        
+            
             <li data-order=""><a href="/jQuery-gridmanager/docs/dev/options-reference.html">Options Reference</a></li>
         
             
@@ -103,91 +106,8 @@
 
 <p>Since version 0.2.3 we went for fontawesome as a default meaning it&#39;s a lot easier to use another framework, as you don&#39;t have to constantly worry about icons.</p>
 
-<h3 id="foundation-5.x">Foundation 5.x</h3>
-<div class="highlight"><pre><code class="language-text" data-lang="text">&lt;script&gt; 
-$(document).ready(function(){  
-    $(&quot;#mycanvas&quot;).gridmanager({
+<p>Please see the source code of the <a href="/jQuery-gridmanager/demo/foundation.html">demo foundation version</a> for the recommended options to set.</p>
 
-    // Default control button class
-    controlButtonClass: &quot;tiny button&quot;, 
-    gmFloatLeft: &quot;left&quot;,
-    gmFloatRight: &quot;right&quot;,
-    gmBtnGroup:  &quot;button-group&quot;, 
-    gmDangerClass: &quot;alert&quot;,
-     // Control bar RH dropdown markup
-    controlAppend: &quot;&lt;div class=&#39;button-group right&#39;&gt;&lt;button title=&#39;Edit Source Code&#39; type=&#39;button&#39; class=&#39;button tiny gm-edit-mode&#39;&gt;&lt;span class=&#39;fa fa-code&#39;&gt;&lt;/span&gt;&lt;/button&gt;&lt;button title=&#39;Preview&#39; type=&#39;button&#39; class=&#39;button tiny gm-preview&#39;&gt;&lt;span class=&#39;fa fa-eye&#39;&gt;&lt;/span&gt;&lt;/button&gt;&lt;div class=&#39;button-group right gm-layout-mode&#39;&gt;&lt;a class=&#39;button tiny&#39; data-width=&#39;auto&#39; title=&#39;Desktop&#39;&gt;&lt;span class=&#39;fa fa-desktop&#39;&gt;&lt;/span&gt;&lt;/a&gt;&lt;a class=&#39;button tiny&#39;  title=&#39;Tablet&#39; data-width=&#39;768&#39;&gt;&lt;span class=&#39;fa fa-tablet&#39;&gt;&lt;/span&gt;&lt;/a&gt;&lt;a title=&#39;Phone&#39; class=&#39;button tiny&#39; data-width=&#39;640&#39;&gt;&lt;span class=&#39;fa fa-mobile-phone&#39;&gt;&lt;/span&gt;&lt;/a&gt;&lt;/div&gt;&lt;a  class=&#39;gm-save button tiny&#39;  title=&#39;Save&#39;  href=&#39;#&#39;&gt;&lt;span class=&#39;fa fa-save&#39;&gt;&lt;/span&gt;&lt;/a&gt;&lt;a  class=&#39;button tiny gm-resetgrid&#39;  title=&#39;Reset Grid&#39; href=&#39;#&#39;&gt;&lt;span class=&#39;fa fa-trash-o&#39;&gt;&lt;/span&gt;&lt;/a&gt;&quot;, 
-    rowSortingClass: &quot;panel callout radius&quot;, 
-    rowButtonsPrepend: [
-            {
-               title:&quot;New Column&quot;, 
-               element: &quot;a&quot;, 
-               btnClass: &quot;gm-addColumn left  &quot;,
-               iconClass: &quot;fa fa-plus&quot;
-            }, 
-             {
-               title:&quot;Row Settings&quot;, 
-               element: &quot;a&quot;, 
-               btnClass: &quot;right gm-rowSettings&quot;,
-               iconClass: &quot;fa fa-cog&quot;
-            }
-
-        ], 
-     rowButtonsAppend: [ 
-            {
-             title:&quot;Remove row&quot;, 
-             element: &quot;a&quot;, 
-             btnClass: &quot;right gm-removeRow&quot;,
-             iconClass: &quot;fa fa-trash-o&quot;
-            }
-        ],
-     rowCustomClasses: [&quot;panel&quot;,&quot;callout&quot;,&quot;radius&quot;], 
-    // Additional column class to add (foundation needs columns, bs3 doesn&#39;t)
-    colAdditionalClass: &quot;column&quot;, 
-    colDesktopClass: &quot;large-&quot;,
-    colTabletClass: &quot;medium-&quot;,
-    colPhoneClass: &quot;small-&quot;, 
-    colDesktopSelector: &quot;div[class*=large]&quot;,
-    colTabletSelector: &quot;div[class*=medium]&quot;,
-    colPhoneSelector: &quot;div[class*=small]&quot;,
-    colButtonsPrepend: [                
-           {
-             title:&quot;Make Column Narrower&quot;, 
-             element: &quot;a&quot;, 
-             btnClass: &quot;gm-colDecrease left&quot;,
-             iconClass: &quot;fa fa-minus&quot;
-          },
-          {
-           title:&quot;Make Column Wider&quot;, 
-           element: &quot;a&quot;, 
-           btnClass: &quot;gm-colIncrease left&quot;,
-           iconClass: &quot;fa fa-plus&quot;
-          },
-          {
-               title:&quot;Column Settings&quot;, 
-               element: &quot;a&quot;, 
-               btnClass: &quot;right gm-colSettings&quot;,
-               iconClass: &quot;fa fa-cog&quot;
-            }
-        ],
-    // Buttons to append to each column
-    colButtonsAppend: [ 
-            {
-             title:&quot;Add Nested Row&quot;, 
-             element: &quot;a&quot;, 
-             btnClass: &quot;left gm-addRow&quot;,
-             iconClass: &quot;fa fa-plus-square&quot;
-            },
-            {
-             title:&quot;Remove Column&quot;, 
-             element: &quot;a&quot;, 
-             btnClass: &quot;right gm-removeCol&quot;,
-             iconClass: &quot;fa fa-trash-o&quot;
-            }
-        ]
-    }); 
-});
-&lt;/script&gt; 
-</code></pre></div>
 
                     </div>
                 
