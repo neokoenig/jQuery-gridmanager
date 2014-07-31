@@ -1002,9 +1002,14 @@
 
           $.each(parentCols, function(i, col) {
             $(col).on('click', '.gm-delete', function(e) {
-              $(this).closest('.'+gm.options.gmEditRegion).remove();
+              $(this).closest('.'+gm.options.contentDraggableClass).remove();
               gm.resetCommentTags(col);
               e.preventDefault();
+            });
+            // If the content element has an edit option add callback
+            $('.'+gm.options.controlEdit, col).off().on('click', function() {
+              gm.editContentElement($(this).closest('.'+gm.options.contentDraggableClass), this);
+              return false;
             });
             $(col).sortable({
               items: '.'+gm.options.contentDraggableClass,
@@ -1020,6 +1025,94 @@
              });
           });
 
+        };
+
+        /*
+          Edits the content element options
+          @elem    - Content element that will be edited
+          @btnEdit - Edit button that was clicked that identifies options to display
+          returns void
+         */
+
+        gm.editContentElement = function(elem, btnEdit) {
+          var modalConfig = null,
+              btnID = '',
+              modalDialog = null;
+          // First retrieve the edit button configuration
+          btnID = $(btnEdit).data('id');
+          // Ensure we have a config schema for this content element
+          if(btnID === '' ||
+            typeof gm.options.contentEditSchema[btnID] === 'undefined' ||
+            typeof gm.options.contentEditSchema[btnID].fields === 'undefined' ||
+            typeof gm.options.contentEditSchema[btnID].buttons === 'undefined') {
+            return;
+          }
+          // get the edit config schema
+          modalConfig = gm.options.contentEditSchema[btnID];
+
+          modalDialog = $('.gm-modal-dialog');
+          // check if we have a modal dialog ready to use, if not create one
+          if(modalDialog.length === 0) {
+            $('body').append('<div class="gm-modal-dialog"></div>');
+            modalDialog = $('.gm-modal-dialog');
+          } else {
+            $(modalDialog).empty();
+          }
+
+          $(modalDialog).append('<div class="gm-modal-form"></div>');
+
+          $(modalDialog).dialog({
+            modal: true
+          });
+          // Setup the OK and Cancel buttons callbacks
+          $.each(modalConfig.buttons, function(i, btn) {
+            if(i === 0) {
+              btn.onSubmit = function(values) { gm.onEditOkClick(modalDialog, modalConfig, values); return false; };
+            } else {
+              btn.onSubmit = function(values) { gm.onEditCancelClick(modalDialog, modalConfig, values); return false; };
+            }
+          });
+          // Initialize form
+          $('.gm-modal-form', modalDialog).bootstrapForm({
+            align: 'block',
+            formInputs: modalConfig.fields,
+            buttons: modalConfig.buttons
+          });
+          if(typeof modalConfig.onInit === 'function') {
+            modalConfig.onInit(modalDialog);
+          }
+        };
+
+        /*
+          Resets the comment tags for editable elements
+          @elem - Element to reset the editable comments on
+          returns void
+         */
+
+        /*
+         Handles the click event on the "OK" button of the edit edit dialog
+         @modalDialog - the modal dialog element opened
+         @modalConfig - configuration object for this modal dialog element opened
+         @values      - values submitted from the modal dialog
+         returns void
+         */
+        gm.onEditOkClick = function(modalDialog, modalConfig, values) {
+          if(typeof modalConfig.onOkClick === 'function') {
+            modalConfig.onOkClick(modalDialog, values);
+          }
+        };
+
+        /*
+         Handles the click event on the "OK" button of the edit edit dialog
+         @modalDialog - the modal dialog element opened
+         @modalConfig - configuration object for this modal dialog element opened
+         @values      - values submitted from the modal dialog
+         returns void
+         */
+        gm.onEditCancelClick = function(modalDialog, modalConfig, values) {
+          if(typeof modalConfig.onOkClick === 'function') {
+            modalConfig.onCancelClick(modalDialog, values);
+          }
         };
 
         /*
@@ -1324,6 +1417,12 @@
 
         // Move handle class
         controlMove: 'gm-move',
+
+        // Content item edit control
+        controlEdit: 'gm-edit',
+
+        // Content item edit schema
+        contentEditSchema: null,
 
         // Editable element toolbar class
         controlNestedEditable: 'gm-controls-element',

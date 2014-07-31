@@ -4,29 +4,33 @@
     <meta charset="utf-8">
     <title>Simple - Gridmanager with Custom Controls</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
-    <link href="css/bootstrap.css" rel="stylesheet">    
-    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">  
-    <link href="css/demo.css" rel="stylesheet">  
+    <link rel="stylesheet" href="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/themes/smoothness/jquery-ui.css" />
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="../dist/css/jquery.gridmanager.css" rel="stylesheet">
+    <link href="css/demo.css" rel="stylesheet">
      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
- 
-    <script src="js/jquery.js"></script> 
-    <script src="js/jquery-ui.js"></script> 
-    <script src="js/bootstrap.js"></script> 
-    <script src="../dist/js/jquery.gridmanager.js"></script> 
- 
+
+    <script src="js/jquery.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.11.0/jquery-ui.min.js"></script>
+    <script src="js/bootstrap.js"></script>
+    <script src="js/jquery.bootstrap-form-builder.js"></script>
+    <script src="js/gm-content-edit-schema.js"></script>
+    <script src="../dist/js/jquery.gridmanager.js"></script>
+
   </head>
-<body> 
-  
-<div class="container">  
+<body>
+
+<div class="container">
     <div id="mycanvas">
         <div class="row">
             <div class="col-md-6 col-sm-6 col-xs-6 column">
+                [myContent]
                 <p>Awaiting Content</p>
             </div>
             <div class="col-md-6 col-sm-6 col-xs-6 column" data-gm-button-test_callback="window">
@@ -41,19 +45,21 @@
                 <p>Awaiting Content</p>
             </div>
         </div>
-    </div> 
-</div> 
- 
-<!--================== JS ================--> 
-<script> 
-$(document).ready(function(){  
+    </div>
+</div>
+
+<!--================== JS ================-->
+<script>
+$(document).ready(function(){
     $("#mycanvas").gridmanager({
-        debug:1,  
+        debug:1,
         customControls: {
             global_row: [{ callback: 'test_callback', loc: 'bottom', btnLabel: 'row btn' }],
             global_col: [{ callback: 'test_callback', loc: 'top' }]
         },
-        filterCallback: my_filter_func
+        filterCallback: my_filter_func,
+        contentEditSchema: gmContentEditSchema,
+        autoEdit: false
     });
 });
 
@@ -67,14 +73,19 @@ function my_filter_func(templateGrid, isInit) {
         templateGrid.find('.row').each(function(i, el) {
             $(el).addClass('my-class');
         });
+        var templateHTML = templateGrid.html();
+        templateHTML = templateHTML.replace('[myContent]', '<div class="my-container gm-content-draggable"><a class="gm-move fa fa-arrows"></a><a class="gm-delete fa fa-times" href="#" title="Delete"></a><a class="gm-edit fa fa-pencil" data-id="myCustomElement"></a><p>My Content</p></div>');
+        templateGrid.html(templateHTML);
     } else {
         // when viewing the source or in preview mode (deinit) this section will run
         templateGrid.find('.my-class').each(function(i, el) {
             $(el).removeClass('my-class');
         });
+        templateGrid.find('.my-container').each(function(i, el) {
+            $(el).after('[myContent]').remove();
+        });
     }
 }
-</script> 
+</script>
 </body>
 </html>
-  
