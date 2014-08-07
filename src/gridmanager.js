@@ -32,7 +32,7 @@
           var cols = canvas.find(gm.options.colSelector);
           $.each(cols, function(){
             if($(this).hasClass(gm.options.gmEditClassSelected)) {
-              $('.'+gm.options.gmEditRegion, this).append(html);
+              $('.'+gm.options.gmToolClass+':last', this).before(html);
             }
           });
         };
@@ -1052,12 +1052,12 @@
 
           modalDialog = $('.gm-modal-dialog');
           // check if we have a modal dialog ready to use, if not create one
-          if(modalDialog.length === 0) {
-            $('body').append('<div class="gm-modal-dialog"></div>');
-            modalDialog = $('.gm-modal-dialog');
-          } else {
-            $(modalDialog).empty();
+          if(modalDialog.length > 0) {
+            $(modalDialog).remove();
+            $('.ui-dialog').remove();
           }
+          $('body').append('<div class="gm-modal-dialog"></div>');
+          modalDialog = $('.gm-modal-dialog');
 
           $(modalDialog).append('<div class="gm-modal-form"></div>');
 
@@ -1067,9 +1067,9 @@
           // Setup the OK and Cancel buttons callbacks
           $.each(modalConfig.buttons, function(i, btn) {
             if(i === 0) {
-              btn.onSubmit = function(values) { gm.onEditOkClick(modalDialog, modalConfig, values); return false; };
+              btn.onSubmit = function(values) { gm.onEditOkClick(modalDialog, modalConfig, values); };
             } else {
-              btn.onSubmit = function(values) { gm.onEditCancelClick(modalDialog, modalConfig, values); return false; };
+              btn.onSubmit = function(values) { gm.onEditCancelClick(modalDialog, modalConfig, values); };
             }
           });
           // Initialize form
@@ -1099,6 +1099,7 @@
         gm.onEditOkClick = function(modalDialog, modalConfig, values) {
           if(typeof modalConfig.onOkClick === 'function') {
             modalConfig.onOkClick(modalDialog, values);
+            return false;
           }
         };
 
