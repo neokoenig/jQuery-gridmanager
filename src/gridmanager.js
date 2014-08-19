@@ -955,7 +955,7 @@
             .addClass(gm.options.colPhoneClass + size)
             .addClass(gm.options.gmEditClass)
             .addClass(gm.options.colAdditionalClass)
-            .html(gm.toolFactory(gm.options.colButtonsPrepend))
+            //.html(gm.toolFactory(gm.options.colButtonsPrepend)) <--- why?
             .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
             .append(gm.toolFactory(gm.options.colButtonsAppend));
             gm.log("++ Created Column " + size);
