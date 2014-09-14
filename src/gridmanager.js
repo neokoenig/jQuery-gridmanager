@@ -1353,6 +1353,8 @@
                   .removeAttr("data-cke-saved-src")
                   .removeAttr("data-mce-src")
                   .removeAttr("data-mce-href").end()
+              // Remove TinyMCE href data
+                  .find("a").removeAttr("data-mce-href").end()
               // Remove Tools
                   .find("." + gm.options.gmToolClass).remove();
               // Destroy any RTEs
