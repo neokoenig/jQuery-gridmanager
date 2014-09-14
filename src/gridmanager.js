@@ -970,17 +970,18 @@
 
             @container - container element that wraps the select button
             @btn       - button element that was clicked
-
+            @html      - optional HTML to insert to editable area: useful for external buttons
             returns void
          */
-        gm.addEditableAreaClick = function(container, btn) {
+        gm.addEditableAreaClick = function(container, btn, html) {
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
-          btn = null;
+              html = html || '<p>New Content</p>';
+              btn = null;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
-            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
+            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'">'+ html +'</div>')).before(cTagClose).prev().before(cTagOpen);
           gm.initNewContentElem(elem);
         };
 
