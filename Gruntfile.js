@@ -171,7 +171,7 @@ module.exports = function (grunt) {
   // Default task.
   grunt.registerTask('default', ['jshint', 'connect', 'qunit', 'clean','copy', 'concat', 'uglify']);
   grunt.registerTask('demo', ['copy:demobootstrap', 'copy:demofoundation', 'copy:demobootstrapjs', 'copy:demofoundationjs',    'copy:demojquery', 'copy:demojqueryui']);
-  grunt.registerTask('dist', ['jshint', 'clean', 'less', 'copy', 'concat', 'uglify']);
+  grunt.registerTask('dist', ['test', 'jshint', 'clean', 'less', 'copy', 'concat', 'uglify']);
   grunt.registerTask('server', function () {
     grunt.log.warn('The `server` task has been deprecated. Use `grunt serve` to start a server.');
     grunt.task.run(['serve']);
