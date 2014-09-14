@@ -972,7 +972,7 @@
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
-              html = html || '<p>New Content</p>';
+              html = html || gm.options.gmContentPlaceholder;
               btn = null;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
@@ -1619,6 +1619,9 @@
 
         // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
         colResizeStep: 1,
+
+        // Default content placeholder
+        gmContentPlaceholder: "<p>New Content</p>",
 
   /*
      Rich Text Editors---------------
