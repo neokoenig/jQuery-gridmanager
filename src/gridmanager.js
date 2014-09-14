@@ -1344,13 +1344,15 @@
               canvas.find(gm.options.colSelector)
                   .removeAttr("style")
                   .removeAttr("spellcheck")
-                  .removeClass("mce-content-body").end()
+                  .removeClass("mce-content-body")
+                  .removeAttr("data-mce-href").end()
               // Clean img markup
                   .find("img")
                   .removeAttr("style")
                   .addClass("img-responsive")
                   .removeAttr("data-cke-saved-src")
-                  .removeAttr("data-mce-src").end()
+                  .removeAttr("data-mce-src")
+                  .removeAttr("data-mce-href").end()
               // Remove Tools
                   .find("." + gm.options.gmToolClass).remove();
               // Destroy any RTEs
