@@ -261,7 +261,7 @@
 - name: gmContentPlaceholder
   requires: string
   category: col
-  default: "<p>New Content</p>"
+  default: "&lt;p&gt;New Content&lt;/p&gt;"
   desc: "Default content for a new editable region"
 - name: tinymce
   requires: object
