@@ -1,4 +1,4 @@
-/*! gridmanager - v0.3.1 - 2014-09-14
+/*! gridmanager - v0.3.1 - 2014-09-21
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -437,7 +437,7 @@
             }).on("click", "a.gm-removeRow", function(){
                gm.log($(this).closest("." +gm.options.colSelector));
                $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', height: 'hide'}, 400, function(){
-                  this.remove();
+                  $(this).remove();
                  // Check for multiple editable regions and merge?
 
                 });
