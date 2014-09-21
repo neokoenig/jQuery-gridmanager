@@ -442,7 +442,7 @@
             }).on("click", "a.gm-removeRow", function(){
                gm.log($(this).closest("." +gm.options.colSelector));
                $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', height: 'hide'}, 400, function(){
-                  this.remove();
+                  $(this).remove();
                  // Check for multiple editable regions and merge?
 
                 });
