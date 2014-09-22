@@ -32,7 +32,7 @@
           var cols = canvas.find(gm.options.colSelector);
           $.each(cols, function(){
             if($(this).hasClass(gm.options.gmEditClassSelected)) {
-              $('.'+gm.options.gmEditRegion, this).append(html);
+              $('.'+gm.options.gmToolClass+':last', this).before(html);
             }
           });
         };
@@ -166,7 +166,7 @@
               tabletRegexObj = new RegExp(tabletRegex, 'i'),
               phoneRegexObj = new RegExp(phoneRegex, 'i');
               //new_html = '';
-          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function(i, el) {
+          return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function() {
             var elClasses = $(this).attr('class'), colNum = 2;
             var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
 
@@ -467,8 +467,8 @@
         gm.initGlobalCustomControls=function(){
           var canvas=gm.$el.find("#" + gm.options.canvasId),
               elems=[],
-              callback = null,
-              btnClass = '';
+              btnClass = '',
+              btnObj = null;
 
           $.each(['row','col'], function(i, control_type) {
             if(typeof gm.options.customControls['global_'+control_type] !== 'undefined') {
@@ -525,6 +525,7 @@
               btnLabel = '';
 
           $( ('.'+gm.options.colClass+':data,'+' .'+gm.options.rowClass+':data'), canvas).each(function(){
+            var prop = '';
             for(prop in $(this).data()) {
               if(prop.indexOf('gmButton') === 0) {
                 callbackFunc = prop.replace('gmButton','');
@@ -976,6 +977,7 @@
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
+          btn = null;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
             .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
@@ -1000,9 +1002,14 @@
 
           $.each(parentCols, function(i, col) {
             $(col).on('click', '.gm-delete', function(e) {
-              $(this).closest('.'+gm.options.gmEditRegion).remove();
+              $(this).closest('.'+gm.options.contentDraggableClass).remove();
               gm.resetCommentTags(col);
               e.preventDefault();
+            });
+            // If the content element has an edit option add callback
+            $('.'+gm.options.controlEdit, col).off().on('click', function() {
+              gm.editContentElement($(this).closest('.'+gm.options.contentDraggableClass), this);
+              return false;
             });
             $(col).sortable({
               items: '.'+gm.options.contentDraggableClass,
@@ -1018,6 +1025,95 @@
              });
           });
 
+        };
+
+        /*
+          Edits the content element options
+          @elem    - Content element that will be edited
+          @btnEdit - Edit button that was clicked that identifies options to display
+          returns void
+         */
+
+        gm.editContentElement = function(elem, btnEdit) {
+          var modalConfig = null,
+              btnID = '',
+              modalDialog = null;
+          // First retrieve the edit button configuration
+          btnID = $(btnEdit).data('id');
+          // Ensure we have a config schema for this content element
+          if(btnID === '' ||
+            typeof gm.options.contentEditSchema[btnID] === 'undefined' ||
+            typeof gm.options.contentEditSchema[btnID].fields === 'undefined' ||
+            typeof gm.options.contentEditSchema[btnID].buttons === 'undefined') {
+            return;
+          }
+          // get the edit config schema
+          modalConfig = gm.options.contentEditSchema[btnID];
+
+          modalDialog = $('.gm-modal-dialog');
+          // check if we have a modal dialog ready to use, if not create one
+          if(modalDialog.length > 0) {
+            $(modalDialog).remove();
+            $('.ui-dialog').remove();
+          }
+          $('body').append('<div class="gm-modal-dialog"></div>');
+          modalDialog = $('.gm-modal-dialog');
+
+          $(modalDialog).append('<div class="gm-modal-form"></div>');
+
+          $(modalDialog).dialog({
+            modal: true
+          });
+          // Setup the OK and Cancel buttons callbacks
+          $.each(modalConfig.buttons, function(i, btn) {
+            if(i === 0) {
+              btn.onSubmit = function(values) { gm.onEditOkClick(modalDialog, modalConfig, values); };
+            } else {
+              btn.onSubmit = function(values) { gm.onEditCancelClick(modalDialog, modalConfig, values); };
+            }
+          });
+          // Initialize form
+          $('.gm-modal-form', modalDialog).bootstrapForm({
+            align: 'block',
+            formInputs: modalConfig.fields,
+            buttons: modalConfig.buttons
+          });
+          if(typeof modalConfig.onInit === 'function') {
+            modalConfig.onInit(modalDialog);
+          }
+        };
+
+        /*
+          Resets the comment tags for editable elements
+          @elem - Element to reset the editable comments on
+          returns void
+         */
+
+        /*
+         Handles the click event on the "OK" button of the edit edit dialog
+         @modalDialog - the modal dialog element opened
+         @modalConfig - configuration object for this modal dialog element opened
+         @values      - values submitted from the modal dialog
+         returns void
+         */
+        gm.onEditOkClick = function(modalDialog, modalConfig, values) {
+          if(typeof modalConfig.onOkClick === 'function') {
+            modalConfig.onOkClick(modalDialog, values);
+            return false;
+          }
+        };
+
+        /*
+         Handles the click event on the "OK" button of the edit edit dialog
+         @modalDialog - the modal dialog element opened
+         @modalConfig - configuration object for this modal dialog element opened
+         @values      - values submitted from the modal dialog
+         returns void
+         */
+        gm.onEditCancelClick = function(modalDialog, modalConfig, values) {
+          if(typeof modalConfig.onOkClick === 'function') {
+            modalConfig.onCancelClick(modalDialog, values);
+          }
         };
 
         /*
@@ -1322,6 +1418,12 @@
 
         // Move handle class
         controlMove: 'gm-move',
+
+        // Content item edit control
+        controlEdit: 'gm-edit',
+
+        // Content item edit schema
+        contentEditSchema: null,
 
         // Editable element toolbar class
         controlNestedEditable: 'gm-controls-element',

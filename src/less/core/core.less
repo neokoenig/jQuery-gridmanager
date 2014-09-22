@@ -1,6 +1,6 @@
 /*
- * GridManager CORE LESS 
- * 
+ * GridManager CORE LESS
+ *
  *
  * Copyright (c) 2014 Tom King
  * Licensed under the MIT license.
@@ -38,95 +38,102 @@
   background-clip: @argument;
 }
 /*=========== core css===============*/
-/* Control bar */ 
+/* Control bar */
 #gm-controls {margin:5px 0;
-	button, a {font-size: @control-bar-font-size;} 
- } 
+	button, a {font-size: @control-bar-font-size;}
+ }
 
 /* Main Editing Space */
 #gm-canvas {min-height: 100;
-	background:@canvas-color; 
-	textarea {width:100%; height: 100%;} 
+	background:@canvas-color;
+	textarea {width:100%; height: 100%;}
 
 
 	/* rows & cols identified by gm: really, this is the column styling as row gets overridden below.
-	   the column selector is inefficent in BS3 as it would need a wild card */  
-	.gm-editing {   
+	   the column selector is inefficent in BS3 as it would need a wild card */
+	.gm-editing {
 		.gm-bordered(@col-border-color,@col-border-color,@col-border-color,@col-border-color);
 		 min-height: @minimum-element-height;
 		 background-color: @col-background-color;
-	 
-	}   
 
-	/* element selected via checkbox */ 
-	.gm-editing-selected { 
-		.gm-box-shadow(0 0 5px 0 @col-selected-color);   
+	}
+
+	/* element selected via checkbox */
+	.gm-editing-selected {
+		.gm-box-shadow(0 0 5px 0 @col-selected-color);
 	}
 
 	/* main editable region */
-	.gm-editable-region{     
+	.gm-editable-region{
 		.gm-bordered(@editable-border-color,@editable-border-color,@editable-border-color,@editable-border-color);
 		border-style: dotted;
 		margin-bottom:2px;
-		min-height: @minimum-element-height -10; 
+		min-height: @minimum-element-height -10;
 		padding:0 20;
 
 		.gm-controls-element { top: 0;   right: 0;   display: block;
 		 a {color: #fff; font-size: @element-font-size; }
 		.gm-move {
 			.gm-border-radius(0, 0, 6px, 6px);
-			float:left; 
-			background-color:@editable-border-color; 
+			float:left;
+			background-color:@editable-border-color;
 			padding:4px;
 			margin-left:-17px; }
 		.gm-delete {
 			.gm-border-radius(6px, 6px, 0, 0);
-			float:right; 
-			background-color: @editable-border-color; 
-			padding:4px;  
-			margin-right:-17px;  
+			float:right;
+			background-color: @editable-border-color;
+			padding:4px;
+			margin-right:-17px;
 			border-radius:0 8px 8px 0; }
-		}   
-	}
-	 
+		}
 
-	/* Default tools */ 
-	.gm-tools {    
+	}
+
+	.gm-content-draggable{
+		.gm-edit {
+			float:right;
+			margin: 10px 10px; }
+	}
+
+
+	/* Default tools */
+	.gm-tools {
 		background-color: @col-tools-background-color;
 		min-height:@minimum-element-height; display:block; clear:both; margin-left:-13px; margin-right: -14px;
 
 		// Applies to the majority of icons
 		a {
 			color: @col-icon-color;
-			font-size: @col-icon-font-size; 
-			padding:5px 5px 5px 8px;  
-			float:left; 
+			font-size: @col-icon-font-size;
+			padding:5px 5px 5px 8px;
+			float:left;
 			cursor: pointer;
 			background-color: @col-icon-color-bg;
 		}
 		a:hover {
-			background-color: @col-icon-color-bg-hover; 
+			background-color: @col-icon-color-bg-hover;
 			color:@col-icon-color-hover;
 			text-decoration: none;
 		}
 
 		label, input {font-size:@element-font-size;}
 		.gm-removeRow:hover, .gm-removeCol:hover {background-color:@danger; color:#fff;}
-		.gm-moveCol, .gm-moveRow {cursor: move;}  
-	}   
+		.gm-moveCol, .gm-moveRow {cursor: move;}
+	}
 
 	/* Row  specific overrides */
 	.row.gm-editing,  .row-fluid.gm-editing {
 		background-color: @row-background-color;
 		margin: 0 0 @row-margin-bottom 0;
 		padding: 0 5px 0 5px;
-		//margin: 3px; 
+		//margin: 3px;
 
 		//.box-shadow( inset -1px -1px 14px -1px #2fa4e7);
 		.gm-border-radius(5px,5px,5px,5px);
 		.gm-bordered(@row-border-color,@row-border-color,@row-border-color,@row-border-color);
 		.gm-box-shadow(0 1px 2px @gray);
-		> .gm-tools { 
+		> .gm-tools {
 			background-color: @row-tools-background-color;
 			margin-right:0; margin-left:0;
 			a {color:@row-icon-color; background-color:@row-icon-color-bg; font-size: @row-icon-font-size;}
@@ -136,4 +143,4 @@
 
 }
 
-.layout-mode a:hover {cursor: pointer;} 
+.layout-mode a:hover {cursor: pointer;}
