@@ -955,7 +955,7 @@
             .addClass(gm.options.colPhoneClass + size)
             .addClass(gm.options.gmEditClass)
             .addClass(gm.options.colAdditionalClass)
-            .html(gm.toolFactory(gm.options.colButtonsPrepend))
+            //.html(gm.toolFactory(gm.options.colButtonsPrepend)) <--- why?
             .prepend(gm.toolFactory(gm.options.colButtonsPrepend))
             .append(gm.toolFactory(gm.options.colButtonsAppend));
             gm.log("++ Created Column " + size);
@@ -970,17 +970,18 @@
 
             @container - container element that wraps the select button
             @btn       - button element that was clicked
-
+            @html      - optional HTML to insert to editable area: useful for external buttons
             returns void
          */
-        gm.addEditableAreaClick = function(container, btn) {
+        gm.addEditableAreaClick = function(container, btn, html) {
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
-          btn = null;
+              html = html || gm.options.gmContentPlaceholder;
+              btn = null;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
-            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
+            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'">'+ html +'</div>')).before(cTagClose).prev().before(cTagOpen);
           gm.initNewContentElem(elem);
         };
 
@@ -1343,13 +1344,17 @@
               canvas.find(gm.options.colSelector)
                   .removeAttr("style")
                   .removeAttr("spellcheck")
-                  .removeClass("mce-content-body").end()
+                  .removeClass("mce-content-body")
+                  .removeAttr("data-mce-href").end()
               // Clean img markup
                   .find("img")
                   .removeAttr("style")
                   .addClass("img-responsive")
                   .removeAttr("data-cke-saved-src")
-                  .removeAttr("data-mce-src").end()
+                  .removeAttr("data-mce-src")
+                  .removeAttr("data-mce-href").end()
+              // Remove TinyMCE href data
+                  .find("a").removeAttr("data-mce-href").end()
               // Remove Tools
                   .find("." + gm.options.gmToolClass).remove();
               // Destroy any RTEs
@@ -1619,6 +1624,9 @@
 
         // Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)
         colResizeStep: 1,
+
+        // Default content placeholder
+        gmContentPlaceholder: "<p>New Content</p>",
 
   /*
      Rich Text Editors---------------

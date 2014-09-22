@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>jQuery GridManager Test Suite</title>
+
+  <!-- Needed for gm to run -->
+  <script src="../bower_components/jquery/dist/jquery.js"></script>
+  <script src="../bower_components/jquery-ui/jquery-ui.js"></script>
+  <script src="../bower_components/bootstrap/dist/js/bootstrap.js"></script>
+  <script src="../src/gridmanager.js"></script>
+  <link rel="stylesheet" href="../demo/css/bootstrap.css" media="screen">
+  <link rel="stylesheet" href="../src/gridmanager.css" media="screen">
+
+  <!-- QUnit. -->
+  <link rel="stylesheet" href="../bower_components/qunit/qunit/qunit.css" media="screen">
+  <script src="../bower_components/qunit/qunit/qunit.js"></script>
+
+  <!-- Load tests. -->
+  <script src="gridmanager_test.js"></script>
+
+  <script>
+  /*Removing access to jQuery and $. But it'll still be available as _$, if
+   you REALLY want to mess around with jQuery in the console. REMEMBER WE
+   ARE TESTING A PLUGIN HERE, THIS HELPS ENSURE BEST PRACTICES. REALLY.*/
+   //window._$ = jQuery.noConflict(true);
+  </script>
+</head>
+<body>
+  <div id="qunit"></div>
+  <div id="qunit-fixture">
+  </div>
+
+
+
+</body>
+</html>

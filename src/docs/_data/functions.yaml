@@ -13,6 +13,11 @@
   params: "@myStylesLocation (string) - path to external CSS"
   return: ""
   ispublic: 1
+- name: "gm.addEditableAreaClick()"
+  desc: "Adds an editable region to the column"
+  params: "@container - container element that wraps the select button<br />@btn - button element that was clicked<br />@html - optional HTML to insert to editable area: useful for external buttons; defaults to gmContentPlaceholder"
+  return: ""
+  ispublic: 1
 - name: "gm.addResponsiveness()"
   desc: "Adds missing reponsive classes to existing HTML"
   params: "@html - html contents to perform regex search on"

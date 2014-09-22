@@ -1,4 +1,4 @@
-- name: debug 
+- name: debug
   requires: boolean
   category: general
   default: 0
@@ -151,17 +151,17 @@
 - name: rowButtonsPrepend
   requires: object
   category: row
-  default: 
+  default:
   desc: "Buttons at the top of each row - pass in standard button objects (see below)"
 - name: rowButtonsAppend
   requires: object
   category: row
-  default: 
+  default:
   desc: "Buttons at the bottom of each row"
 - name: rowCustomClasses
   requires: array
   category: row
-  default: 
+  default:
   desc: "add your own to make them available in the row settings, i.e <code>['one', 'two']</code>"
 - name: colClass
   requires: string
@@ -237,12 +237,12 @@
   requires: object
   category: col
   default: ""
-  desc: "Buttons at the top of each col" 
+  desc: "Buttons at the top of each col"
 - name: colButtonsAppend
   requires: object
   category: col
-  default: 
-  desc: "Buttons at the bottom of each col" 
+  default:
+  desc: "Buttons at the bottom of each col"
 - name: colCustomClasses
   requires: array
   category: col
@@ -258,6 +258,11 @@
   category: col
   default: "1"
   desc: "Column resizing +- value: this is also the colMin value, as columns won't be able to go smaller than this number (otherwise you hit zero and all hell breaks loose)"
+- name: gmContentPlaceholder
+  requires: string
+  category: col
+  default: "&lt;p&gt;New Content&lt;/p&gt;"
+  desc: "Default content for a new editable region"
 - name: tinymce
   requires: object
   category: rte
@@ -281,40 +286,40 @@
 - name: title
   requires: string
   category: btnObject
-  default: 
+  default:
   desc: "Title for button"
 - name: element
   requires: string
   category: btnObject
-  default: 
+  default:
   desc: "Element to generate, i.e a"
 - name: btnClass
   requires: string
   category: btnObject
-  default: 
+  default:
   desc: "Class for the button"
 - name: iconClass
   requires: string
   category: btnObject
-  default: 
+  default:
   desc: "Class for the button icon"
 - name: callback
   requires: string
   category: customControls
-  default: 
+  default:
   desc: "Name of custom callback function (required)"
 - name: loc
   requires: string
   category: customControls
-  default: 
+  default:
   desc: "Location of custom callback function button: options are <code>top</code> or <code>bottom</code>"
 - name: iconClass
   requires: string
   category: customControls
-  default: 
+  default:
   desc: "css class of icon for custom callback function button, i.e <code>fa fa-myicon</code>"
 - name: btnClass
   requires: string
   category: customControls
-  default: 
+  default:
   desc: "css class of button for custom callback function button"
