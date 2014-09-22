@@ -436,7 +436,7 @@
 
             // Remove a col or row
             }).on("click", "a.gm-removeCol", function(){
-               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();});
+               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){$(this).remove();});
                  gm.log("Column Removed");
 
             }).on("click", "a.gm-removeRow", function(){

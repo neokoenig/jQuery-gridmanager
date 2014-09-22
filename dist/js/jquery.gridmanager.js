@@ -1,4 +1,4 @@
-/*! gridmanager - v0.3.1 - 2014-09-21
+/*! gridmanager - v0.3.1 - 2014-09-22
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
@@ -431,7 +431,7 @@
 
             // Remove a col or row
             }).on("click", "a.gm-removeCol", function(){
-               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){this.remove();});
+               $(this).closest("." +gm.options.gmEditClass).animate({opacity: 'hide', width: 'hide', height: 'hide'}, 400, function(){$(this).remove();});
                  gm.log("Column Removed");
 
             }).on("click", "a.gm-removeRow", function(){
