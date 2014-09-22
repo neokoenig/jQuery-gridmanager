@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 /*! gridmanager - v0.3.1 - 2014-09-22
-=======
-/*! gridmanager - v0.3.1 - 2014-09-21
->>>>>>> origin/unittests
 * http://neokoenig.github.io/jQuery-gridmanager/
 * Copyright (c) 2014 Tom King; Licensed MIT */
 (function($  ){
