@@ -1227,7 +1227,11 @@
           var canvas=gm.$el.find("#" + gm.options.canvasId);
               gm.$el.on("click", string, function(e){
                 gm.log("Clicked " + string);
-                canvas.prepend(gm.createRow(colWidths));
+                if (gm.options.addRowPosition === 'bottom') {
+                  canvas.append(gm.createRow(colWidths));
+                } else {
+                  canvas.prepend(gm.createRow(colWidths));
+                }
                 gm.reset();
                 e.preventDefault();
             });
@@ -1526,6 +1530,9 @@
 
         // CUstom row classes - add your own to make them available in the row settings
         rowCustomClasses: ["example-class","test-class"],
+
+        // Where to add new rows for canvas
+        addRowPosition: 'top', // bottom or top
 
   /*
      Columns--------------

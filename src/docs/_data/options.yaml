@@ -163,6 +163,11 @@
   category: row
   default:
   desc: "add your own to make them available in the row settings, i.e <code>['one', 'two']</code>"
+- name: addRowPosition
+  requires: string
+  category: row
+  default: "top"
+  desc: "Whether to add new rows to the top or bottom of the canvas. Accepts 'top' or 'bottom'"
 - name: colClass
   requires: string
   category: col
