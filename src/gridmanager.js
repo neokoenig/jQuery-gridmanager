@@ -1329,6 +1329,8 @@
           var canvas,
               content;
 
+              gm.rteControl("stop");
+
               // cache canvas
               canvas = gm.$el.find("#" + gm.options.canvasId);
 
@@ -1344,25 +1346,25 @@
               // Clean any temp class strings
               canvas.html(gm.cleanSubstring(gm.options.classRenameSuffix, content, ''));
 
+              // Remove Gridmanager Tools
+              canvas.find("." + gm.options.gmToolClass).remove();
+
               // Clean column markup
-              canvas.find(gm.options.colSelector)
-                  .removeAttr("style")
-                  .removeAttr("spellcheck")
-                  .removeClass("mce-content-body")
-                  .removeAttr("data-mce-href").end()
-              // Clean img markup
-                  .find("img")
-                  .removeAttr("style")
-                  .addClass("img-responsive")
-                  .removeAttr("data-cke-saved-src")
-                  .removeAttr("data-mce-src")
-                  .removeAttr("data-mce-href").end()
-              // Remove TinyMCE href data
-                  .find("a").removeAttr("data-mce-href").end()
-              // Remove Tools
-                  .find("." + gm.options.gmToolClass).remove();
+              $.each(canvas.find(gm.options.colSelector), function(i, col){
+                  $(col).removeClass(gm.options.removeColClass)
+                        .removeAttr(gm.options.removeColAttr)
+                        .addClass(gm.options.addColClass)
+                        .find("img")
+                        .removeClass(gm.options.removeImgClass)
+                        .removeAttr(gm.options.removeImgAttr)
+                        .addClass(gm.options.addImgClass).end()
+                        .find("a")
+                        .removeClass(gm.options.removeAClass)
+                        .removeAttr(gm.options.removeAAttr)
+                        .addClass(gm.options.addAClass).end()
+                        .find(gm.options.removeDivsByID).remove();
+              });
               // Destroy any RTEs
-                  gm.rteControl("stop");
               gm.log("~~Cleanup Ran~~");
         };
 
@@ -1413,6 +1415,39 @@
 
         // Filter callback. Callback receives two params: the template grid element and whether is called from the init or deinit method
         filterCallback: null,
+  /*
+     Cleanup---------------
+    */
+        // Remove column, img , a elements classes and attributes:
+        // most of the time this is to strip out data attributes left by Rich Text Editors: anything with mce = tinyMCE
+
+        // Cols-------------
+        removeColClass: "mce-content-body",
+        // Attributes need to be space seperated
+        removeColAttr: "style spellcheck data-mce-href",
+        // Add a class to each column
+        addColClass: "",
+
+        // Images-------------
+        // Ditto for Images
+        removeImgClass: "",
+        // Attributes need to be space seperated
+        removeImgAttr: "style data-cke-saved-src data-mce-src data-mce-href data-mce-selected",
+        // Add this class to every img
+        addImgClass: "img-responsive",
+
+        // Links-------------
+        // Ditto for Links
+        removeAClass: "",
+        // Attributes need to be space seperated
+        removeAAttr: "data-mce-href data-mce-selected",
+        // Add this class to every anchor
+        addAClass: "",
+
+        // Misc--------------
+        // Force remove divs by id: tinymce putting in tonnes of handles etc
+        removeDivsByID: "#mceResizeHandlen,#mceResizeHandlee,#mceResizeHandles,#mceResizeHandlew,#mceResizeHandlenw,#mceResizeHandlene,#mceResizeHandlese,#mceResizeHandlesw",
+
   /*
      Canvas---------------
     */

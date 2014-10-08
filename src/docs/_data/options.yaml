@@ -182,7 +182,56 @@
   requires: boolean
   category: general
   default: "true"
-  desc: "Adds any missing classes in columns for muti-device support"
+- name: removeColClass
+  requires: string
+  category: general
+  default: "mce-content-body"
+  desc: "Remove column, img , a elements classes and attributes - most of the time this is to strip out data attributes left by Rich Text Editors: anything with mce = tinyMCE"
+- name: removeColAttr
+  requires: string
+  category: general
+  default: "style spellcheck data-mce-href"
+  desc: "Removes attributes from a column on cleanup: Attributes need to be space seperated!"
+- name: addColClass
+  requires: string
+  category: general
+  default: ""
+  desc: "Adds a class to each column on cleanup"
+- name: removeImgClass
+  requires: string
+  category: general
+  default: ""
+  desc: "See removeColAttr etc"
+- name: removeImgAttr
+  requires: string
+  category: general
+  default: "style data-cke-saved-src data-mce-src data-mce-href data-mce-selected"
+  desc: "See removeColAttr etc"
+- name: addImgClass
+  requires: string
+  category: general
+  default: "img-responsive"
+  desc: "See removeColAttr etc NB: if you're having issues with aligning images in RTEs: this is probably what it is..."
+- name: removeAClass
+  requires: string
+  category: general
+  default: ""
+  desc: "See removeColAttr etc"
+- name: removeAAttr
+  requires: string
+  category: general
+  default: "data-mce-href data-mce-selected"
+  desc: "See removeColAttr etc"
+- name: addAClass
+  requires: string
+  category: general
+  default: ""
+  desc: "See removeColAttr etc"
+- name: removeDivsByID
+  requires: string
+  category: general
+  default: "#mceResizeHandlen,#mceResizeHandlee,#mceResizeHandles,#mceResizeHandlew,#mceResizeHandlenw,#mceResizeHandlene,#mceResizeHandlese,#mceResizeHandlesw"
+  desc: "Destroy these elements on cleanup: used to strip out left over TinyMCE Handles"
 - name: addDefaultColumnClass
   requires: boolean
   category: col
