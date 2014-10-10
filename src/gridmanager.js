@@ -148,6 +148,10 @@
           if(gm.options.editableRegionEnabled) {
             gm.options.customControls.global_col.push({callback: gm.addEditableAreaClick, loc: 'top', iconClass: 'fa fa-edit', title: 'Add Editable Region'});
           }
+          if(gm.options.colOffsetEnabled) {
+            gm.options.customControls.global_col.push({callback: gm.addOffsetLeftClick, loc: 'top', iconClass: 'fa fa-arrow-left', title: 'Move to Left'});
+            gm.options.customControls.global_col.push({callback: gm.addOffsetRightClick, loc: 'top', iconClass: 'fa fa-arrow-right', title: 'Move to Right'});
+          }
         };
 
 
@@ -162,13 +166,23 @@
           var desktopRegex = gm.options.colDesktopClass+'(\\d+)',
               tabletRegex = gm.options.colTabletClass+'(\\d+)',
               phoneRegex = gm.options.colPhoneClass+'(\\d+)',
+
+              desktopOffsetRegex = gm.options.colDesktopOffsetClass+'(\\d+)',
+              tabletOffsetRegex = gm.options.colTabletOffsetClass+'(\\d+)',
+              phoneOffsetRegex = gm.options.colPhoneOffsetClass+'(\\d+)',
+
               desktopRegexObj = new RegExp(desktopRegex,'i'),
               tabletRegexObj = new RegExp(tabletRegex, 'i'),
-              phoneRegexObj = new RegExp(phoneRegex, 'i');
-              //new_html = '';
+              phoneRegexObj = new RegExp(phoneRegex, 'i'),
+
+              desktopOffsetRegexObj = new RegExp(desktopOffsetRegex,'i'),
+              tabletOffsetRegexObj = new RegExp(tabletOffsetRegex, 'i'),
+              phoneOffsetRegexObj = new RegExp(phoneOffsetRegex, 'i');
+
           return $(html).find(':regex(class,'+desktopRegex+'|'+tabletRegex+'|'+phoneRegex+')').each(function() {
-            var elClasses = $(this).attr('class'), colNum = 2;
+            var elClasses = $(this).attr('class'), colNum = 2, offset = 0;
             var hasDesktop = desktopRegexObj.test(elClasses), hasPhone = phoneRegexObj.test(elClasses), hasTablet = tabletRegexObj.test(elClasses);
+            var hasDesktopOffset = desktopOffsetRegexObj.test(elClasses), hasPhoneOffset = phoneOffsetRegexObj.test(elClasses), hasTabletOffset = tabletOffsetRegexObj.test(elClasses);
 
             colNum = (colNum = desktopRegexObj.exec(elClasses))? colNum[1] : ( (colNum = tabletRegexObj.exec(elClasses))? colNum[1] : phoneRegexObj.exec(elClasses)[1] );
 
@@ -180,6 +194,15 @@
             }
             if(!hasTablet) {
               $(this).addClass(gm.options.colTabletClass+colNum);
+            }
+            if(!hasDesktopOffset) {
+              $(this).addClass(gm.options.colDesktopOffsetClass+offset);
+            }
+            if(!hasPhoneOffset) {
+              $(this).addClass(gm.options.colPhoneOffsetClass+offset);
+            }
+            if(!hasTabletOffset) {
+              $(this).addClass(gm.options.colTabletOffsetClass+offset);
             }
             // Adds default column classes - probably shouldn't go here, but since we're doing an expensive search to add the responsive classes, it'll do for now.
             if(gm.options.addDefaultColumnClass){
@@ -200,8 +223,15 @@
             var buttons=[];
             // Dynamically generated row template buttons
             $.each(gm.options.controlButtons, function(i, val){
-              var _class=gm.generateButtonClass(val);
-              buttons.push("<a title='Add Row " + _class + "' class='" + gm.options.controlButtonClass + " add" + _class + "'><span class='" + gm.options.controlButtonSpanClass + "'></span> " + _class + "</a>");
+              var _class=gm.generateButtonClass(val),
+                  buttonLabel = '';
+
+              if(typeof gm.options.controlButtonsLabels[_class] !== 'undefined') {
+                buttonLabel = gm.options.controlButtonsLabels[_class];
+              } else {
+                buttonLabel = _class;
+              }
+              buttons.push("<a title='Add Row " + _class + "' class='" + gm.options.controlButtonClass + " add" + _class + "'><span class='" + gm.options.controlButtonSpanClass + "'></span> " + buttonLabel + "</a>");
               gm.generateClickHandler(val);
             });
 
@@ -256,7 +286,7 @@
          * @returns null
          */
         gm.switchLayoutMode = function(mode) {
-          var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex1 = '', regex2 = '', uimode = '';
+          var canvas=gm.$el.find("#" + gm.options.canvasId), temp_html = canvas.html(), regex1 = '', regex2 = '', regex3 = '', regex4 = '', uimode = '';
           // Reset previous changes
           temp_html = gm.cleanSubstring(gm.options.classRenameSuffix, temp_html, '');
           uimode = $('div.gm-layout-mode > button > span');
@@ -265,31 +295,40 @@
             case 768:
               regex1 = '(' + gm.options.colDesktopClass  + '\\d+)';
               regex2 = '(' + gm.options.colPhoneClass + '\\d+)';
+              regex3 = '(' + gm.options.colDesktopOffsetClass  + '\\d+)';
+              regex4 = '(' + gm.options.colPhoneClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colTabletClass;
+              gm.options.currentClassOffsetMode = gm.options.colTabletOffsetClass;
               gm.options.colSelector = gm.options.colTabletSelector;
               $(uimode).attr('class', 'fa fa-tablet').attr('title', 'Tablet');
               break;
             case 640:
               regex1 = '(' + gm.options.colDesktopClass  + '\\d+)';
               regex2 = '(' + gm.options.colTabletClass + '\\d+)';
+              regex3 = '(' + gm.options.colDesktopOffsetClass  + '\\d+)';
+              regex4 = '(' + gm.options.colTabletOffsetClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colPhoneClass;
+              gm.options.currentClassOffsetMode = gm.options.colPhoneOffsetClass;
               gm.options.colSelector = gm.options.colPhoneSelector;
               $(uimode).attr('class', 'fa fa-mobile-phone').attr('title', 'Phone');
               break;
             default:
               regex1 = '(' + gm.options.colPhoneClass  + '\\d+)';
               regex2 = '(' + gm.options.colTabletClass + '\\d+)';
+              regex3 = '(' + gm.options.colPhoneOffsetClass  + '\\d+)';
+              regex4 = '(' + gm.options.colTabletOffsetClass + '\\d+)';
               gm.options.currentClassMode = gm.options.colDesktopClass;
+              gm.options.currentClassOffsetMode = gm.options.colDesktopOffsetClass;
               gm.options.colSelector = gm.options.colDesktopSelector;
               $(uimode).attr('class', 'fa fa-desktop').attr('title', 'Desktop');
           }
           gm.options.layoutDefaultMode = mode;
-          temp_html = temp_html.replace(new RegExp((regex1+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
-          temp_html = temp_html.replace(new RegExp((regex2+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          temp_html = temp_html.replace(new RegExp((regex1+'(?=[^"]*".*>)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          temp_html = temp_html.replace(new RegExp((regex2+'(?=[^"]*".*>)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          temp_html = temp_html.replace(new RegExp((regex3+'(?=[^"]*".*>)'), 'gm'), '$1'+gm.options.classRenameSuffix);
+          temp_html = temp_html.replace(new RegExp((regex4+'(?=[^"]*".*>)'), 'gm'), '$1'+gm.options.classRenameSuffix);
           canvas.html(temp_html);
         };
-
-
 
         /**
          * Add click functionality to the buttons
@@ -642,10 +681,28 @@
          */
         gm.getColClass=function(col){
             var colClass=$.grep(col.attr("class").split(" "), function(v){
-                return v.indexOf(gm.options.currentClassMode) === 0;
+                var regex = new RegExp(gm.options.currentClassMode+'(\\d+)','i');
+                return regex.test(v);
                 }).join();
             var colWidth=colClass.replace(gm.options.currentClassMode, "");
                 return {colClass:colClass, colWidth:colWidth};
+        };
+
+      /**
+         * Get the col-md-6 offset class, returning 6 as well from column
+         * returns colDesktopClass: the full col-md-offset-6 class
+         * colWidth: just the last integer of classname
+         * @col - column to look at
+         * @method getColClass
+         * @param {} col
+         * @return ObjectExpression
+         */
+        gm.getColOffsetClass=function(col){
+            var colOffsetClass=$.grep(col.attr("class").split(" "), function(v){
+                return v.indexOf(gm.options.currentClassOffsetMode) === 0;
+                }).join();
+            var colOffset=colOffsetClass.replace(gm.options.currentClassOffsetMode, "");
+                return {colOffsetClass:colOffsetClass, colOffset:colOffset};
         };
 
         /*
@@ -663,6 +720,18 @@
           }
           if(gm.options.editableRegionEnabled) {
             gm.editableAreaFilter(canvasElem, isInit);
+          }
+        };
+
+        /*
+          Run (if set) any custom function after init has finished
+            @canvasElem - canvas wrapper container with the entire layout html
+            returns void
+         */
+
+        gm.runPostInit=function(canvasElem){
+          if(typeof gm.options.postInit === 'function') {
+            gm.options.postInit(canvasElem);
           }
         };
 
@@ -728,6 +797,7 @@
             gm.initCustomControls();
             gm.initGlobalCustomControls();
             gm.initNewContentElem();
+            gm.runPostInit(canvas);
         };
 
         /**
@@ -953,6 +1023,9 @@
             .addClass(gm.options.colDesktopClass + size)
             .addClass(gm.options.colTabletClass + size)
             .addClass(gm.options.colPhoneClass + size)
+            .addClass(gm.options.colDesktopOffsetClass + 0)
+            .addClass(gm.options.colTabletOffsetClass + 0)
+            .addClass(gm.options.colPhoneOffsetClass + 0)
             .addClass(gm.options.gmEditClass)
             .addClass(gm.options.colAdditionalClass)
             .html(gm.toolFactory(gm.options.colButtonsPrepend))
@@ -968,19 +1041,22 @@
         /*
           Callback called when a the new editable area button is clicked
 
-            @container - container element that wraps the select button
-            @btn       - button element that was clicked
+            @container    - container element that wraps the select button
+            @btn          - button element that was clicked
+            @initial_html - html content to insert into container
 
             returns void
          */
-        gm.addEditableAreaClick = function(container, btn) {
+        gm.addEditableAreaClick = function(container, btn, initial_html) {
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
-              elem = null;
+              elem = null,
+              html_content = '';
           btn = null;
+          html_content = (initial_html === null)? '<p>New Content</p>' : initial_html;
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
-            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'"><p>New Content</p></div>')).before(cTagClose).prev().before(cTagOpen);
+            .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'">'+html_content+'</div>')).before(cTagClose).prev().before(cTagOpen);
           gm.initNewContentElem(elem);
         };
 
@@ -1079,7 +1155,7 @@
             buttons: modalConfig.buttons
           });
           if(typeof modalConfig.onInit === 'function') {
-            modalConfig.onInit(modalDialog);
+            modalConfig.onInit(modalDialog, btnEdit);
           }
         };
 
@@ -1144,6 +1220,40 @@
             $(container).addClass(gm.options.gmEditClassSelected);
           } else {
             $(container).removeClass(gm.options.gmEditClassSelected);
+          }
+        };
+
+        /*
+          Callback called when a the column right offset button is clicked
+            @container - container element that wraps the select button
+            @btn       - button element that was clicked
+            returns void
+         */
+
+        gm.addOffsetRightClick = function(container, btn) {
+          var col = $(container).closest("." +gm.options.gmEditClass);
+          var t=gm.getColOffsetClass(col), c=gm.getColClass(col);
+          btn = null;
+          if((parseInt(t.colOffset, 10) + parseInt(c.colWidth, 10)) < gm.options.colMax){
+            t.colOffset=(parseInt(t.colOffset, 10) + parseInt(gm.options.colResizeStep, 10));
+            col.switchClass(t.colOffsetClass, gm.options.currentClassOffsetMode + t.colOffset, 200);
+          }
+        };
+
+        /*
+          Callback called when a the column left offset button is clicked
+            @container - container element that wraps the select button
+            @btn       - button element that was clicked
+            returns void
+         */
+
+        gm.addOffsetLeftClick = function(container, btn) {
+          var col = $(container).closest("." +gm.options.gmEditClass);
+          var t=gm.getColOffsetClass(col);
+          btn = null;
+          if(t.colOffset > 0){
+            t.colOffset=(parseInt(t.colOffset, 10) - parseInt(gm.options.colResizeStep, 10));
+            col.switchClass(t.colOffsetClass, gm.options.currentClassOffsetMode + t.colOffset, 200);
           }
         };
 
@@ -1393,6 +1503,9 @@
         // Can add editable regions?
         editableRegionEnabled: true,
 
+        // Can columns be moved to the right or left?
+        colOffsetEnabled: true,
+
         // Should we try and automatically create editable regions?
         autoEdit: true,
 
@@ -1404,6 +1517,9 @@
 
         // Filter callback. Callback receives two params: the template grid element and whether is called from the init or deinit method
         filterCallback: null,
+
+        // Function that is executed after all init functions have finished
+        postInit: null,
   /*
      Canvas---------------
     */
@@ -1430,6 +1546,9 @@
 
         // Array of buttons for row templates
         controlButtons: [[12], [6,6], [4,4,4], [3,3,3,3], [2,2,2,2,2,2], [2,8,2], [4,8], [8,4]],
+
+        // Array of button labels for row templates
+        controlButtonsLabels: null,
 
         // Custom Global Controls for rows & cols - available props: global_row, global_col
         customControls: { global_row: [], global_col: [] },
@@ -1546,6 +1665,15 @@
         // Generic phone size layout class
         colPhoneClass: "col-xs-",
 
+        // Generic desktop offset size layout class
+        colDesktopOffsetClass: "col-md-offset-",
+
+        // Generic tablet offset size layout class
+        colTabletOffsetClass: "col-sm-offset-",
+
+        // Generic tablet offset size layout class
+        colPhoneOffsetClass: "col-xs-offset-",
+
         // Wild card column desktop selector
         colDesktopSelector: "div[class*=col-md-]",
 
@@ -1563,6 +1691,9 @@
 
         // Current layout column mode
         currentClassMode: "",
+
+        // Current layout column offset mode
+        currentClassOffsetMode: "",
 
         // Additional column class to add (foundation needs columns, bs3 doesn't)
         colAdditionalClass: "",
