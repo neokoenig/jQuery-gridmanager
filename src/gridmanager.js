@@ -47,7 +47,9 @@
             gm.addCSS(gm.options.cssInclude);
             gm.rteControl("init");
             gm.createCanvas();
-            gm.createControls();
+            if(gm.options.useControlBar){
+              gm.createControls();
+            }
             gm.initControls();
             gm.initDefaultButtons();
             gm.initCanvas();
@@ -142,6 +144,9 @@
          */
 
         gm.initDefaultButtons = function(){
+          gm.log("+ InitDefault Buttons");
+          /* Bit of hack to make sure this is only run once */
+          gm.options.customControls.global_col=[];
           if(gm.options.colSelectEnabled) {
             gm.options.customControls.global_col.push({callback: gm.selectColClick, loc: 'top', iconClass: 'fa fa-square-o', title: 'Select Column'});
           }
@@ -302,14 +307,7 @@
 
            // Turn editing on or off
            gm.$el.on("click", ".gm-preview", function(){
-               if(gm.status){
-                gm.deinitCanvas();
-                 $(this).parent().find(".gm-edit-mode").prop('disabled', true);
-              } else {
-                gm.initCanvas();
-                 $(this).parent().find(".gm-edit-mode").prop('disabled', false);
-              }
-              $(this).toggleClass(gm.options.gmDangerClass);
+              gm.switchPreview();
 
             // Switch Layout Mode
             }).on("click", ".gm-layout-mode a", function() {
@@ -317,20 +315,7 @@
 
             // Switch editing mode
             }).on("click", ".gm-edit-mode", function(){
-              if(gm.mode === "visual"){
-                 gm.deinitCanvas();
-                 canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
-                 gm.mode="html";
-                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', true);
-              } else {
-                var editedSource=canvas.find("textarea").val();
-                 canvas.html(editedSource);
-                 gm.initCanvas();
-                 gm.mode="visual";
-                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', false);
-              }
-              $(this).toggleClass(gm.options.gmDangerClass);
-
+              gm.switchMode();
             // Make region editable
             }).on("click", "." + gm.options.gmEditRegion + ' .'+gm.options.gmContentRegion, function(){
               //gm.log("clicked editable");
@@ -755,6 +740,7 @@
               gm.status=false;
         };
 
+
         /**
          * Push cleaned div content somewhere to save it
          * @method saveremote
@@ -770,7 +756,35 @@
             gm.log("Save Function Called");
         };
 
+        /* Turns code view on or off */
+        gm.switchMode = function(){
+          var canvas=gm.$el.find("#" + gm.options.canvasId);
+          if(gm.mode === "visual"){
+                 gm.deinitCanvas();
+                 canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
+                 gm.mode="html";
+                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', true);
+              } else {
+                var editedSource=canvas.find("textarea").val();
+                 canvas.html(editedSource);
+                 gm.initCanvas();
+                 gm.mode="visual";
+                 $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', false);
+              }
+              $(this).toggleClass(gm.options.gmDangerClass);
+        };
 
+        /* Turns local preview on or off */
+        gm.switchPreview = function(){
+           if(gm.status){
+                gm.deinitCanvas();
+                 $(this).parent().find(".gm-edit-mode").prop('disabled', true);
+              } else {
+                gm.initCanvas();
+                 $(this).parent().find(".gm-edit-mode").prop('disabled', false);
+              }
+              $(this).toggleClass(gm.options.gmDangerClass);
+        };
 /*------------------------------------------ ROWS ---------------------------------------*/
         /**
          * Look for pre-existing rows and add editing tools as appropriate
@@ -800,6 +814,14 @@
                .removeAttr("style");
         };
 
+        /**
+        Convient method when calling from outside
+        **/
+        gm.addRow = function(colWidths){
+          var canvas=gm.$el.find("#" + gm.options.canvasId);
+              canvas.append(gm.createRow(colWidths));
+              gm.reset();
+        };
         /**
          * Create a single row with appropriate editing tools & nested columns
          * @method createRow
@@ -1320,6 +1342,24 @@
         };
 
         /**
+         * Destroy instance, save created HTML in original container
+         * @method destroy
+         * @returns null
+         */
+        gm.destroy = function(){
+          if(gm.status){
+            gm.log("~~DESTROY~~");
+            // Remove controls
+            $("#" + gm.options.controlId).remove();
+            // Remove content out of canvas
+            gm.deinitCanvas();
+            gm.$el.html($("#" + gm.options.canvasId).html());
+            // Remove canvas
+            $("#" + gm.options.canvasId).remove();
+          }
+        };
+
+        /**
          * Remove all extraneous markup
          * @method cleanup
          * @returns null
@@ -1399,8 +1439,11 @@
 
         debug: 0,
 
-        // Are you columns selectable
-        colSelectEnabled: true,
+        // Use default control bar; you can turn this off if you want to control gm from custom controls
+        useControlBar: true,
+
+        // Are your columns selectable?
+        colSelectEnabled: false,
 
         // Can add editable regions?
         editableRegionEnabled: true,

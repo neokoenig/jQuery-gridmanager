@@ -4,83 +4,160 @@
     <meta charset="utf-8">
     <title>Gridmanager Development</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">  
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
 
     <!-- Bootstrap CSS -->
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">   
+
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Grid Manager CSS -->
-    <link href="gridmanager.css" rel="stylesheet"> 
+    <link href="gridmanager.css" rel="stylesheet">
 
-   
-    <link href="demo.css" rel="stylesheet"> 
+
+    <link href="demo.css" rel="stylesheet">
 
      <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->  
+    <![endif]-->
 
-    <style>.red{background-color:red;}
-</style>
     <!-- jQuery -->
      <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
     <!-- jQuery UI -->
      <script src="//cdnjs.cloudflare.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
     <!-- Bootstrap JS -->
      <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-  
+
      <script src="//tinymce.cachefly.net/4.0/tinymce.min.js"></script>
      <script src="//tinymce.cachefly.net/4.0/jquery.tinymce.min.js"></script>
- 
+
     <!-- Grid Manager JS -->
-     <script src="gridmanager.js"></script> 
-  
+     <script src="gridmanager.js"></script>
+
   <style>
 
   </style>
   </head>
-<body>   
+<body>
 
-  <div class="container"> 
-    <div id="mycanvas" class="clearfix">  
-    <div class="row">
-      <div class="col-md-6"><p>Wrap me 1</p>
-        <p>This markup will not be wrapped properly</p>
-        <p>Wrap me 3</p>
-      </div>
-      <div class="col-md-6"><p>Wrap me 1</p><p>Wrap me 2</p><p>Wrap me 3</p></div> 
-    </div> 
-      <div class="row">
-      <div class="col-md-12"> 
-        <p>This markup will not be wrapped properly</p>
-        <p>Wrap me before nest 2</p>
-        <p>Wrap me before nest 3</p> 
-          <div class="row">
-            <div class="col-md-6"><p>Wrap me 1</p></div>
-            <div class="col-md-6"><p>Wrap me 1</p></div>  
-          </div> 
-        <p>This markup will be wrapped properly as there's no linebreaks</p><p>This markup will be wrapped properly as there's no linebreaks</p>
-         <div class="row">
-            <div class="col-md-6"><p>Wrap me 1</p></div>
-            <div class="col-md-6"><p>Wrap me 1</p></div>  
-          </div> 
+  <div class="container">
+    <div class="well">
+          <a class="loadgridmanager btn btn-danger btn-xs">ON</a>
+          <a class="cleargrid btn btn-danger btn-xs canbedisabled">CLEAR</a>
+          <a class="stopgridmanager btn btn-danger btn-xs canbedisabled">OFF</a>
+          <a class="addRow btn btn-primary btn-xs canbedisabled">Add Row</a>
+          <a class="addRowCustom btn btn-primary btn-xs canbedisabled">Add Row (2|7|3)</a>
+          <a class="addContentToSelected btn btn-primary btn-xs canbedisabled">Add "Hi!" To Selected</a>
+          <a class="addRegionToSelected btn btn-primary btn-xs canbedisabled">Add Region To Selected</a>
+          <a class="getSelected btn btn-primary btn-xs canbedisabled">Get Selected</a>
+          <a class="deleteSelected btn btn-primary btn-xs canbedisabled">Delete Selected</a>
+          <a class="grabcontents btn btn-primary btn-xs canbedisabled">Get Contents</a>
+          <a class="codeview btn btn-primary btn-xs canbedisabled">Toggle Code View</a>
+          <a class="preview btn btn-primary btn-xs canbedisabled">Toggle Preview</a>
+          <a class="getCurrentMode btn btn-primary btn-xs canbedisabled">Get Current Mode</a>
+          <a class="testReset btn btn-primary btn-xs canbedisabled">Test Reset</a>
+          <a class="saveremote btn btn-primary btn-xs canbedisabled">Save</a>
+    </div>
 
-        <p>Wrap me after nest 4</p>
-  </div> 
-    </div> 
+    <div id="mycanvas"></div>
   </div>
 
-<!--================== JS ================--> 
-<script> 
-$(document).ready(function(){  
+<!--================== JS ================-->
+<script>
+$(document).ready(function(){
 
-   $("#mycanvas").gridmanager({
-         debug: 1 }
-    ); 
- 
+  toggleControls();
+
+  $(".loadgridmanager").on("click", function(e){
+    grid=$("#mycanvas").gridmanager(
+      {
+        debug: 1,
+        colSelectEnabled: true,
+        useControlBar: false
+      }
+    ).data('gridmanager');
+    toggleControls();
+  });
+
+  $(".cleargrid").on("click", function(e){
+    $("#mycanvas").html("");
+    //grid.reset();
+  });
+
+  $(".stopgridmanager").on("click", function(e){
+    grid.destroy();
+    toggleControls();
+  });
+
+  $(".addRow").on("click", function(e){
+    grid.addRow([12]);
+  });
+
+  $(".addRowCustom").on("click", function(e){
+    grid.addRow([2,7,3]);
+  });
+
+  $(".grabcontents").on("click", function(e){
+    grid.destroy();
+    toggleControls();
+    alert($("#mycanvas").html());
+  });
+
+  $(".addContentToSelected").on("click", function(e){
+    var myContent="<p>Hi!</p>";
+    grid.appendHTMLSelectedCols(myContent);
+  });
+
+  $(".addRegionToSelected").on("click", function(e){
+      grid.addEditableAreaClick();
+  });
+
+  $(".codeview").on("click", function(e){
+    grid.switchMode();
+  });
+
+  $(".preview").on("click", function(e){
+    grid.switchPreview();
+  });
+
+  $(".getCurrentMode").on("click", function(e){
+    alert(grid.mode);
+  });
+
+
+  $(".getSelected").on("click", function(e){
+    var selected=$("." + grid.options.gmEditClassSelected);
+    alert(selected);
+  });
+
+  $(".deleteSelected").on("click", function(e){
+    var selected=$("." + grid.options.gmEditClassSelected);
+        selected.remove();
+  });
+
+  $(".testReset").on("click", function(e){
+    grid.reset();
+  });
+
+  $(".saveremote").on("click", function(e){
+    grid.deinitCanvas();
+    grid.saveremote();
+  });
+
+
+
+
+
+  function toggleControls(){
+    if(typeof grid !== "undefined" && grid.status){
+      $("a.canbedisabled").attr("disabled", false);
+    } else {
+      $("a.canbedisabled").attr("disabled", true);
+    }
+  }
+
 });
-</script>  
+</script>
 </body>
 </html>
-  
