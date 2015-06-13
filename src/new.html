@@ -108,6 +108,10 @@ $(document).ready(function(){
       options= {
         debug: 1,
         useControlBar: false,
+        customControls: {
+            global_row: [{ iconClass: "fa fa-file-pdf-o", callback: 'button_callback', loc: 'bottom', btnLabel: 'myBtn' }],
+            global_col: [{ iconClass: "fa fa-file-pdf-o", callback: 'button_callback', loc: 'top' , btnLabel: 'myBtn' }]
+        },
         events: {
           beforeget: customCallBack
         }
@@ -132,8 +136,11 @@ $(document).ready(function(){
 
   function customCallBack(){
     console.log("======================My Custom Callback");
-
   };
+
+  function button_callback(){
+    alert("btn");
+  }
 
 });
 </script>

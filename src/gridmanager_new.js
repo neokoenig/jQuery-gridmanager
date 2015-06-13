@@ -21,15 +21,25 @@
 
         // Main entry point. Wraps each function call with before and after handlers and does logging if requested.
         gm.do = function(eventName, options){
-          gm._executeCallback(gm.options.events['before' + eventName]);
+          var d="";
+          // Look for before events
+          gm._runIfValidFunction(gm.options.events['before' + eventName]);
+          if($.isFunction(gm.options.events[eventName])){
+            // run overridden function
+            gm.log("--" + eventName + " (overridden) --");
+            d = gm.options.events[eventName](options);
+          } else {
+            // run default function
             gm.log("--" + eventName + "--");
-            var d= gm[eventName](options);
-          gm._executeCallback(gm.options.events['after' + eventName]);
+            d= gm[eventName](options);
+          }
+          // Look for after events
+          gm._runIfValidFunction(gm.options.events['after' + eventName]);
           return d;
         };
 
         // If event is valid, execute it.
-        gm._executeCallback=function(callBack){
+        gm._runIfValidFunction=function(callBack){
           if($.isFunction(callBack)){
             callBack();
           }
@@ -61,7 +71,7 @@
         // Clears the grid contents
         gm.delete= function(){
             gm.getCanvas().html("");
-            gm.reset();
+            gm.do("reset");
         };
         // Delete selected column(s)
         gm.deleteSelected= function(){
@@ -136,7 +146,7 @@
             } else {
                 canvas.prepend(row);
             }
-            gm.reset();
+            gm.do("reset");
         };
         gm.rowDelete= function(position){
            if (typeof position === "undefined" || position === null) {
@@ -221,8 +231,6 @@
 
           _initControls: function(){
 
-            //var canvas=gm.$el.find("#" + gm.options.canvasId);
-
            // Turn editing on or off
            gm.$el.on("click", ".gm-preview", function(){
               gm.do("preview");
@@ -303,7 +311,7 @@
             }).on("click", "a.gm-addColumn", function(){
                 $(this).parent().after(gm.col.create(2));
                 gm.grid._switchLayoutMode(gm.options.layoutDefaultMode);
-                gm.reset();
+                gm.do("reset");
 
             // Add a nested row
             }).on("click", "a.gm-addRow", function(){
@@ -312,7 +320,7 @@
                   $("<div>").addClass(gm.options.rowClass)
                             .html(gm.col.create(6))
                             .append(gm.col.create(6)));
-               gm.reset();
+               gm.do("reset");
 
             // Decrease Column Size
             }).on("click", "a.gm-colDecrease", function(){
@@ -345,11 +353,6 @@
                   $(this).remove();
                 });
             });
-            // For all the above, prevent default.
-            // TODO
-            //}).on("click", "a.gm-deletegrid, a.gm-remove, a.gm-removeRow, a.gm-save, button.gm-preview, a.gm-viewsource, a.gm-addColumn, a.gm-colDecrease, a.gm-colIncrease", function(e){
-            //   //e.preventDefault();
-            //
           },
 
           _initDefaultButtons : function(){
@@ -624,7 +627,7 @@
 
           // Ensure we have a valid callback, if not skip
           if(typeof callbackFunc === 'string') {
-            callback = gm.isValidCallback(callbackScp, callbackFunc.toLowerCase());
+            callback = gm.grid._isValidCallback(callbackScp, callbackFunc.toLowerCase());
           } else if(typeof callbackFunc === 'function') {
             callback = callbackFunc;
           } else {
@@ -639,6 +642,23 @@
             e.preventDefault();
           });
           return true;
+        },
+
+      _isValidCallback:function(callbackScp, callbackFunc){
+          var callback = null;
+
+          if(callbackScp === 'window') {
+            if(typeof window[callbackFunc] === 'function') {
+              callback = window[callbackFunc];
+            } else { // If the global function is not valid there is nothing to do
+              return false;
+            }
+          } else if(typeof window[callbackScp][callbackFunc] === 'function') {
+            callback = window[callbackScp][callbackFunc];
+          } else { // If there is no valid callback there is nothing to do
+            return false;
+          }
+          return callback;
         },
 
        _initNewContentElem:function(newElem) {
@@ -1028,7 +1048,7 @@
                 } else {
                   canvas.prepend(gm.rowCreate(colWidths));
                 }
-                gm.reset();
+                gm.do("reset");
                 e.preventDefault();
             });
           },
