@@ -14,6 +14,7 @@
         gm.el = el;
         gm.$el.data("gridmanager", gm);
 
+//------------------------ INIT & Wrapper functions---------------------------//
         gm.init = function(){
           gm.options = $.extend({},$.gridmanager.defaultOptions, options);
           gm.do("start");
@@ -38,29 +39,24 @@
           return d;
         };
 
-        // If event is valid, execute it.
-        gm._runIfValidFunction=function(callBack){
-          if($.isFunction(callBack)){
-            callBack();
-          }
-        };
+//------------------------ INIT & Wrapper functions---------------------------//
 
         // Runs on start up
         gm.start = function(){
             gm.utils.addCSS(gm.options.cssInclude);
-            gm.grid._setupCanvas();
-            gm.grid._setupResponsiveness();
-            gm.grid._setupDefaultEditableRegions();
-            gm.grid._setupControls();
-            gm.grid._initControls();
-            gm.grid._initDefaultButtons();
-            gm.grid._initCanvas();
+            gm._setupCanvas();
+            gm._setupResponsiveness();
+            gm._setupDefaultEditableRegions();
+            gm._setupControls();
+            gm._initControls();
+            gm._initDefaultButtons();
+            gm._initCanvas();
             gm.markup.activate(gm.$el.find(gm.options.colSelector));
 
         };
         // Destroy the container and reproduce content in original div
         gm.destroy = function(){
-          gm.grid._deinitCanvas();
+          gm._deinitCanvas();
           var html=gm.getRaw();
           var parentitem=gm.$el.parent();
           var elid=$(el).attr("id");
@@ -79,20 +75,20 @@
         };
         // Reinit's all the grids handlers etc
         gm.reset= function(){
-          gm.grid._deinitCanvas();
-          gm.grid._initCanvas();
+          gm._deinitCanvas();
+          gm._initCanvas();
         };
         // Save contents
         gm.save=   function(){
-          gm.grid._deinitCanvas();
-          gm.grid._saveremote();
-          gm.grid._initCanvas();
+          gm._deinitCanvas();
+          gm._saveremote();
+          gm._initCanvas();
         };
         // Get Cleaned contents
         gm.get=    function(){
-          gm.grid._deinitCanvas();
+          gm._deinitCanvas();
           var temp=gm.getRaw();
-          gm.grid._initCanvas();
+          gm._initCanvas();
           return temp;
         };
         // Get Raw contents (with GM markup)
@@ -113,23 +109,23 @@
         };
         // Switch to desktop mode
         gm.desktop= function(){
-          gm.grid._switchLayoutMode();
+          gm._switchLayoutMode();
         };
         // Switch to tablet mode
         gm.tablet= function(){
-          gm.grid._switchLayoutMode("tablet");
+          gm._switchLayoutMode("tablet");
         };
         // Switch to phone mode
         gm.phone= function(){
-          gm.grid._switchLayoutMode("phone");
+          gm._switchLayoutMode("phone");
         };
         // Switch to codeview
         gm.codeview= function(){
-          gm.grid._switchMode();
+          gm._switchMode();
         };
         // Switch to preview
         gm.preview= function(){
-          gm.grid._switchPreview();
+          gm._switchPreview();
         };
 
        // Create a row
@@ -181,23 +177,32 @@
         };
 
         //------------------------------GRID----------------------------
-        gm.grid   ={
-          _saveremote: function(){
+        // If event is valid, execute it.
+        gm._runIfValidFunction=function(callBack){
+          if($.isFunction(callBack)){
+            callBack();
+          }
+        };
+
+        // Remote save
+        gm._saveremote= function(){
             var canvas=gm.getCanvas();
             $.ajax({
               type: "POST",
               url:  gm.options.remoteURL,
               data: {content: canvas.html()}
             });
-          },
+         };
 
-          _setupCanvas: function(){
+         // Setup Canvas
+         gm._setupCanvas= function(){
             var html=gm.$el.html();
                 gm.$el.html("");
                 $('<div/>', {'id': gm.options.canvasId, 'html':html }).appendTo(gm.$el);
-          },
+         };
 
-          _setupControls: function(){
+         // Setup Controls
+         gm._setupControls= function(){
             if(gm.options.useControlBar){
                     var buttons=[];
                 // Dynamically generated row template buttons
@@ -223,13 +228,13 @@
                   )
               );
             }
-          },
+          };
 
-          _removeControls: function(){
+          gm._removeControls= function(){
             $("#" + gm.options.controlId).remove();
-          },
+          };
 
-          _initControls: function(){
+          gm._initControls= function(){
 
            // Turn editing on or off
            gm.$el.on("click", ".gm-preview", function(){
@@ -237,7 +242,7 @@
 
             // Switch Layout Mode
             }).on("click", ".gm-layout-mode a", function() {
-              gm.grid._switchLayoutMode($(this).data('width'));
+              gm._switchLayoutMode($(this).data('width'));
 
             // Switch editing mode
             }).on("click", ".gm-edit-mode", function(){
@@ -310,7 +315,7 @@
             // Add new column to existing row
             }).on("click", "a.gm-addColumn", function(){
                 $(this).parent().after(gm.col.create(2));
-                gm.grid._switchLayoutMode(gm.options.layoutDefaultMode);
+                gm._switchLayoutMode(gm.options.layoutDefaultMode);
                 gm.do("reset");
 
             // Add a nested row
@@ -353,20 +358,20 @@
                   $(this).remove();
                 });
             });
-          },
+          };
 
-          _initDefaultButtons : function(){
+          gm._initDefaultButtons = function(){
           /* Bit of hack to make sure this is only run once */
           gm.options.customControls.global_col=[];
           if(gm.options.colSelectEnabled) {
             gm.options.customControls.global_col.push({callback: gm.col._selectColClick, loc: 'top', iconClass: 'fa fa-square-o', title: 'Select Column'});
           }
           if(gm.options.editableRegionEnabled) {
-            gm.options.customControls.global_col.push({callback: gm.grid._addEditableAreaClick, loc: 'top', iconClass: 'fa fa-edit', title: 'Add Editable Region'});
+            gm.options.customControls.global_col.push({callback: gm._addEditableAreaClick, loc: 'top', iconClass: 'fa fa-edit', title: 'Add Editable Region'});
           }
-        },
+        };
 
-         _addEditableAreaClick : function(container, btn, html) {
+         gm._addEditableAreaClick = function(container, btn, html) {
           var cTagOpen = '<!--'+gm.options.gmEditRegion+'-->',
               cTagClose = '<!--\/'+gm.options.gmEditRegion+'-->',
               elem = null;
@@ -375,10 +380,10 @@
           $(('.'+gm.options.gmToolClass+':last'),container)
           .before(elem = $('<div>').addClass(gm.options.gmEditRegion+' '+gm.options.contentDraggableClass)
             .append(gm.options.controlContentElem+'<div class="'+gm.options.gmContentRegion+'">'+ html +'</div>')).before(cTagClose).prev().before(cTagOpen);
-          gm.grid._initNewContentElem(elem);
-        },
+          gm._initNewContentElem(elem);
+        };
 
-          _setupResponsiveness: function(){
+          gm._setupResponsiveness = function(){
             if(gm.options.addResponsiveClasses) {
               var html=gm.getCanvas();
               if(html === '') { return; }
@@ -412,20 +417,20 @@
                 }
               });
             }
-          },
+          };
 
-          _setupDefaultEditableRegions: function(){
+          gm._setupDefaultEditableRegions= function(){
               if(gm.options.autoEdit){
                  var cols= gm.getCanvas()
                          .find("."+gm.options.colClass)
                          .not("."+gm.options.rowClass);
                    gm.markup.activate(cols);
                 }
-          },
+          };
 
 
 
-         _switchLayoutMode: function(mode) {
+         gm._switchLayoutMode= function(mode) {
             var canvas=gm.getCanvas(),
                 temp_html = canvas.html(),
                 regex1 = '',
@@ -462,41 +467,41 @@
             temp_html = temp_html.replace(new RegExp((regex1+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
             temp_html = temp_html.replace(new RegExp((regex2+'(?=[^"]*">)'), 'gm'), '$1'+gm.options.classRenameSuffix);
             canvas.html(temp_html);
-        },
+        };
 
-        _switchMode: function(){
+        gm._switchMode= function(){
           var canvas=gm.getCanvas();
           if(gm.mode === "visual"){
-                 gm.grid._deinitCanvas();
+                 gm._deinitCanvas();
                  canvas.html($('<textarea/>').attr("cols", 130).attr("rows", 25).val(canvas.html()));
                  gm.mode="html";
                  $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', true);
               } else {
                 var editedSource=canvas.find("textarea").val();
                  canvas.html(editedSource);
-                 gm.grid._initCanvas();
+                 gm._initCanvas();
                  gm.mode="visual";
                  $(this).parent().find(".gm-preview, .gm-layout-mode > button").prop('disabled', false);
               }
               $(this).toggleClass(gm.options.gmDangerClass);
-        },
+        };
 
-        /* Turns local preview on or off */
-        _switchPreview: function(){
+        // Turns local preview on or off
+        gm._switchPreview= function(){
            if(gm.status){
-                gm.grid._deinitCanvas();
+                gm._deinitCanvas();
                  $(this).parent().find(".gm-edit-mode").prop('disabled', true);
               } else {
-                gm.grid._initCanvas();
+                gm._initCanvas();
                  $(this).parent().find(".gm-edit-mode").prop('disabled', false);
               }
               $(this).toggleClass(gm.options.gmDangerClass);
-        },
+        };
 
 
-        _initCanvas: function(){
+        gm._initCanvas= function(){
           var canvas=gm.getCanvas();
-          gm.grid._switchLayoutMode(gm.options.layoutDefaultMode);
+          gm._switchLayoutMode(gm.options.layoutDefaultMode);
           var cols=canvas.find(gm.options.colSelector);
           var rows=canvas.find(gm.options.rowSelector);
               // Show the template controls
@@ -537,12 +542,12 @@
               });
             gm.status=true;
             gm.mode="visual";
-            gm.grid._initCustomControls();
-            gm.grid._initGlobalCustomControls();
-            gm.grid._initNewContentElem();
-        },
+            gm._initCustomControls();
+            gm._initGlobalCustomControls();
+            gm._initNewContentElem();
+        };
 
-        _initCustomControls:function(){
+        gm._initCustomControls=function(){
           var canvas=gm.getCanvas(),
               callbackParams = '',
               callbackScp = '',
@@ -571,14 +576,14 @@
                   iconClass:  iconClass,
                   btnLabel: btnLabel
                 };
-                gm.grid._setupCustomBtn(this, btnLoc, callbackScp, callbackFunc, btnObj);
+                gm._setupCustomBtn(this, btnLoc, callbackScp, callbackFunc, btnObj);
                 break;
               }
             }
           });
-        },
+        };
 
-     _initGlobalCustomControls:function(){
+     gm._initGlobalCustomControls=function(){
           var canvas=gm.getCanvas(),
               elems=[],
               btnClass = '',
@@ -589,7 +594,7 @@
               elems=canvas.find(gm.options[control_type+'Selector']);
               $.each(gm.options.customControls['global_'+control_type], function(i, curr_control) {
                 // controls with no valid callbacks set are skipped
-                if(typeof curr_control.callback === 'undefined') { return; }
+                if(typeof curr_control.callback === 'undefined') { gm.log("Invalid Callback"); return; }
 
                 if(typeof curr_control.loc === 'undefined') {
                   curr_control.loc = 'top';
@@ -615,19 +620,19 @@
                 };
 
                 $.each(elems, function(i, current_elem) {
-                  gm.grid._setupCustomBtn(current_elem, curr_control.loc, 'window', curr_control.callback, btnObj);
+                  gm._setupCustomBtn(current_elem, curr_control.loc, 'window', curr_control.callback, btnObj);
                 });
               });
             }
           });
-        },
+        };
 
-        _setupCustomBtn:function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
+        gm._setupCustomBtn= function(container, btnLoc, callbackScp, callbackFunc, btnObj) {
           var callback = null;
 
           // Ensure we have a valid callback, if not skip
           if(typeof callbackFunc === 'string') {
-            callback = gm.grid._isValidCallback(callbackScp, callbackFunc.toLowerCase());
+            callback = gm._isValidCallback(callbackScp, callbackFunc.toLowerCase());
           } else if(typeof callbackFunc === 'function') {
             callback = callbackFunc;
           } else {
@@ -642,9 +647,9 @@
             e.preventDefault();
           });
           return true;
-        },
+        };
 
-      _isValidCallback:function(callbackScp, callbackFunc){
+      gm._isValidCallback=function(callbackScp, callbackFunc){
           var callback = null;
 
           if(callbackScp === 'window') {
@@ -659,9 +664,9 @@
             return false;
           }
           return callback;
-        },
+        };
 
-       _initNewContentElem:function(newElem) {
+       gm._initNewContentElem=function(newElem) {
           var parentCols = null;
 
           if(typeof newElem === 'undefined') {
@@ -695,9 +700,9 @@
              });
           });
 
-        },
+        };
 
-        _deinitCanvas: function(){
+        gm._deinitCanvas=function(){
           var canvas=gm.getCanvas();
           var cols=canvas.find(gm.options.colSelector);
           var rows=canvas.find(gm.options.rowSelector);
@@ -705,7 +710,7 @@
               // Hide template control
               gm.$el.find("#gm-addnew").hide();
               // Sort Rows First
-              gm.rowDeactivate(rows);
+              gm.do("rowDeactivate", rows);
               // Now Columns
               gm.col.deactivate(cols);
               // Clean markup
@@ -713,11 +718,9 @@
               gm.markup._editregions(canvas, false);
               //gm.runFilter(canvas, false);
               gm.status=false;
-        },
-
-
-
         };
+
+
         //------------------------------MARKUP-------------------------
         gm.markup={
             activate: function(cols){
@@ -1044,9 +1047,9 @@
           var canvas=gm.getCanvas();
               gm.$el.on("click", string, function(e){
                 if (gm.options.addRowPosition === 'bottom') {
-                  canvas.append(gm.rowCreate(colWidths));
+                  canvas.append(gm.do("rowCreate", colWidths));
                 } else {
-                  canvas.prepend(gm.rowCreate(colWidths));
+                  canvas.prepend(gm.do("rowCreate", colWidths));
                 }
                 gm.do("reset");
                 e.preventDefault();
