@@ -63,6 +63,10 @@
             gm.getCanvas().html("");
             gm.reset();
         };
+        // Delete selected column(s)
+        gm.deleteSelected= function(){
+            gm.getSelected().remove();
+        };
         // Reinit's all the grids handlers etc
         gm.reset= function(){
           gm.grid._deinitCanvas();
@@ -88,6 +92,10 @@
         // Get the Canvas
         gm.getCanvas=function(){
           return gm.$el.find("#" + gm.options.canvasId);
+        };
+        // Get Selected Cols
+        gm.getSelected=function(){
+          return gm.getCanvas().find("." + gm.options.gmEditClassSelected);
         };
         // Generic logging function
         gm.log = function(logvar){
